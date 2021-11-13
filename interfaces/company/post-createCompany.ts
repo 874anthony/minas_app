@@ -8,4 +8,5 @@ export default interface DtoCreateCompany {
 	docComCam: string;
 	docRUT: string;
 	docLegalRepresentativeID: string;
+	company?: string;
 }

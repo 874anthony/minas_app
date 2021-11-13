@@ -17,19 +17,16 @@ const TrdSchema: Schema<TrdInterface> = new Schema({
 		type: Schema.Types.ObjectId,
 		ref: 'trd_dependency',
 		required: true,
-		min: 4,
 	},
 	serie: {
 		type: Schema.Types.ObjectId,
 		ref: 'trd_serie',
 		required: true,
-		min: 2,
 	},
 	subserie: {
 		type: Schema.Types.ObjectId,
 		ref: 'trd_subserie',
 		required: true,
-		min: 2,
 	},
 	consecutive: {
 		type: Number,

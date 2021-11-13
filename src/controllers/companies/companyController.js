@@ -10,6 +10,25 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -57,7 +76,8 @@ var httpException_1 = __importDefault(require("../../utils/httpException"));
 var catchAsync_1 = __importDefault(require("../../utils/catchAsync"));
 var email_1 = __importDefault(require("../../utils/email"));
 // Own models
-var companyModel_1 = __importDefault(require("../../models/companies/companyModel"));
+var contractorModel_1 = __importDefault(require("../../models/companies/contractorModel"));
+var companyModel_1 = __importStar(require("../../models/companies/companyModel"));
 var trdModel_1 = __importDefault(require("../../models/trd/trdModel"));
 var trdImportAll_1 = require("../../models/trd/trdImportAll");
 // ================================== MULTER CONFIGURATION TO HANDLE THE DOCUMENTS ===========================================
@@ -148,20 +168,26 @@ var createCompany = (0, catchAsync_1.default)(function (req, res, next) { return
                     !req.files['docLegalRepresentativeID']) {
                     return [2 /*return*/, next(new httpException_1.default('No se han cargado todos los archivos, por favor inténtelo nuevamente', 404))];
                 }
-                body = __assign({}, req.body);
+                body = req.body;
                 // Extracting the filenames from the files
                 body.docComCam = req.files['docComCam'][0].filename;
                 body.docRUT = req.files['docRUT'][0].filename;
                 body.docLegalRepresentativeID =
                     req.files['docLegalRepresentativeID'][0].filename;
-                return [4 /*yield*/, companyModel_1.default.create(body)];
+                if (!body.company) return [3 /*break*/, 2];
+                return [4 /*yield*/, contractorModel_1.default.create(body)];
             case 1:
                 companyCreated = _a.sent();
-                return [2 /*return*/, res.status(201).json({
-                        status: true,
-                        message: 'La empresa se ha creado éxitosamente',
-                        company: companyCreated,
-                    })];
+                return [3 /*break*/, 4];
+            case 2: return [4 /*yield*/, companyModel_1.default.create(body)];
+            case 3:
+                companyCreated = _a.sent();
+                _a.label = 4;
+            case 4: return [2 /*return*/, res.status(201).json({
+                    status: true,
+                    message: 'La empresa se ha creado éxitosamente',
+                    company: companyCreated,
+                })];
         }
     });
 }); });
@@ -173,21 +199,29 @@ var acceptCompany = (0, catchAsync_1.default)(function (req, res, next) { return
         switch (_a.label) {
             case 0:
                 id = req.params.id;
-                body = req.body;
-                return [4 /*yield*/, companyModel_1.default.findById(id)];
+                body = __assign({}, req.body);
+                if (!(req.body.contractor === true)) return [3 /*break*/, 2];
+                return [4 /*yield*/, contractorModel_1.default.findById(id)];
             case 1:
                 companyMatched = _a.sent();
+                return [3 /*break*/, 4];
+            case 2: return [4 /*yield*/, companyModel_1.default.findById(id)];
+            case 3:
+                companyMatched = _a.sent();
+                _a.label = 4;
+            case 4:
+                // CHECK IF THE COMPANY EXISTS
                 if (!companyMatched) {
                     return [2 /*return*/, next(new httpException_1.default('No existe una compañía con ese ID, inténtelo nuevamente', 404))];
                 }
                 return [4 /*yield*/, trdImportAll_1.TRDDependency.findById(body.dependency)];
-            case 2:
+            case 5:
                 dependency = _a.sent();
                 return [4 /*yield*/, trdImportAll_1.TRDSerie.findById(body.serie)];
-            case 3:
+            case 6:
                 serie = _a.sent();
                 return [4 /*yield*/, trdImportAll_1.TRDSubSerie.findById(body.subserie)];
-            case 4:
+            case 7:
                 subserie = _a.sent();
                 if (!dependency || !serie || !subserie) {
                     return [2 /*return*/, next(new httpException_1.default('No se ha encontrado ningúna tipología creada!', 404))];
@@ -197,18 +231,18 @@ var acceptCompany = (0, catchAsync_1.default)(function (req, res, next) { return
                         serie: body.serie,
                         subserie: body.subserie,
                     })];
-            case 5:
+            case 8:
                 trd = _a.sent();
-                if (!!trd) return [3 /*break*/, 7];
+                if (!!trd) return [3 /*break*/, 10];
                 return [4 /*yield*/, trdModel_1.default.create({
                         dependency: body.dependency,
                         serie: body.serie,
                         subserie: body.subserie,
                     })];
-            case 6:
+            case 9:
                 trd = _a.sent();
-                _a.label = 7;
-            case 7:
+                _a.label = 10;
+            case 10:
                 year = new Date().getFullYear();
                 dependencyCode = dependency.dependencyCode;
                 serieCode = serie.serieCode;
@@ -219,38 +253,41 @@ var acceptCompany = (0, catchAsync_1.default)(function (req, res, next) { return
                 // INCREMENT THE CONSECUTIVE
                 trd.consecutive = trd.getConsecutive() + 1;
                 return [4 /*yield*/, trd.save({ validateBeforeSave: false })];
-            case 8:
+            case 11:
                 _a.sent();
                 return [4 /*yield*/, companyMatched.generatePassword()];
-            case 9:
+            case 12:
                 genPassword = _a.sent();
                 return [4 /*yield*/, companyMatched.hashPassword(genPassword)];
-            case 10:
+            case 13:
                 hashedPassword = _a.sent();
                 // NOW SAVE THE RADICADO, THE STATUS, PASSWORD AND THE UPDATED AT
                 companyMatched.password = hashedPassword;
                 companyMatched.radicado = radicado;
-                companyMatched.pending = false;
+                companyMatched.status = companyModel_1.StatusCompany.Active;
                 companyMatched.updatedAt = Date.now();
+                // To save observations as well
+                if (req.body.observations)
+                    companyMatched.observations = req.body.observations;
                 return [4 /*yield*/, companyMatched.save({ validateBeforeSave: false })];
-            case 11:
+            case 14:
                 _a.sent();
                 emailMessage = "Ha sido aprobado su solicitud de acceso para la mina, la generaci\u00F3n de su empresa se ha generado con el radicado: " + radicado + ". Sus credenciales de accesos son las siguientes:\n\t\t\nEl correo: el mismo con el que se registr\u00F3\nSu contrase\u00F1a: " + genPassword + "!\n\nSi tiene alguna duda, no dude en contactar con nosotros!";
-                _a.label = 12;
-            case 12:
-                _a.trys.push([12, 14, , 15]);
+                _a.label = 15;
+            case 15:
+                _a.trys.push([15, 17, , 18]);
                 return [4 /*yield*/, (0, email_1.default)({
                         email: companyMatched.email,
                         subject: 'Ha sido aprobado su acceso a la Mina San Jorge!',
                         message: emailMessage,
                     })];
-            case 13:
+            case 16:
                 _a.sent();
-                return [3 /*break*/, 15];
-            case 14:
+                return [3 /*break*/, 18];
+            case 17:
                 error_1 = _a.sent();
                 return [2 /*return*/, next(new httpException_1.default('Hubo un error al enviar el correo, por favor intente más tarde', 500))];
-            case 15: 
+            case 18: 
             // SENDING THE FINAL RESPONSE TO THE CLIENT
             return [2 /*return*/, res.status(200).json({
                     status: true,

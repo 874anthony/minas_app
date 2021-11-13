@@ -8,7 +8,8 @@ import catchAsync from '../../utils/catchAsync';
 import sendEmail from '../../utils/email';
 
 // Own models
-import Company from '../../models/companies/companyModel';
+import Contractor from '../../models/companies/contractorModel';
+import Company, { StatusCompany } from '../../models/companies/companyModel';
 import TRD, { TrdInterface } from '../../models/trd/trdModel';
 import {
 	TRDDependency,
@@ -117,7 +118,7 @@ const createCompany = catchAsync(
 			);
 		}
 
-		const body: DtoCreateCompany = { ...req.body };
+		const body: DtoCreateCompany = req.body;
 
 		// Extracting the filenames from the files
 		body.docComCam = req.files['docComCam'][0].filename;
@@ -125,7 +126,13 @@ const createCompany = catchAsync(
 		body.docLegalRepresentativeID =
 			req.files['docLegalRepresentativeID'][0].filename;
 
-		const companyCreated = await Company.create(body);
+		let companyCreated;
+
+		if (body.company) {
+			companyCreated = await Contractor.create(body);
+		} else {
+			companyCreated = await Company.create(body);
+		}
 
 		return res.status(201).json({
 			status: true,
@@ -139,10 +146,17 @@ const createCompany = catchAsync(
 const acceptCompany = catchAsync(
 	async (req: Request, res: Response, next: NextFunction) => {
 		const id = req.params.id;
-		const body: TrdInterface = req.body;
+		const body: TrdInterface = { ...req.body };
+
+		let companyMatched;
+
+		if (req.body.contractor === true) {
+			companyMatched = await Contractor.findById(id);
+		} else {
+			companyMatched = await Company.findById(id);
+		}
 
 		// CHECK IF THE COMPANY EXISTS
-		const companyMatched = await Company.findById(id);
 
 		if (!companyMatched) {
 			return next(
@@ -202,8 +216,12 @@ const acceptCompany = catchAsync(
 		// NOW SAVE THE RADICADO, THE STATUS, PASSWORD AND THE UPDATED AT
 		companyMatched.password = hashedPassword;
 		companyMatched.radicado = radicado;
-		companyMatched.pending = false;
+		companyMatched.status = StatusCompany.Active;
 		companyMatched.updatedAt = Date.now();
+
+		// To save observations as well
+		if (req.body.observations)
+			companyMatched.observations = req.body.observations;
 
 		await companyMatched.save({ validateBeforeSave: false });
 

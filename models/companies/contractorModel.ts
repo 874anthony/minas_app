@@ -4,37 +4,15 @@ import validator from 'validator';
 import CryptoJS from 'crypto-js';
 import crypto from 'crypto';
 
-export enum StatusCompany {
-	Active = 'ACTIVO',
-	InProcess = 'EN PROCESO',
-	Pending = 'PENDIENTE',
-	Inactive = 'INACTIVO',
-	Rejected = 'RECHAZADO',
-}
-export interface CompanyInterface extends Schema {
-	businessName: string;
-	nit: number;
-	email: string;
-	address: string;
-	phone: number;
-	legalRepresentative: string;
-	docComCam: string;
-	docRUT: string;
-	docLegalRepresentativeID: string;
-	radicado: string;
-	password: string;
-	status: any;
-	observations: Array<string>;
-	finishDates: Array<any>;
-	createdAt: any;
-	updatedAt: any;
-	generatePassword: () => Promise<string>;
-	hashPassword: (genPassword: string) => Promise<string>;
-	decryptPassword: (hashedPassword: string) => Promise<string>;
+import { StatusCompany } from './companyModel';
+import { CompanyInterface } from './companyModel';
+
+export interface ContractorInterface extends Schema, CompanyInterface {
+	company: Schema.Types.ObjectId;
 }
 
 // Definying the schema
-const CompanySchema: Schema<CompanyInterface> = new Schema({
+const ContractorSchema: Schema<ContractorInterface> = new Schema({
 	businessName: {
 		type: String,
 		required: true,
@@ -111,6 +89,11 @@ const CompanySchema: Schema<CompanyInterface> = new Schema({
 			minlength: [5, 'Las observaciones deben tener al menos 5 letras'],
 		},
 	],
+	company: {
+		type: Schema.Types.ObjectId,
+		ref: 'company',
+		required: true,
+	},
 });
 
 // UserSchema.methods.toJSON = function() {
@@ -126,14 +109,14 @@ const CompanySchema: Schema<CompanyInterface> = new Schema({
  * @returns An automatic generated passwords
  */
 
-CompanySchema.methods.hashPassword = async function (genPassword: string) {
+ContractorSchema.methods.hashPassword = async function (genPassword: string) {
 	return CryptoJS.AES.encrypt(
 		genPassword,
 		process.env.PASSWORD_PHARAPRHASE!
 	).toString();
 };
 
-CompanySchema.methods.generatePassword = async function (
+ContractorSchema.methods.generatePassword = async function (
 	length = 10,
 	wishlist = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz~!@-#$'
 ) {
@@ -142,11 +125,11 @@ CompanySchema.methods.generatePassword = async function (
 		.join('');
 };
 
-CompanySchema.methods.decryptPassword = async function (hashedPassword) {
+ContractorSchema.methods.decryptPassword = async function (hashedPassword) {
 	return CryptoJS.AES.decrypt(
 		hashedPassword,
 		process.env.PASSWORD_PHARAPRHASE!
 	).toString(CryptoJS.enc.Utf8);
 };
 
-export default model<CompanyInterface>('company', CompanySchema);
+export default model<ContractorInterface>('contractor', ContractorSchema);

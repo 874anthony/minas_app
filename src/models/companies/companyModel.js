@@ -39,10 +39,19 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.StatusCompany = void 0;
 var mongoose_1 = require("mongoose");
 var validator_1 = __importDefault(require("validator"));
 var crypto_js_1 = __importDefault(require("crypto-js"));
 var crypto_1 = __importDefault(require("crypto"));
+var StatusCompany;
+(function (StatusCompany) {
+    StatusCompany["Active"] = "ACTIVO";
+    StatusCompany["InProcess"] = "EN PROCESO";
+    StatusCompany["Pending"] = "PENDIENTE";
+    StatusCompany["Inactive"] = "INACTIVO";
+    StatusCompany["Rejected"] = "RECHAZADO";
+})(StatusCompany = exports.StatusCompany || (exports.StatusCompany = {}));
 // Definying the schema
 var CompanySchema = new mongoose_1.Schema({
     businessName: {
@@ -101,9 +110,10 @@ var CompanySchema = new mongoose_1.Schema({
     password: {
         type: String,
     },
-    pending: {
-        type: Boolean,
-        default: true,
+    status: {
+        type: String,
+        enum: [StatusCompany],
+        default: StatusCompany.Pending,
     },
     createdAt: {
         type: Date,
@@ -112,6 +122,14 @@ var CompanySchema = new mongoose_1.Schema({
     updatedAt: {
         type: Date,
     },
+    finishDates: [Date],
+    observations: [
+        {
+            type: String,
+            trim: true,
+            minlength: [5, 'Las observaciones deben tener al menos 5 letras'],
+        },
+    ],
 });
 // UserSchema.methods.toJSON = function() {
 // var obj = this.toObject()
