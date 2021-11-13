@@ -1,5 +1,6 @@
-// Mongoose imports
+// Import 3rd-party packages
 import { NextFunction, Request, Response } from 'express';
+import multer from 'multer';
 
 // Importing our utils to this controller
 import HttpException from '../../utils/httpException';
@@ -18,7 +19,51 @@ import {
 // Own DTO Pattern
 import DtoCreateCompany from '../../interfaces/company/post-createCompany';
 
+// ================================== MULTER CONFIGURATION TO HANDLE THE DOCUMENTS ===========================================
+// Configuring first the type of the storage
+const multerStorage = multer.diskStorage({
+	// Define the destination
+	destination: (req: Request, file: Express.Multer.File, callback) => {
+		callback(
+			null,
+			process.env.PATH_STORE_DOCUMENTS || 'store/documents/company'
+		);
+	},
+	filename: (req: Request, file: Express.Multer.File, callback) => {
+		// Extracting the extension.
+		const extension = file.mimetype.split('/')[1];
+		callback(null, `company-${req.body.nit}-${Date.now()}.${extension}`);
+	},
+});
+
+// Filtering for only PDF files
+const multerFilter = (
+	req: Request,
+	file: Express.Multer.File,
+	callback: any
+) => {
+	if (file.mimetype.split('/')[1] === 'pdf') {
+		callback(null, true);
+	} else {
+		callback(
+			new HttpException('No es un pdf, por favor, solo suba archivos PDF', 404),
+			false
+		);
+	}
+};
+
+const upload = multer({
+	storage: multerStorage,
+	fileFilter: multerFilter,
+});
+
 // ================================================ Endpoints starts here =========================================
+const uploadCompanyDocs = upload.fields([
+	{ name: 'docComCam', maxCount: 1 },
+	{ name: 'docRUT', maxCount: 1 },
+	{ name: 'docLegalRepresentativeID', maxCount: 1 },
+]);
+
 const getAllCompanies = catchAsync(
 	async (req: Request, res: Response, next: NextFunction) => {
 		const companies = await Company.find({});
@@ -58,7 +103,28 @@ const getCompany = catchAsync(
 
 const createCompany = catchAsync(
 	async (req: Request, res: Response, next: NextFunction) => {
-		const body: DtoCreateCompany = req.body;
+		if (
+			!req.files ||
+			!req.files['docComCam'] ||
+			!req.files['docRUT'] ||
+			!req.files['docLegalRepresentativeID']
+		) {
+			return next(
+				new HttpException(
+					'No se han cargado todos los archivos, por favor inténtelo nuevamente',
+					404
+				)
+			);
+		}
+
+		const body: DtoCreateCompany = { ...req.body };
+
+		// Extracting the filenames from the files
+		body.docComCam = req.files['docComCam'][0].filename;
+		body.docRUT = req.files['docRUT'][0].filename;
+		body.docLegalRepresentativeID =
+			req.files['docLegalRepresentativeID'][0].filename;
+
 		const companyCreated = await Company.create(body);
 
 		return res.status(201).json({
@@ -169,4 +235,10 @@ const acceptCompany = catchAsync(
 	}
 );
 
-export { getAllCompanies, getCompany, createCompany, acceptCompany };
+export {
+	getAllCompanies,
+	getCompany,
+	createCompany,
+	acceptCompany,
+	uploadCompanyDocs,
+};

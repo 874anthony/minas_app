@@ -1,4 +1,7 @@
+// Import 3rd-party packages
 import express from 'express';
+
+// Importing own controllers
 import * as companyController from '../controllers/companies/companyController';
 
 const router = express.Router();
@@ -7,7 +10,7 @@ const router = express.Router();
 router
 	.route('/')
 	.get(companyController.getAllCompanies)
-	.post(companyController.createCompany);
+	.post(companyController.uploadCompanyDocs, companyController.createCompany);
 
 // Routes with the id
 router.route('/:id').get(companyController.getCompany);

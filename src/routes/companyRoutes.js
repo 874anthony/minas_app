@@ -22,14 +22,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+// Import 3rd-party packages
 var express_1 = __importDefault(require("express"));
+// Importing own controllers
 var companyController = __importStar(require("../controllers/companies/companyController"));
 var router = express_1.default.Router();
 // Routes without the id
 router
     .route('/')
     .get(companyController.getAllCompanies)
-    .post(companyController.createCompany);
+    .post(companyController.uploadCompanyDocs, companyController.createCompany);
 // Routes with the id
 router.route('/:id').get(companyController.getCompany);
 router

@@ -1,4 +1,15 @@
 "use strict";
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -39,7 +50,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.acceptCompany = exports.createCompany = exports.getCompany = exports.getAllCompanies = void 0;
+exports.uploadCompanyDocs = exports.acceptCompany = exports.createCompany = exports.getCompany = exports.getAllCompanies = void 0;
+var multer_1 = __importDefault(require("multer"));
 // Importing our utils to this controller
 var httpException_1 = __importDefault(require("../../utils/httpException"));
 var catchAsync_1 = __importDefault(require("../../utils/catchAsync"));
@@ -48,7 +60,39 @@ var email_1 = __importDefault(require("../../utils/email"));
 var companyModel_1 = __importDefault(require("../../models/companies/companyModel"));
 var trdModel_1 = __importDefault(require("../../models/trd/trdModel"));
 var trdImportAll_1 = require("../../models/trd/trdImportAll");
+// ================================== MULTER CONFIGURATION TO HANDLE THE DOCUMENTS ===========================================
+// Configuring first the type of the storage
+var multerStorage = multer_1.default.diskStorage({
+    // Define the destination
+    destination: function (req, file, callback) {
+        callback(null, process.env.PATH_STORE_DOCUMENTS || 'store/documents/company');
+    },
+    filename: function (req, file, callback) {
+        // Extracting the extension.
+        var extension = file.mimetype.split('/')[1];
+        callback(null, "company-" + req.body.nit + "-" + Date.now() + "." + extension);
+    },
+});
+// Filtering for only PDF files
+var multerFilter = function (req, file, callback) {
+    if (file.mimetype.split('/')[1] === 'pdf') {
+        callback(null, true);
+    }
+    else {
+        callback(new httpException_1.default('No es un pdf, por favor, solo suba archivos PDF', 404), false);
+    }
+};
+var upload = (0, multer_1.default)({
+    storage: multerStorage,
+    fileFilter: multerFilter,
+});
 // ================================================ Endpoints starts here =========================================
+var uploadCompanyDocs = upload.fields([
+    { name: 'docComCam', maxCount: 1 },
+    { name: 'docRUT', maxCount: 1 },
+    { name: 'docLegalRepresentativeID', maxCount: 1 },
+]);
+exports.uploadCompanyDocs = uploadCompanyDocs;
 var getAllCompanies = (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     var companies;
     return __generator(this, function (_a) {
@@ -98,7 +142,18 @@ var createCompany = (0, catchAsync_1.default)(function (req, res, next) { return
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                body = req.body;
+                if (!req.files ||
+                    !req.files['docComCam'] ||
+                    !req.files['docRUT'] ||
+                    !req.files['docLegalRepresentativeID']) {
+                    return [2 /*return*/, next(new httpException_1.default('No se han cargado todos los archivos, por favor inténtelo nuevamente', 404))];
+                }
+                body = __assign({}, req.body);
+                // Extracting the filenames from the files
+                body.docComCam = req.files['docComCam'][0].filename;
+                body.docRUT = req.files['docRUT'][0].filename;
+                body.docLegalRepresentativeID =
+                    req.files['docLegalRepresentativeID'][0].filename;
                 return [4 /*yield*/, companyModel_1.default.create(body)];
             case 1:
                 companyCreated = _a.sent();
