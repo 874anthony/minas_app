@@ -1,9 +1,10 @@
 // Mongoose imports
 import { NextFunction, Request, Response } from 'express';
 
-// Importing the global handler error and the catchAsync
+// Importing our utils to this controller
 import HttpException from '../../utils/httpException';
 import catchAsync from '../../utils/catchAsync';
+import sendEmail from '../../utils/email';
 
 // Own models
 import Company from '../../models/companies/companyModel';
@@ -140,6 +141,24 @@ const acceptCompany = catchAsync(
 
 		await companyMatched.save({ validateBeforeSave: false });
 
+		const emailMessage = `Ha sido aprobado su solicitud de acceso para la mina, la generación de su empresa se ha generado con el radicado: ${radicado}. Sus credenciales de accesos son las siguientes:
+		\nEl correo: el mismo con el que se registró\nSu contraseña: ${genPassword}!\n\nSi tiene alguna duda, no dude en contactar con nosotros!`;
+
+		try {
+			await sendEmail({
+				email: companyMatched.email,
+				subject: 'Ha sido aprobado su acceso a la Mina San Jorge!',
+				message: emailMessage,
+			});
+		} catch (error) {
+			return next(
+				new HttpException(
+					'Hubo un error al enviar el correo, por favor intente más tarde',
+					500
+				)
+			);
+		}
+
 		// SENDING THE FINAL RESPONSE TO THE CLIENT
 		return res.status(200).json({
 			status: true,
@@ -151,5 +170,3 @@ const acceptCompany = catchAsync(
 );
 
 export { getAllCompanies, getCompany, createCompany, acceptCompany };
-
-// TODO: BETTER REFACTORING OF THE CODE AND SEND EMAIL

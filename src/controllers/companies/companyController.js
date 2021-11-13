@@ -40,9 +40,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.acceptCompany = exports.createCompany = exports.getCompany = exports.getAllCompanies = void 0;
-// Importing the global handler error and the catchAsync
+// Importing our utils to this controller
 var httpException_1 = __importDefault(require("../../utils/httpException"));
 var catchAsync_1 = __importDefault(require("../../utils/catchAsync"));
+var email_1 = __importDefault(require("../../utils/email"));
 // Own models
 var companyModel_1 = __importDefault(require("../../models/companies/companyModel"));
 var trdModel_1 = __importDefault(require("../../models/trd/trdModel"));
@@ -112,7 +113,7 @@ var createCompany = (0, catchAsync_1.default)(function (req, res, next) { return
 exports.createCompany = createCompany;
 // Approve a pending company and autogenerate 'Radicado'
 var acceptCompany = (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var id, body, companyMatched, dependency, serie, subserie, trd, year, dependencyCode, serieCode, subserieCode, consecutive, radicado, genPassword, hashedPassword;
+    var id, body, companyMatched, dependency, serie, subserie, trd, year, dependencyCode, serieCode, subserieCode, consecutive, radicado, genPassword, hashedPassword, emailMessage, error_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -179,14 +180,29 @@ var acceptCompany = (0, catchAsync_1.default)(function (req, res, next) { return
                 return [4 /*yield*/, companyMatched.save({ validateBeforeSave: false })];
             case 11:
                 _a.sent();
-                // SENDING THE FINAL RESPONSE TO THE CLIENT
-                return [2 /*return*/, res.status(200).json({
-                        status: true,
-                        message: 'La empresa fue aprobada éxitosamente y se le envió un correo con sus credenciales',
-                        radicado: radicado,
+                emailMessage = "Ha sido aprobado su solicitud de acceso para la mina, la generaci\u00F3n de su empresa se ha generado con el radicado: " + radicado + ". Sus credenciales de accesos son las siguientes:\n\t\t\nEl correo: el mismo con el que se registr\u00F3\nSu contrase\u00F1a: " + genPassword + "!\n\nSi tiene alguna duda, no dude en contactar con nosotros!";
+                _a.label = 12;
+            case 12:
+                _a.trys.push([12, 14, , 15]);
+                return [4 /*yield*/, (0, email_1.default)({
+                        email: companyMatched.email,
+                        subject: 'Ha sido aprobado su acceso a la Mina San Jorge!',
+                        message: emailMessage,
                     })];
+            case 13:
+                _a.sent();
+                return [3 /*break*/, 15];
+            case 14:
+                error_1 = _a.sent();
+                return [2 /*return*/, next(new httpException_1.default('Hubo un error al enviar el correo, por favor intente más tarde', 500))];
+            case 15: 
+            // SENDING THE FINAL RESPONSE TO THE CLIENT
+            return [2 /*return*/, res.status(200).json({
+                    status: true,
+                    message: 'La empresa fue aprobada éxitosamente y se le envió un correo con sus credenciales',
+                    radicado: radicado,
+                })];
         }
     });
 }); });
 exports.acceptCompany = acceptCompany;
-// TODO: BETTER REFACTORING OF THE CODE AND SEND EMAIL
