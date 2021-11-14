@@ -71,6 +71,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.uploadCompanyDocs = exports.acceptCompany = exports.createCompany = exports.getCompany = exports.getAllCompanies = void 0;
 var multer_1 = __importDefault(require("multer"));
+var fs_1 = __importDefault(require("fs"));
 // Importing our utils to this controller
 var httpException_1 = __importDefault(require("../../utils/httpException"));
 var catchAsync_1 = __importDefault(require("../../utils/catchAsync"));
@@ -85,7 +86,11 @@ var trdImportAll_1 = require("../../models/trd/trdImportAll");
 var multerStorage = multer_1.default.diskStorage({
     // Define the destination
     destination: function (req, file, callback) {
-        callback(null, process.env.PATH_STORE_DOCUMENTS || 'store/documents/company');
+        var directory = "store/documents/company/" + req.body.nit;
+        if (!fs_1.default.existsSync(directory)) {
+            fs_1.default.mkdirSync(directory);
+        }
+        callback(null, directory);
     },
     filename: function (req, file, callback) {
         // Extracting the extension.

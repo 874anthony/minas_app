@@ -1,6 +1,7 @@
 // Import 3rd-party packages
 import { NextFunction, Request, Response } from 'express';
 import multer from 'multer';
+import fs from 'fs';
 
 // Importing our utils to this controller
 import HttpException from '../../utils/httpException';
@@ -25,10 +26,13 @@ import DtoCreateCompany from '../../interfaces/company/post-createCompany';
 const multerStorage = multer.diskStorage({
 	// Define the destination
 	destination: (req: Request, file: Express.Multer.File, callback) => {
-		callback(
-			null,
-			process.env.PATH_STORE_DOCUMENTS || 'store/documents/company'
-		);
+		const directory = `store/documents/company/${req.body.nit}`;
+
+		if (!fs.existsSync(directory)) {
+			fs.mkdirSync(directory);
+		}
+
+		callback(null, directory);
 	},
 	filename: (req: Request, file: Express.Multer.File, callback) => {
 		// Extracting the extension.

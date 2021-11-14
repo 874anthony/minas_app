@@ -105,7 +105,7 @@ var CompanySchema = new mongoose_1.Schema({
     },
     radicado: {
         type: String,
-        unique: true,
+        default: 'Sin radicado',
     },
     password: {
         type: String,
