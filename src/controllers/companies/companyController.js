@@ -69,133 +69,35 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.uploadCompanyDocs = exports.acceptCompany = exports.createCompany = exports.getCompany = exports.getAllCompanies = void 0;
-var multer_1 = __importDefault(require("multer"));
-var fs_1 = __importDefault(require("fs"));
+exports.getPendingCompanies = exports.uploadCompanyDocs = exports.acceptCompany = exports.createCompany = exports.getCompany = exports.getAllCompanies = void 0;
 // Importing our utils to this controller
 var httpException_1 = __importDefault(require("../../utils/httpException"));
 var catchAsync_1 = __importDefault(require("../../utils/catchAsync"));
 var email_1 = __importDefault(require("../../utils/email"));
 // Own models
-var contractorModel_1 = __importDefault(require("../../models/companies/contractorModel"));
+var contractorModel_1 = __importDefault(require("../../models/contractors/contractorModel"));
 var companyModel_1 = __importStar(require("../../models/companies/companyModel"));
 var trdModel_1 = __importDefault(require("../../models/trd/trdModel"));
 var trdImportAll_1 = require("../../models/trd/trdImportAll");
-// ================================== MULTER CONFIGURATION TO HANDLE THE DOCUMENTS ===========================================
-// Configuring first the type of the storage
-var multerStorage = multer_1.default.diskStorage({
-    // Define the destination
-    destination: function (req, file, callback) {
-        var directory = "store/documents/company/" + req.body.nit;
-        if (!fs_1.default.existsSync(directory)) {
-            fs_1.default.mkdirSync(directory);
-        }
-        callback(null, directory);
-    },
-    filename: function (req, file, callback) {
-        // Extracting the extension.
-        var extension = file.mimetype.split('/')[1];
-        callback(null, "company-" + req.body.nit + "-" + Date.now() + "." + extension);
-    },
-});
-// Filtering for only PDF files
-var multerFilter = function (req, file, callback) {
-    if (file.mimetype.split('/')[1] === 'pdf') {
-        callback(null, true);
-    }
-    else {
-        callback(new httpException_1.default('No es un pdf, por favor, solo suba archivos PDF', 404), false);
-    }
-};
-var upload = (0, multer_1.default)({
-    storage: multerStorage,
-    fileFilter: multerFilter,
-});
-// ================================================ Endpoints starts here =========================================
-var uploadCompanyDocs = upload.fields([
-    { name: 'docComCam', maxCount: 1 },
-    { name: 'docRUT', maxCount: 1 },
-    { name: 'docLegalRepresentativeID', maxCount: 1 },
-]);
+// Own Factory
+var factory = __importStar(require("../companyFactory"));
+// // ================================================ Middlewares starts here =========================================
+var uploadCompanyDocs = factory.uploadCompanyDocs;
 exports.uploadCompanyDocs = uploadCompanyDocs;
-var getAllCompanies = (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var companies;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, companyModel_1.default.find({})];
-            case 1:
-                companies = _a.sent();
-                if (companies.length === 0) {
-                    return [2 /*return*/, next(new httpException_1.default('No hay empresas creadas aún!', 204))];
-                }
-                return [2 /*return*/, res.status(200).json({
-                        status: true,
-                        data: {
-                            companies: companies,
-                        },
-                    })];
-        }
-    });
-}); });
+var getPendingCompanies = function (req, res, next) {
+    req.query.status = 'PENDIENTE';
+    next();
+};
+exports.getPendingCompanies = getPendingCompanies;
+// // ================================================ Endpoints starts here =========================================
+var getAllCompanies = factory.findAll(companyModel_1.default);
 exports.getAllCompanies = getAllCompanies;
-/**
- * Obtener empresa por el ID;
- * @param id
- */
-var getCompany = (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var id, company;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                id = req.params.id;
-                return [4 /*yield*/, companyModel_1.default.findById(id)];
-            case 1:
-                company = _a.sent();
-                if (!company) {
-                    return [2 /*return*/, next(new httpException_1.default('No hay una empresa con este ID', 404))];
-                }
-                return [2 /*return*/, res.status(200).json({
-                        status: true,
-                        company: company,
-                    })];
-        }
-    });
-}); });
+var getCompany = factory.findOne(companyModel_1.default, {
+    path: 'contratistas',
+    select: 'businessName nit email address phone legalRepresentative -company',
+});
 exports.getCompany = getCompany;
-var createCompany = (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var body, companyCreated;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                if (!req.files ||
-                    !req.files['docComCam'] ||
-                    !req.files['docRUT'] ||
-                    !req.files['docLegalRepresentativeID']) {
-                    return [2 /*return*/, next(new httpException_1.default('No se han cargado todos los archivos, por favor inténtelo nuevamente', 404))];
-                }
-                body = req.body;
-                // Extracting the filenames from the files
-                body.docComCam = req.files['docComCam'][0].filename;
-                body.docRUT = req.files['docRUT'][0].filename;
-                body.docLegalRepresentativeID =
-                    req.files['docLegalRepresentativeID'][0].filename;
-                if (!body.company) return [3 /*break*/, 2];
-                return [4 /*yield*/, contractorModel_1.default.create(body)];
-            case 1:
-                companyCreated = _a.sent();
-                return [3 /*break*/, 4];
-            case 2: return [4 /*yield*/, companyModel_1.default.create(body)];
-            case 3:
-                companyCreated = _a.sent();
-                _a.label = 4;
-            case 4: return [2 /*return*/, res.status(201).json({
-                    status: true,
-                    message: 'La empresa se ha creado éxitosamente',
-                    company: companyCreated,
-                })];
-        }
-    });
-}); });
+var createCompany = factory.createOne(companyModel_1.default);
 exports.createCompany = createCompany;
 // Approve a pending company and autogenerate 'Radicado'
 var acceptCompany = (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {

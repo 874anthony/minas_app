@@ -7,8 +7,8 @@ var express_1 = __importDefault(require("express"));
 var cors_1 = __importDefault(require("cors"));
 var morgan_1 = __importDefault(require("morgan"));
 // Own routes
-var companyRoutes_1 = __importDefault(require("./routes/companyRoutes"));
-var trdRoutes_1 = __importDefault(require("./routes/trdRoutes"));
+var companyRoutes_1 = __importDefault(require("./routes/company/companyRoutes"));
+var trdRoutes_1 = __importDefault(require("./routes/trd/trdRoutes"));
 var app = (0, express_1.default)();
 // To handle the CORS
 app.use((0, cors_1.default)());

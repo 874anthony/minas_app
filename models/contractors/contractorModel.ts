@@ -4,8 +4,8 @@ import validator from 'validator';
 import CryptoJS from 'crypto-js';
 import crypto from 'crypto';
 
-import { StatusCompany } from './companyModel';
-import { CompanyInterface } from './companyModel';
+import { StatusCompany } from '../companies/companyModel';
+import { CompanyInterface } from '../companies/companyModel';
 
 export interface ContractorInterface extends Schema, CompanyInterface {
 	company: Schema.Types.ObjectId;
@@ -95,6 +95,16 @@ const ContractorSchema: Schema<ContractorInterface> = new Schema({
 		required: true,
 	},
 });
+// ================================================== PRE METHODS STARTS HERE ==================================================
+
+// ContractorSchema.pre(/^find/, function (next) {
+// 	this.populate({
+// 		path: 'company',
+// 		select: 'businessName nit email address phone legalRepresentative',
+// 	});
+
+// 	next();
+// });
 
 // UserSchema.methods.toJSON = function() {
 // var obj = this.toObject()

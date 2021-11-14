@@ -1,12 +1,26 @@
 // Import 3rd-party packages
 import express from 'express';
 
+// Importing own routers
+import contractorRouter from '../../routes/contractors/contractorRoutes';
+
 // Importing own controllers
-import * as companyController from '../controllers/companies/companyController';
+import * as companyController from '../../controllers/companies/companyController';
 
 const router = express.Router();
 
-// Routes without the id
+// Nesting routes to redirect to contractorRouter
+router.use('/:idCompany/contractors', contractorRouter);
+
+// Custom routes
+router
+	.route('/pending-companies')
+	.get(
+		companyController.getPendingCompanies,
+		companyController.getAllCompanies
+	);
+
+// Routes
 router
 	.route('/')
 	.get(companyController.getAllCompanies)

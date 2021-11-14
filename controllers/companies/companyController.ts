@@ -1,7 +1,5 @@
 // Import 3rd-party packages
 import { NextFunction, Request, Response } from 'express';
-import multer from 'multer';
-import fs from 'fs';
 
 // Importing our utils to this controller
 import HttpException from '../../utils/httpException';
@@ -9,7 +7,7 @@ import catchAsync from '../../utils/catchAsync';
 import sendEmail from '../../utils/email';
 
 // Own models
-import Contractor from '../../models/companies/contractorModel';
+import Contractor from '../../models/contractors/contractorModel';
 import Company, { StatusCompany } from '../../models/companies/companyModel';
 import TRD, { TrdInterface } from '../../models/trd/trdModel';
 import {
@@ -18,133 +16,29 @@ import {
 	TRDSubSerie,
 } from '../../models/trd/trdImportAll';
 
-// Own DTO Pattern
-import DtoCreateCompany from '../../interfaces/company/post-createCompany';
+// Own Factory
+import * as factory from '../companyFactory';
 
-// ================================== MULTER CONFIGURATION TO HANDLE THE DOCUMENTS ===========================================
-// Configuring first the type of the storage
-const multerStorage = multer.diskStorage({
-	// Define the destination
-	destination: (req: Request, file: Express.Multer.File, callback) => {
-		const directory = `store/documents/company/${req.body.nit}`;
+// // ================================================ Middlewares starts here =========================================
+const uploadCompanyDocs = factory.uploadCompanyDocs;
 
-		if (!fs.existsSync(directory)) {
-			fs.mkdirSync(directory);
-		}
-
-		callback(null, directory);
-	},
-	filename: (req: Request, file: Express.Multer.File, callback) => {
-		// Extracting the extension.
-		const extension = file.mimetype.split('/')[1];
-		callback(null, `company-${req.body.nit}-${Date.now()}.${extension}`);
-	},
-});
-
-// Filtering for only PDF files
-const multerFilter = (
+const getPendingCompanies = (
 	req: Request,
-	file: Express.Multer.File,
-	callback: any
+	res: Response,
+	next: NextFunction
 ) => {
-	if (file.mimetype.split('/')[1] === 'pdf') {
-		callback(null, true);
-	} else {
-		callback(
-			new HttpException('No es un pdf, por favor, solo suba archivos PDF', 404),
-			false
-		);
-	}
+	req.query.status = 'PENDIENTE';
+	next();
 };
 
-const upload = multer({
-	storage: multerStorage,
-	fileFilter: multerFilter,
+// // ================================================ Endpoints starts here =========================================
+
+const getAllCompanies = factory.findAll(Company);
+const getCompany = factory.findOne(Company, {
+	path: 'contratistas',
+	select: 'businessName nit email address phone legalRepresentative -company',
 });
-
-// ================================================ Endpoints starts here =========================================
-const uploadCompanyDocs = upload.fields([
-	{ name: 'docComCam', maxCount: 1 },
-	{ name: 'docRUT', maxCount: 1 },
-	{ name: 'docLegalRepresentativeID', maxCount: 1 },
-]);
-
-const getAllCompanies = catchAsync(
-	async (req: Request, res: Response, next: NextFunction) => {
-		const companies = await Company.find({});
-
-		if (companies.length === 0) {
-			return next(new HttpException('No hay empresas creadas aún!', 204));
-		}
-
-		return res.status(200).json({
-			status: true,
-			data: {
-				companies,
-			},
-		});
-	}
-);
-
-/**
- * Obtener empresa por el ID;
- * @param id
- */
-const getCompany = catchAsync(
-	async (req: Request, res: Response, next: NextFunction) => {
-		const id = req.params.id;
-		const company = await Company.findById(id);
-
-		if (!company) {
-			return next(new HttpException('No hay una empresa con este ID', 404));
-		}
-
-		return res.status(200).json({
-			status: true,
-			company,
-		});
-	}
-);
-
-const createCompany = catchAsync(
-	async (req: Request, res: Response, next: NextFunction) => {
-		if (
-			!req.files ||
-			!req.files['docComCam'] ||
-			!req.files['docRUT'] ||
-			!req.files['docLegalRepresentativeID']
-		) {
-			return next(
-				new HttpException(
-					'No se han cargado todos los archivos, por favor inténtelo nuevamente',
-					404
-				)
-			);
-		}
-
-		const body: DtoCreateCompany = req.body;
-
-		// Extracting the filenames from the files
-		body.docComCam = req.files['docComCam'][0].filename;
-		body.docRUT = req.files['docRUT'][0].filename;
-		body.docLegalRepresentativeID =
-			req.files['docLegalRepresentativeID'][0].filename;
-
-		let companyCreated;
-
-		if (body.company) {
-			companyCreated = await Contractor.create(body);
-		} else {
-			companyCreated = await Company.create(body);
-		}
-
-		return res.status(201).json({
-			status: true,
-			message: 'La empresa se ha creado éxitosamente',
-			company: companyCreated,
-		});
-	}
-);
+const createCompany = factory.createOne(Company);
 
 // Approve a pending company and autogenerate 'Radicado'
 const acceptCompany = catchAsync(
@@ -263,4 +157,5 @@ export {
 	createCompany,
 	acceptCompany,
 	uploadCompanyDocs,
+	getPendingCompanies,
 };

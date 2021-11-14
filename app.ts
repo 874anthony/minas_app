@@ -6,8 +6,8 @@ import morgan from 'morgan';
 import HttpException from './utils/httpException';
 
 // Own routes
-import companyRouter from './routes/companyRoutes';
-import trdRouter from './routes/trdRoutes';
+import companyRouter from './routes/company/companyRoutes';
+import trdRouter from './routes/trd/trdRoutes';
 
 const app = express();
 
