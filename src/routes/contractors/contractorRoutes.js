@@ -23,16 +23,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = __importDefault(require("express"));
-var companyController = __importStar(require("../controllers/companies/companyController"));
-var router = express_1.default.Router();
-// Routes without the id
+// Importing own controllers
+var contractorController = __importStar(require("../../controllers/contractor/contractorController"));
+// Enabling the mergeParams to get access to the idCompany
+var router = express_1.default.Router({ mergeParams: true });
 router
     .route('/')
-    .get(companyController.getAllCompanies)
-    .post(companyController.createCompany);
+    .get(contractorController.getAllContractors)
+    .post(contractorController.uploadContractorDocs, contractorController.addContractor, contractorController.createContractor);
 // Routes with the id
-router.route('/:id').get(companyController.getCompany);
-router
-    .route('/accept-pending-company/:id')
-    .patch(companyController.acceptCompany);
+router.route('/:id').get(contractorController.getContractor);
 exports.default = router;

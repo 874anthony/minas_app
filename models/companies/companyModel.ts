@@ -4,6 +4,13 @@ import validator from 'validator';
 import CryptoJS from 'crypto-js';
 import crypto from 'crypto';
 
+export enum StatusCompany {
+	Active = 'ACTIVO',
+	InProcess = 'EN PROCESO',
+	Pending = 'PENDIENTE',
+	Inactive = 'INACTIVO',
+	Rejected = 'RECHAZADO',
+}
 export interface CompanyInterface extends Schema {
 	businessName: string;
 	nit: number;
@@ -16,7 +23,9 @@ export interface CompanyInterface extends Schema {
 	docLegalRepresentativeID: string;
 	radicado: string;
 	password: string;
-	pending: boolean;
+	status: any;
+	observations: Array<string>;
+	finishDates: Array<any>;
 	createdAt: any;
 	updatedAt: any;
 	generatePassword: () => Promise<string>;
@@ -25,74 +34,97 @@ export interface CompanyInterface extends Schema {
 }
 
 // Definying the schema
-const CompanySchema: Schema<CompanyInterface> = new Schema({
-	businessName: {
-		type: String,
-		required: true,
-		trim: true,
-		minlength: 3,
-	},
-	nit: {
-		type: Number,
-		unique: true,
-		required: true,
-		min: 7,
-	},
-	email: {
-		type: String,
-		validate: {
-			validator: (value: string) => validator.isEmail(value),
-			message: 'El email ingresado no es válidad',
+const CompanySchema: Schema<CompanyInterface> = new Schema(
+	{
+		businessName: {
+			type: String,
+			required: true,
+			trim: true,
+			minlength: 3,
 		},
-		lowercase: true,
-		required: true,
-		unique: true,
+		nit: {
+			type: Number,
+			unique: true,
+			required: true,
+			min: 7,
+		},
+		email: {
+			type: String,
+			validate: {
+				validator: (value: string) => validator.isEmail(value),
+				message: 'El email ingresado no es válidad',
+			},
+			lowercase: true,
+			required: true,
+			unique: true,
+		},
+		address: {
+			type: String,
+			required: true,
+		},
+		phone: {
+			type: Number,
+			required: true,
+			unique: true,
+		},
+		legalRepresentative: {
+			type: String,
+			required: true,
+			minlength: 8,
+			trim: true,
+		},
+		docComCam: {
+			required: true,
+			type: String,
+		},
+		docRUT: {
+			type: String,
+			required: true,
+		},
+		docLegalRepresentativeID: {
+			type: String,
+			required: true,
+		},
+		radicado: {
+			type: String,
+			default: 'Sin radicado',
+		},
+		password: {
+			type: String,
+		},
+		status: {
+			type: String,
+			enum: [StatusCompany],
+			default: StatusCompany.Pending,
+		},
+		createdAt: {
+			type: Date,
+			default: Date.now(),
+		},
+		updatedAt: {
+			type: Date,
+		},
+		finishDates: [Date],
+		observations: [
+			{
+				type: String,
+				trim: true,
+				minlength: [5, 'Las observaciones deben tener al menos 5 letras'],
+			},
+		],
 	},
-	address: {
-		type: String,
-		required: true,
-	},
-	phone: {
-		type: Number,
-		required: true,
-		unique: true,
-	},
-	legalRepresentative: {
-		type: String,
-		required: true,
-		minlength: 8,
-		trim: true,
-	},
-	docComCam: {
-		required: true,
-		type: String,
-	},
-	docRUT: {
-		type: String,
-		required: true,
-	},
-	docLegalRepresentativeID: {
-		type: String,
-		required: true,
-	},
-	radicado: {
-		type: String,
-		unique: true,
-	},
-	password: {
-		type: String,
-	},
-	pending: {
-		type: Boolean,
-		default: true,
-	},
-	createdAt: {
-		type: Date,
-		default: Date.now(),
-	},
-	updatedAt: {
-		type: Date,
-	},
+	{
+		toObject: { virtuals: true },
+		toJSON: { virtuals: true },
+	}
+);
+
+// ================================================== VIRTUAL PROPERTIES STARTS HERE ==================================================
+// Virtual populate
+CompanySchema.virtual('contratistas', {
+	ref: 'contractor',
+	foreignField: 'company',
+	localField: '_id',
 });
 
 // UserSchema.methods.toJSON = function() {

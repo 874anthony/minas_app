@@ -39,21 +39,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.StatusCompany = void 0;
 var mongoose_1 = require("mongoose");
 var validator_1 = __importDefault(require("validator"));
 var crypto_js_1 = __importDefault(require("crypto-js"));
 var crypto_1 = __importDefault(require("crypto"));
-var StatusCompany;
-(function (StatusCompany) {
-    StatusCompany["Active"] = "ACTIVO";
-    StatusCompany["InProcess"] = "EN PROCESO";
-    StatusCompany["Pending"] = "PENDIENTE";
-    StatusCompany["Inactive"] = "INACTIVO";
-    StatusCompany["Rejected"] = "RECHAZADO";
-})(StatusCompany = exports.StatusCompany || (exports.StatusCompany = {}));
+var companyModel_1 = require("./companyModel");
 // Definying the schema
-var CompanySchema = new mongoose_1.Schema({
+var ContractorSchema = new mongoose_1.Schema({
     businessName: {
         type: String,
         required: true,
@@ -112,8 +104,8 @@ var CompanySchema = new mongoose_1.Schema({
     },
     status: {
         type: String,
-        enum: [StatusCompany],
-        default: StatusCompany.Pending,
+        enum: [companyModel_1.StatusCompany],
+        default: companyModel_1.StatusCompany.Pending,
     },
     createdAt: {
         type: Date,
@@ -130,16 +122,11 @@ var CompanySchema = new mongoose_1.Schema({
             minlength: [5, 'Las observaciones deben tener al menos 5 letras'],
         },
     ],
-}, {
-    toObject: { virtuals: true },
-    toJSON: { virtuals: true },
-});
-// ================================================== VIRTUAL PROPERTIES STARTS HERE ==================================================
-// Virtual populate
-CompanySchema.virtual('contratistas', {
-    ref: 'contractor',
-    foreignField: 'company',
-    localField: '_id',
+    company: {
+        type: mongoose_1.Schema.Types.ObjectId,
+        ref: 'company',
+        required: true,
+    },
 });
 // UserSchema.methods.toJSON = function() {
 // var obj = this.toObject()
@@ -152,14 +139,14 @@ CompanySchema.virtual('contratistas', {
  * @param genPassword
  * @returns An automatic generated passwords
  */
-CompanySchema.methods.hashPassword = function (genPassword) {
+ContractorSchema.methods.hashPassword = function (genPassword) {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
             return [2 /*return*/, crypto_js_1.default.AES.encrypt(genPassword, process.env.PASSWORD_PHARAPRHASE).toString()];
         });
     });
 };
-CompanySchema.methods.generatePassword = function (length, wishlist) {
+ContractorSchema.methods.generatePassword = function (length, wishlist) {
     if (length === void 0) { length = 10; }
     if (wishlist === void 0) { wishlist = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz~!@-#$'; }
     return __awaiter(this, void 0, void 0, function () {
@@ -170,11 +157,11 @@ CompanySchema.methods.generatePassword = function (length, wishlist) {
         });
     });
 };
-CompanySchema.methods.decryptPassword = function (hashedPassword) {
+ContractorSchema.methods.decryptPassword = function (hashedPassword) {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
             return [2 /*return*/, crypto_js_1.default.AES.decrypt(hashedPassword, process.env.PASSWORD_PHARAPRHASE).toString(crypto_js_1.default.enc.Utf8)];
         });
     });
 };
-exports.default = (0, mongoose_1.model)('company', CompanySchema);
+exports.default = (0, mongoose_1.model)('contractor', ContractorSchema);

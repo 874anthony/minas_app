@@ -1,10 +1,10 @@
 import express from 'express';
 
 // Imports required (controllers)
-import * as trdDependencyController from '../controllers/trd/trdDependencyController';
-import * as trdSerieController from '../controllers/trd/trdSerieController';
-import * as trdSubSerieController from '../controllers/trd/trdSubserieController';
-import * as trdTipoDocController from '../controllers/trd/trdTipoDocController';
+import * as trdDependencyController from '../../controllers/trd/trdDependencyController';
+import * as trdSerieController from '../../controllers/trd/trdSerieController';
+import * as trdSubSerieController from '../../controllers/trd/trdSubserieController';
+import * as trdTipoDocController from '../../controllers/trd/trdTipoDocController';
 
 const router = express.Router();
 

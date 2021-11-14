@@ -1,4 +1,4 @@
-// Mongoose imports
+// Import 3rd-party packages
 import { NextFunction, Request, Response } from 'express';
 
 // Importing our utils to this controller
@@ -7,7 +7,8 @@ import catchAsync from '../../utils/catchAsync';
 import sendEmail from '../../utils/email';
 
 // Own models
-import Company from '../../models/companies/companyModel';
+import Contractor from '../../models/contractors/contractorModel';
+import Company, { StatusCompany } from '../../models/companies/companyModel';
 import TRD, { TrdInterface } from '../../models/trd/trdModel';
 import {
 	TRDDependency,
@@ -15,68 +16,45 @@ import {
 	TRDSubSerie,
 } from '../../models/trd/trdImportAll';
 
-// Own DTO Pattern
-import DtoCreateCompany from '../../interfaces/company/post-createCompany';
+// Own Factory
+import * as factory from '../companyFactory';
 
-// ================================================ Endpoints starts here =========================================
-const getAllCompanies = catchAsync(
-	async (req: Request, res: Response, next: NextFunction) => {
-		const companies = await Company.find({});
+// // ================================================ Middlewares starts here =========================================
+const uploadCompanyDocs = factory.uploadCompanyDocs;
 
-		if (companies.length === 0) {
-			return next(new HttpException('No hay empresas creadas aún!', 204));
-		}
+const getPendingCompanies = (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
+	req.query.status = 'PENDIENTE';
+	next();
+};
 
-		return res.status(200).json({
-			status: true,
-			data: {
-				companies,
-			},
-		});
-	}
-);
+// // ================================================ Endpoints starts here =========================================
 
-/**
- * Obtener empresa por el ID;
- * @param id
- */
-const getCompany = catchAsync(
-	async (req: Request, res: Response, next: NextFunction) => {
-		const id = req.params.id;
-		const company = await Company.findById(id);
-
-		if (!company) {
-			return next(new HttpException('No hay una empresa con este ID', 404));
-		}
-
-		return res.status(200).json({
-			status: true,
-			company,
-		});
-	}
-);
-
-const createCompany = catchAsync(
-	async (req: Request, res: Response, next: NextFunction) => {
-		const body: DtoCreateCompany = req.body;
-		const companyCreated = await Company.create(body);
-
-		return res.status(201).json({
-			status: true,
-			message: 'La empresa se ha creado éxitosamente',
-			company: companyCreated,
-		});
-	}
-);
+const getAllCompanies = factory.findAll(Company);
+const getCompany = factory.findOne(Company, {
+	path: 'contratistas',
+	select: 'businessName nit email address phone legalRepresentative -company',
+});
+const createCompany = factory.createOne(Company);
 
 // Approve a pending company and autogenerate 'Radicado'
 const acceptCompany = catchAsync(
 	async (req: Request, res: Response, next: NextFunction) => {
 		const id = req.params.id;
-		const body: TrdInterface = req.body;
+		const body: TrdInterface = { ...req.body };
+
+		let companyMatched;
+
+		if (req.body.contractor === true) {
+			companyMatched = await Contractor.findById(id);
+		} else {
+			companyMatched = await Company.findById(id);
+		}
 
 		// CHECK IF THE COMPANY EXISTS
-		const companyMatched = await Company.findById(id);
 
 		if (!companyMatched) {
 			return next(
@@ -136,8 +114,12 @@ const acceptCompany = catchAsync(
 		// NOW SAVE THE RADICADO, THE STATUS, PASSWORD AND THE UPDATED AT
 		companyMatched.password = hashedPassword;
 		companyMatched.radicado = radicado;
-		companyMatched.pending = false;
+		companyMatched.status = StatusCompany.Active;
 		companyMatched.updatedAt = Date.now();
+
+		// To save observations as well
+		if (req.body.observations)
+			companyMatched.observations = req.body.observations;
 
 		await companyMatched.save({ validateBeforeSave: false });
 
@@ -169,4 +151,11 @@ const acceptCompany = catchAsync(
 	}
 );
 
-export { getAllCompanies, getCompany, createCompany, acceptCompany };
+export {
+	getAllCompanies,
+	getCompany,
+	createCompany,
+	acceptCompany,
+	uploadCompanyDocs,
+	getPendingCompanies,
+};

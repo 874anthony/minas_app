@@ -24,10 +24,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = __importDefault(require("express"));
 // Imports required (controllers)
-var trdDependencyController = __importStar(require("../controllers/trd/trdDependencyController"));
-var trdSerieController = __importStar(require("../controllers/trd/trdSerieController"));
-var trdSubSerieController = __importStar(require("../controllers/trd/trdSubserieController"));
-var trdTipoDocController = __importStar(require("../controllers/trd/trdTipoDocController"));
+var trdDependencyController = __importStar(require("../../controllers/trd/trdDependencyController"));
+var trdSerieController = __importStar(require("../../controllers/trd/trdSerieController"));
+var trdSubSerieController = __importStar(require("../../controllers/trd/trdSubserieController"));
+var trdTipoDocController = __importStar(require("../../controllers/trd/trdTipoDocController"));
 var router = express_1.default.Router();
 // DEPENDENCY ROUTES
 router.route('/dependency').post(trdDependencyController.createDependency);
