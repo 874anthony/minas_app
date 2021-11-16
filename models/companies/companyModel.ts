@@ -87,7 +87,6 @@ const CompanySchema: Schema<CompanyInterface> = new Schema(
 		},
 		radicado: {
 			type: String,
-			default: 'Sin radicado',
 		},
 		password: {
 			type: String,

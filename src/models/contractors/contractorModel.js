@@ -97,7 +97,6 @@ var ContractorSchema = new mongoose_1.Schema({
     },
     radicado: {
         type: String,
-        default: 'Sin radicado',
     },
     password: {
         type: String,
