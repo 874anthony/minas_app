@@ -33,4 +33,7 @@ router
     .post(contractorController.uploadContractorDocs, contractorController.addContractor, contractorController.createContractor);
 // Routes with the id
 router.route('/:id').get(contractorController.getContractor);
+router
+    .route('/accept-pending-contractor/:id')
+    .patch(contractorController.acceptContractor);
 exports.default = router;

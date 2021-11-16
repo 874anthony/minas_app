@@ -8,6 +8,7 @@ var cors_1 = __importDefault(require("cors"));
 var morgan_1 = __importDefault(require("morgan"));
 // Own routes
 var companyRoutes_1 = __importDefault(require("./routes/company/companyRoutes"));
+var contractorRoutes_1 = __importDefault(require("./routes/contractors/contractorRoutes"));
 var trdRoutes_1 = __importDefault(require("./routes/trd/trdRoutes"));
 var app = (0, express_1.default)();
 // To handle the CORS
@@ -22,6 +23,7 @@ if (process.env.NODE_ENV === 'development') {
 }
 // Importing routes
 app.use('/api/v1/companies', companyRoutes_1.default);
+app.use('/api/v1/contractors', contractorRoutes_1.default);
 app.use('/api/v1/trd-management', trdRoutes_1.default);
 // Define the global error handler to pass next errors
 function globalErrorHandler(err, req, res, next) {

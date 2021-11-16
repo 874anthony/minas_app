@@ -7,6 +7,7 @@ import HttpException from './utils/httpException';
 
 // Own routes
 import companyRouter from './routes/company/companyRoutes';
+import contractorRouter from './routes/contractors/contractorRoutes';
 import trdRouter from './routes/trd/trdRoutes';
 
 const app = express();
@@ -25,6 +26,7 @@ if (process.env.NODE_ENV === 'development') {
 
 // Importing routes
 app.use('/api/v1/companies', companyRouter);
+app.use('/api/v1/contractors', contractorRouter);
 app.use('/api/v1/trd-management', trdRouter);
 
 // Define the global error handler to pass next errors

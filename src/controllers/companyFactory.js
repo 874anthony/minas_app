@@ -1,4 +1,15 @@
 "use strict";
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -39,12 +50,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.uploadCompanyDocs = exports.findOne = exports.findAll = exports.createOne = void 0;
+exports.uploadCompanyDocs = exports.acceptOne = exports.findOne = exports.findAll = exports.createOne = void 0;
 var multer_1 = __importDefault(require("multer"));
 var fs_1 = __importDefault(require("fs"));
 // Importing our utils to this controller
 var httpException_1 = __importDefault(require("../utils/httpException"));
 var catchAsync_1 = __importDefault(require("../utils/catchAsync"));
+var email_1 = __importDefault(require("../utils/email"));
+// Importing own models to the controller
+var trdImportAll_1 = require("../models/trd/trdImportAll");
+var trdModel_1 = __importDefault(require("../models/trd/trdModel"));
+var companyModel_1 = require("../models/companies/companyModel");
 // ================================== MULTER CONFIGURATION TO HANDLE THE DOCUMENTS ===========================================
 // Configuring first the type of the storage
 var multerStorage = multer_1.default.diskStorage({
@@ -52,7 +68,7 @@ var multerStorage = multer_1.default.diskStorage({
     destination: function (req, file, callback) {
         var directory = "store/documents/company/" + req.body.nit;
         if (!fs_1.default.existsSync(directory)) {
-            fs_1.default.mkdirSync(directory);
+            fs_1.default.mkdirSync(directory, { recursive: true });
         }
         callback(null, directory);
     },
@@ -182,3 +198,103 @@ var createOne = function (Model) {
     }); });
 };
 exports.createOne = createOne;
+var acceptOne = function (Model) {
+    return (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+        var id, body, companyMatched, dependency, serie, subserie, trd, year, dependencyCode, serieCode, subserieCode, consecutive, radicado, genPassword, hashedPassword, emailMessage, error_2;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    id = req.params.id;
+                    body = __assign({}, req.body);
+                    return [4 /*yield*/, Model.findById(id)];
+                case 1:
+                    companyMatched = _a.sent();
+                    // CHECK IF THE COMPANY EXISTS
+                    if (!companyMatched) {
+                        return [2 /*return*/, next(new httpException_1.default('No existe una compañía con ese ID, inténtelo nuevamente', 404))];
+                    }
+                    return [4 /*yield*/, trdImportAll_1.TRDDependency.findById(body.dependency)];
+                case 2:
+                    dependency = _a.sent();
+                    return [4 /*yield*/, trdImportAll_1.TRDSerie.findById(body.serie)];
+                case 3:
+                    serie = _a.sent();
+                    return [4 /*yield*/, trdImportAll_1.TRDSubSerie.findById(body.subserie)];
+                case 4:
+                    subserie = _a.sent();
+                    if (!dependency || !serie || !subserie) {
+                        return [2 /*return*/, next(new httpException_1.default('No se ha encontrado ningúna tipología creada!', 404))];
+                    }
+                    return [4 /*yield*/, trdModel_1.default.findOne({
+                            dependency: body.dependency,
+                            serie: body.serie,
+                            subserie: body.subserie,
+                        })];
+                case 5:
+                    trd = _a.sent();
+                    if (!!trd) return [3 /*break*/, 7];
+                    return [4 /*yield*/, trdModel_1.default.create({
+                            dependency: body.dependency,
+                            serie: body.serie,
+                            subserie: body.subserie,
+                        })];
+                case 6:
+                    trd = _a.sent();
+                    _a.label = 7;
+                case 7:
+                    year = new Date().getFullYear();
+                    dependencyCode = dependency.dependencyCode;
+                    serieCode = serie.serieCode;
+                    subserieCode = subserie.subSerieCode;
+                    consecutive = trd.getConsecutive() + 1;
+                    consecutive = ('00000' + consecutive).slice(-5);
+                    radicado = "" + year + dependencyCode + serieCode + subserieCode + consecutive + "E";
+                    // INCREMENT THE CONSECUTIVE
+                    trd.consecutive = trd.getConsecutive() + 1;
+                    return [4 /*yield*/, trd.save({ validateBeforeSave: false })];
+                case 8:
+                    _a.sent();
+                    return [4 /*yield*/, companyMatched.generatePassword()];
+                case 9:
+                    genPassword = _a.sent();
+                    return [4 /*yield*/, companyMatched.hashPassword(genPassword)];
+                case 10:
+                    hashedPassword = _a.sent();
+                    // NOW SAVE THE RADICADO, THE STATUS, PASSWORD AND THE UPDATED AT
+                    companyMatched.password = hashedPassword;
+                    companyMatched.radicado = radicado;
+                    companyMatched.status = companyModel_1.StatusCompany.Active;
+                    companyMatched.updatedAt = Date.now();
+                    // To save observations as well
+                    if (req.body.observations)
+                        companyMatched.observations = req.body.observations;
+                    return [4 /*yield*/, companyMatched.save({ validateBeforeSave: false })];
+                case 11:
+                    _a.sent();
+                    emailMessage = "Ha sido aprobado su solicitud de acceso para la mina, la generaci\u00F3n de su empresa se ha generado con el radicado: " + radicado + ". Sus credenciales de accesos son las siguientes:\n\t\t\nEl correo: el mismo con el que se registr\u00F3\nSu contrase\u00F1a: " + genPassword + "!\n\nSi tiene alguna duda, no dude en contactar con nosotros!";
+                    _a.label = 12;
+                case 12:
+                    _a.trys.push([12, 14, , 15]);
+                    return [4 /*yield*/, (0, email_1.default)({
+                            email: companyMatched.email,
+                            subject: 'Ha sido aprobado su acceso a la Mina San Jorge!',
+                            message: emailMessage,
+                        })];
+                case 13:
+                    _a.sent();
+                    return [3 /*break*/, 15];
+                case 14:
+                    error_2 = _a.sent();
+                    return [2 /*return*/, next(new httpException_1.default('Hubo un error al enviar el correo, por favor intente más tarde', 500))];
+                case 15: 
+                // SENDING THE FINAL RESPONSE TO THE CLIENT
+                return [2 /*return*/, res.status(200).json({
+                        status: true,
+                        message: 'La empresa fue aprobada éxitosamente y se le envió un correo con sus credenciales',
+                        radicado: radicado,
+                    })];
+            }
+        });
+    }); });
+};
+exports.acceptOne = acceptOne;
