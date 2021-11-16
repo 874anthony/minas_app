@@ -24,11 +24,13 @@ const addContractor = (req: Request, res: Response, next: NextFunction) => {
 const getAllContractors = factory.findAll(Contractor);
 const getContractor = factory.findOne(Contractor);
 const createContractor = factory.createOne(Contractor);
+const acceptContractor = factory.acceptOne(Contractor);
 
 export {
 	getAllContractors,
 	getContractor,
 	createContractor,
 	addContractor,
+	acceptContractor,
 	uploadContractorDocs,
 };

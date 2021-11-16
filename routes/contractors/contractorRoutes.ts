@@ -18,4 +18,8 @@ router
 // Routes with the id
 router.route('/:id').get(contractorController.getContractor);
 
+router
+	.route('/accept-pending-contractor/:id')
+	.patch(contractorController.acceptContractor);
+
 export default router;
