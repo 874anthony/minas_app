@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = __importDefault(require("express"));
 var cors_1 = __importDefault(require("cors"));
 var morgan_1 = __importDefault(require("morgan"));
+var path_1 = __importDefault(require("path"));
 // Own routes
 var companyRoutes_1 = __importDefault(require("./routes/company/companyRoutes"));
 var contractorRoutes_1 = __importDefault(require("./routes/contractors/contractorRoutes"));
@@ -21,6 +22,9 @@ app.use(express_1.default.urlencoded({ extended: true }));
 if (process.env.NODE_ENV === 'development') {
     app.use((0, morgan_1.default)('dev'));
 }
+// Defining the static files
+app.use('/companies', express_1.default.static(path_1.default.join(__dirname, '../store/documents/company')));
+app.use('/contractors', express_1.default.static(path_1.default.join(__dirname, '../store/documents/contractors')));
 // Importing routes
 app.use('/api/v1/companies', companyRoutes_1.default);
 app.use('/api/v1/contractors', contractorRoutes_1.default);

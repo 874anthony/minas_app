@@ -1,6 +1,7 @@
 import express, { NextFunction, Request, Response } from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
+import path from 'path';
 
 // TODO: Own Imports LATER BE REMOVED
 import HttpException from './utils/httpException';
@@ -23,6 +24,17 @@ app.use(express.urlencoded({ extended: true }));
 if (process.env.NODE_ENV === 'development') {
 	app.use(morgan('dev'));
 }
+
+// Defining the static files
+app.use(
+	'/companies',
+	express.static(path.join(__dirname, '../store/documents/company'))
+);
+
+app.use(
+	'/contractors',
+	express.static(path.join(__dirname, '../store/documents/contractors'))
+);
 
 // Importing routes
 app.use('/api/v1/companies', companyRouter);
