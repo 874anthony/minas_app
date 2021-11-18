@@ -39,40 +39,33 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createSubSerie = void 0;
+exports.createOneTRD = void 0;
 // Importing the global handler error and the catchAsync
-var httpException_1 = __importDefault(require("../../utils/httpException"));
-var catchAsync_1 = __importDefault(require("../../utils/catchAsync"));
-// Importing our models
-var trdSubSerie_1 = __importDefault(require("../../models/trd/trdSubSerie"));
-var createSubSerie = (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var dependencyID, serieID, body, newSubSerie;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                dependencyID = req.params.id;
-                serieID = req.params.idSerie;
-                body = req.body;
-                if (!body || !dependencyID || !serieID) {
-                    return [2 /*return*/, next(new httpException_1.default('Hacen faltan campos para la creación de la Subserie', 404))];
-                }
-                return [4 /*yield*/, trdSubSerie_1.default.create({
-                        dependencyID: dependencyID,
-                        serieID: serieID,
-                        subSerieCode: body.subSerieCode,
-                        subSerieName: body.subSerieName,
-                    })];
-            case 1:
-                newSubSerie = _a.sent();
-                if (!newSubSerie) {
-                    return [2 /*return*/, next(new httpException_1.default('No se pudo crear la Subserie, inténtelo nuevamente', 400))];
-                }
-                return [2 /*return*/, res.status(201).json({
-                        status: true,
-                        message: "Se cre\u00F3 exitosamente la Subserie - " + body.subSerieName,
-                        serie: newSubSerie,
-                    })];
-        }
-    });
-}); });
-exports.createSubSerie = createSubSerie;
+var httpException_1 = __importDefault(require("../utils/httpException"));
+var catchAsync_1 = __importDefault(require("../utils/catchAsync"));
+var createOneTRD = function (Model) {
+    return (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+        var body, newTRD;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    body = req.body;
+                    if (!body) {
+                        return [2 /*return*/, next(new httpException_1.default('Hacen faltan campos para la creación de la TRD', 404))];
+                    }
+                    return [4 /*yield*/, Model.create(body)];
+                case 1:
+                    newTRD = _a.sent();
+                    if (!newTRD) {
+                        return [2 /*return*/, next(new httpException_1.default('No se pudo crear la TRD, inténtelo nuevamente', 400))];
+                    }
+                    return [2 /*return*/, res.status(201).json({
+                            status: true,
+                            message: "Se aplic\u00F3 exitosamente la TRD",
+                            trd: newTRD,
+                        })];
+            }
+        });
+    }); });
+};
+exports.createOneTRD = createOneTRD;

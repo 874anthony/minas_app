@@ -27,12 +27,12 @@ if (process.env.NODE_ENV === 'development') {
 
 // Defining the static files
 app.use(
-	'/companies',
+	'/pdf-companies',
 	express.static(path.join(__dirname, '../store/documents/company'))
 );
 
 app.use(
-	'/contractors',
+	'/pdf-contractors',
 	express.static(path.join(__dirname, '../store/documents/contractors'))
 );
 
@@ -53,8 +53,8 @@ function globalErrorHandler(
 
 	return res.status(status).json({
 		error: err,
-		status: err.status,
-		message: err.message,
+		status,
+		message,
 		stack: err.stack,
 	});
 }

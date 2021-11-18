@@ -21,7 +21,7 @@ const createTipoDoc = catchAsync(
 		if (!body || !dependencyID || !serieID || !subSerieID) {
 			return next(
 				new HttpException(
-					'Hacen faltan campos para la creación de la serie',
+					'Hacen faltan campos para la creación del tipo de documento',
 					404
 				)
 			);
@@ -46,7 +46,7 @@ const createTipoDoc = catchAsync(
 
 		return res.status(201).json({
 			status: true,
-			message: `Se creó exitosamente la serie - ${body.tipoDocName}`,
+			message: `Se creó exitosamente el tipo de documento - ${body.tipoDocName}`,
 			serie: newTipoDoc,
 		});
 	}

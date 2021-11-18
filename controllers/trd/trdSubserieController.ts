@@ -20,7 +20,7 @@ const createSubSerie = catchAsync(
 		if (!body || !dependencyID || !serieID) {
 			return next(
 				new HttpException(
-					'Hacen faltan campos para la creación de la serie',
+					'Hacen faltan campos para la creación de la Subserie',
 					404
 				)
 			);
@@ -36,7 +36,7 @@ const createSubSerie = catchAsync(
 		if (!newSubSerie) {
 			return next(
 				new HttpException(
-					'No se pudo crear la serie, inténtelo nuevamente',
+					'No se pudo crear la Subserie, inténtelo nuevamente',
 					400
 				)
 			);
@@ -44,7 +44,7 @@ const createSubSerie = catchAsync(
 
 		return res.status(201).json({
 			status: true,
-			message: `Se creó exitosamente la serie - ${body.subSerieName}`,
+			message: `Se creó exitosamente la Subserie - ${body.subSerieName}`,
 			serie: newSubSerie,
 		});
 	}

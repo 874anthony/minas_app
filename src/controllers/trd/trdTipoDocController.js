@@ -55,7 +55,7 @@ var createTipoDoc = (0, catchAsync_1.default)(function (req, res, next) { return
                 subSerieID = req.params.idsubserie;
                 body = req.body;
                 if (!body || !dependencyID || !serieID || !subSerieID) {
-                    return [2 /*return*/, next(new httpException_1.default('Hacen faltan campos para la creación de la serie', 404))];
+                    return [2 /*return*/, next(new httpException_1.default('Hacen faltan campos para la creación del tipo de documento', 404))];
                 }
                 return [4 /*yield*/, trdTipoDoc_1.default.create({
                         dependencyID: dependencyID,
@@ -71,7 +71,7 @@ var createTipoDoc = (0, catchAsync_1.default)(function (req, res, next) { return
                 }
                 return [2 /*return*/, res.status(201).json({
                         status: true,
-                        message: "Se cre\u00F3 exitosamente la serie - " + body.tipoDocName,
+                        message: "Se cre\u00F3 exitosamente el tipo de documento - " + body.tipoDocName,
                         serie: newTipoDoc,
                     })];
         }

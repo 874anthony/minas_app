@@ -1,6 +1,8 @@
 import nodemailer from 'nodemailer';
 import { MailOptions } from 'nodemailer/lib/ses-transport';
 
+// TODO: Build a complex mail handler
+
 export interface EmailInterface {
 	email: string;
 	subject: string;
