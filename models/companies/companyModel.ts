@@ -52,7 +52,7 @@ const CompanySchema: Schema<CompanyInterface> = new Schema(
 			type: String,
 			validate: {
 				validator: (value: string) => validator.isEmail(value),
-				message: 'El email ingresado no es válidad',
+				message: 'El email ingresado no es válido',
 			},
 			lowercase: true,
 			required: true,

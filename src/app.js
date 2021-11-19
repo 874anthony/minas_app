@@ -11,6 +11,7 @@ var path_1 = __importDefault(require("path"));
 var companyRoutes_1 = __importDefault(require("./routes/company/companyRoutes"));
 var contractorRoutes_1 = __importDefault(require("./routes/contractors/contractorRoutes"));
 var trdRoutes_1 = __importDefault(require("./routes/trd/trdRoutes"));
+var authRoutes_1 = __importDefault(require("./routes/auth/authRoutes"));
 var app = (0, express_1.default)();
 // To handle the CORS
 app.use((0, cors_1.default)());
@@ -29,6 +30,7 @@ app.use('/pdf-contractors', express_1.default.static(path_1.default.join(__dirna
 app.use('/api/v1/companies', companyRoutes_1.default);
 app.use('/api/v1/contractors', contractorRoutes_1.default);
 app.use('/api/v1/trd-management', trdRoutes_1.default);
+app.use('/api/v1/auth', authRoutes_1.default);
 // Define the global error handler to pass next errors
 function globalErrorHandler(err, req, res, next) {
     var status = err.status || 500;

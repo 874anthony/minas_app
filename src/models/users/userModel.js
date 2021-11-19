@@ -39,32 +39,37 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.StatusCompany = void 0;
+exports.UserRoles = void 0;
 var mongoose_1 = require("mongoose");
 var validator_1 = __importDefault(require("validator"));
 var crypto_js_1 = __importDefault(require("crypto-js"));
-var crypto_1 = __importDefault(require("crypto"));
-var StatusCompany;
-(function (StatusCompany) {
-    StatusCompany["Active"] = "ACTIVO";
-    StatusCompany["InProcess"] = "EN PROCESO";
-    StatusCompany["Pending"] = "PENDIENTE";
-    StatusCompany["Inactive"] = "INACTIVO";
-    StatusCompany["Rejected"] = "RECHAZADO";
-})(StatusCompany = exports.StatusCompany || (exports.StatusCompany = {}));
-// Definying the schema
-var CompanySchema = new mongoose_1.Schema({
-    businessName: {
+var UserRoles;
+(function (UserRoles) {
+    UserRoles["AccessControl"] = "Control de Acceso";
+    UserRoles["RSE"] = "Responsabilidad Social Empresarial";
+    UserRoles["SSFF"] = "Seguridad F\u00EDsica";
+    UserRoles["SISO"] = "Seguridad y Salud en el Trabajo";
+    UserRoles["Auditing"] = "Interventor\u00EDa";
+    UserRoles["SMIN"] = "Gerencia Servicios Mineros";
+    UserRoles["Admin"] = "Administrador";
+})(UserRoles = exports.UserRoles || (exports.UserRoles = {}));
+var UserSchema = new mongoose_1.Schema({
+    name: {
         type: String,
         required: true,
-        trim: true,
-        minlength: 3,
+        minlength: 1,
     },
-    nit: {
-        type: Number,
-        unique: true,
+    surname: {
+        type: String,
+        minlength: 1,
+    },
+    role: {
+        type: String,
         required: true,
-        min: 7,
+        enum: {
+            values: Object.values(UserRoles),
+            message: 'El rol debe ser alguno de los predeterminados por Servicios Mineros',
+        },
     },
     email: {
         type: String,
@@ -76,45 +81,24 @@ var CompanySchema = new mongoose_1.Schema({
         required: true,
         unique: true,
     },
-    address: {
-        type: String,
-        required: true,
-    },
-    phone: {
-        type: Number,
-        required: true,
-        unique: true,
-    },
-    legalRepresentative: {
-        type: String,
-        required: true,
-        minlength: 8,
-        trim: true,
-    },
-    docComCam: {
-        required: true,
-        type: String,
-    },
-    docRUT: {
-        type: String,
-        required: true,
-    },
-    docLegalRepresentativeID: {
-        type: String,
-        required: true,
-    },
-    radicado: {
-        type: String,
-        default: 'Sin radicado',
-    },
     password: {
         type: String,
         select: false,
     },
-    status: {
+    passwordConfirm: {
         type: String,
-        enum: [StatusCompany],
-        default: StatusCompany.Pending,
+        required: [true, 'Por favor, confirma tu contraseña'],
+        // ONLY WORKS ON .create() and .save();
+        validate: {
+            validator: function (value) {
+                return value === this.password;
+            },
+            message: 'Las contraseñas no coinciden',
+        },
+    },
+    status: {
+        type: Boolean,
+        default: true,
     },
     createdAt: {
         type: Date,
@@ -123,60 +107,44 @@ var CompanySchema = new mongoose_1.Schema({
     updatedAt: {
         type: Date,
     },
-    finishDates: [Date],
-    observations: [
-        {
-            type: String,
-            trim: true,
-            minlength: [5, 'Las observaciones deben tener al menos 5 letras'],
-        },
-    ],
-}, {
-    toObject: { virtuals: true },
-    toJSON: { virtuals: true },
 });
-// ================================================== VIRTUAL PROPERTIES STARTS HERE ==================================================
-// Virtual populate
-// TODO: Fix VIRTUAL POPULATE
-CompanySchema.virtual('contratistas', {
-    ref: 'contractor',
-    foreignField: 'company',
-    localField: '_id',
+// ============================================= DOCUMENT MIDDLEWARE STARTS HERE==============================================
+// To hash the password everytime it changes
+UserSchema.pre('save', function (next) {
+    return __awaiter(this, void 0, void 0, function () {
+        var _a;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0:
+                    // Only run this function if password was actually modified
+                    if (!this.isModified('password'))
+                        return [2 /*return*/, next()];
+                    // Hash the password with cost of 12
+                    _a = this;
+                    return [4 /*yield*/, crypto_js_1.default.AES.encrypt(this.password, process.env.PASSWORD_PHARAPRHASE).toString()];
+                case 1:
+                    // Hash the password with cost of 12
+                    _a.password = _b.sent();
+                    // Delete passwordConfirm field
+                    this.passwordConfirm = undefined;
+                    next();
+                    return [2 /*return*/];
+            }
+        });
+    });
 });
-// UserSchema.methods.toJSON = function() {
-// var obj = this.toObject()
-// delete obj.passwordHash
-// return obj
-// }
-// ================================================== STATIC METHODS STARTS HERE ==================================================
-/**
- *
- * @param genPassword
- * @returns An automatic generated passwords
- */
-CompanySchema.methods.hashPassword = function (genPassword) {
+// ================================================== STATICS METHODS STARTS HERE ==========================================
+UserSchema.methods.decryptPassword = function (hashedPassword) {
     return __awaiter(this, void 0, void 0, function () {
+        var passwordDecrypted;
         return __generator(this, function (_a) {
-            return [2 /*return*/, crypto_js_1.default.AES.encrypt(genPassword, process.env.PASSWORD_PHARAPRHASE).toString()];
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, crypto_js_1.default.AES.decrypt(hashedPassword, process.env.PASSWORD_PHARAPRHASE).toString(crypto_js_1.default.enc.Utf8)];
+                case 1:
+                    passwordDecrypted = _a.sent();
+                    return [2 /*return*/, passwordDecrypted];
+            }
         });
     });
 };
-CompanySchema.methods.generatePassword = function (length, wishlist) {
-    if (length === void 0) { length = 10; }
-    if (wishlist === void 0) { wishlist = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz~!@-#$'; }
-    return __awaiter(this, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            return [2 /*return*/, Array.from(crypto_1.default.randomFillSync(new Uint32Array(length)))
-                    .map(function (x) { return wishlist[x % wishlist.length]; })
-                    .join('')];
-        });
-    });
-};
-CompanySchema.methods.decryptPassword = function (hashedPassword) {
-    return __awaiter(this, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            return [2 /*return*/, crypto_js_1.default.AES.decrypt(hashedPassword, process.env.PASSWORD_PHARAPRHASE).toString(crypto_js_1.default.enc.Utf8)];
-        });
-    });
-};
-exports.default = (0, mongoose_1.model)('company', CompanySchema);
+exports.default = (0, mongoose_1.model)('user', UserSchema);

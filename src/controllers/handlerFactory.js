@@ -39,65 +39,91 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAll = exports.createOne = void 0;
+exports.findOne = exports.findAll = exports.createOne = void 0;
 // Importing the global handler error and the catchAsync
 var httpException_1 = __importDefault(require("../utils/httpException"));
 var catchAsync_1 = __importDefault(require("../utils/catchAsync"));
 var apiFeatures_1 = __importDefault(require("../utils/apiFeatures"));
 var createOne = function (Model) {
     return (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-        var body, newTRD;
+        var body, document;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     body = req.body;
                     if (!body) {
-                        return [2 /*return*/, next(new httpException_1.default('Hacen faltan campos para la creación de la TRD', 404))];
+                        return [2 /*return*/, next(new httpException_1.default('Hacen faltan campos para la creación del documento', 404))];
                     }
                     return [4 /*yield*/, Model.create(body)];
                 case 1:
-                    newTRD = _a.sent();
-                    if (!newTRD) {
-                        return [2 /*return*/, next(new httpException_1.default('No se pudo crear la TRD, inténtelo nuevamente', 400))];
+                    document = _a.sent();
+                    if (!document) {
+                        return [2 /*return*/, next(new httpException_1.default('No se pudo crear el documento, inténtelo nuevamente', 400))];
                     }
                     return [2 /*return*/, res.status(201).json({
                             status: true,
-                            message: "Se aplic\u00F3 exitosamente la TRD",
-                            trd: newTRD,
+                            message: "Se cre\u00F3 el documento exitosamente!",
+                            document: document,
                         })];
             }
         });
     }); });
 };
 exports.createOne = createOne;
-var getAll = function (Model) {
+var findAll = function (Model) {
     return (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-        var filter, features, companies;
+        var features, documents;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    filter = {};
-                    if (req.params.idCompany)
-                        filter = { company: req.params.idCompany };
-                    features = new apiFeatures_1.default(Model.find(filter), req.query)
+                    features = new apiFeatures_1.default(Model.find(), req.query)
                         .filter()
                         .sort()
                         .limitFields()
                         .paginate();
                     return [4 /*yield*/, features.query];
                 case 1:
-                    companies = _a.sent();
-                    if (companies.length === 0) {
-                        return [2 /*return*/, next(new httpException_1.default('No hay empresas con ese criterio de búsqueda!', 204))];
+                    documents = _a.sent();
+                    if (documents.length === 0) {
+                        return [2 /*return*/, next(new httpException_1.default('No hay documentos con ese criterio de búsqueda!', 204))];
                     }
                     return [2 /*return*/, res.status(200).json({
                             status: true,
                             data: {
-                                companies: companies,
+                                documents: documents,
                             },
                         })];
             }
         });
     }); });
 };
-exports.getAll = getAll;
+exports.findAll = findAll;
+/**
+ * Obtener empresa por el ID;
+ * @param id
+ */
+var findOne = function (Model, populateOptions) {
+    return (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+        var id, query, document;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    id = req.params.id;
+                    query = Model.findById(id);
+                    if (populateOptions)
+                        query = query.populate(populateOptions);
+                    return [4 /*yield*/, query];
+                case 1:
+                    document = _a.sent();
+                    if (!document) {
+                        return [2 /*return*/, next(new httpException_1.default('No hay un documento con este ID', 404))];
+                    }
+                    return [2 /*return*/, res.status(200).json({
+                            status: true,
+                            document: document,
+                        })];
+            }
+        });
+    }); });
+};
+exports.findOne = findOne;

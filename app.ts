@@ -10,6 +10,7 @@ import HttpException from './utils/httpException';
 import companyRouter from './routes/company/companyRoutes';
 import contractorRouter from './routes/contractors/contractorRoutes';
 import trdRouter from './routes/trd/trdRoutes';
+import authRouter from './routes/auth/authRoutes';
 
 const app = express();
 
@@ -40,6 +41,7 @@ app.use(
 app.use('/api/v1/companies', companyRouter);
 app.use('/api/v1/contractors', contractorRouter);
 app.use('/api/v1/trd-management', trdRouter);
+app.use('/api/v1/auth', authRouter);
 
 // Define the global error handler to pass next errors
 function globalErrorHandler(
