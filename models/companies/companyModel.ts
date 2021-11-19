@@ -52,7 +52,7 @@ const CompanySchema: Schema<CompanyInterface> = new Schema(
 			type: String,
 			validate: {
 				validator: (value: string) => validator.isEmail(value),
-				message: 'El email ingresado no es válidad',
+				message: 'El email ingresado no es válido',
 			},
 			lowercase: true,
 			required: true,
@@ -87,9 +87,11 @@ const CompanySchema: Schema<CompanyInterface> = new Schema(
 		},
 		radicado: {
 			type: String,
+			default: 'Sin radicado',
 		},
 		password: {
 			type: String,
+			select: false,
 		},
 		status: {
 			type: String,
@@ -120,6 +122,7 @@ const CompanySchema: Schema<CompanyInterface> = new Schema(
 
 // ================================================== VIRTUAL PROPERTIES STARTS HERE ==================================================
 // Virtual populate
+// TODO: Fix VIRTUAL POPULATE
 CompanySchema.virtual('contratistas', {
 	ref: 'contractor',
 	foreignField: 'company',

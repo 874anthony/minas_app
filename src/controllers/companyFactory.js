@@ -57,6 +57,7 @@ var fs_1 = __importDefault(require("fs"));
 var httpException_1 = __importDefault(require("../utils/httpException"));
 var catchAsync_1 = __importDefault(require("../utils/catchAsync"));
 var email_1 = __importDefault(require("../utils/email"));
+var apiFeatures_1 = __importDefault(require("../utils/apiFeatures"));
 // Importing own models to the controller
 var trdImportAll_1 = require("../models/trd/trdImportAll");
 var trdModel_1 = __importDefault(require("../models/trd/trdModel"));
@@ -100,16 +101,19 @@ var uploadCompanyDocs = upload.fields([
 exports.uploadCompanyDocs = uploadCompanyDocs;
 var findAll = function (Model) {
     return (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-        var filter, companies;
+        var filter, features, companies;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     filter = {};
                     if (req.params.idCompany)
                         filter = { company: req.params.idCompany };
-                    if (req.query.status)
-                        filter['status'] = req.query.status;
-                    return [4 /*yield*/, Model.find(filter)];
+                    features = new apiFeatures_1.default(Model.find(filter), req.query)
+                        .filter()
+                        .sort()
+                        .limitFields()
+                        .paginate();
+                    return [4 /*yield*/, features.query];
                 case 1:
                     companies = _a.sent();
                     if (companies.length === 0) {

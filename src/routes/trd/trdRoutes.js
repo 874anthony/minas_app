@@ -30,15 +30,31 @@ var trdSubSerieController = __importStar(require("../../controllers/trd/trdSubse
 var trdTipoDocController = __importStar(require("../../controllers/trd/trdTipoDocController"));
 var router = express_1.default.Router();
 // DEPENDENCY ROUTES
-router.route('/dependency').post(trdDependencyController.createDependency);
+router
+    .route('/dependency')
+    .post(trdDependencyController.createDependency)
+    .get(trdDependencyController.getAllDependencies);
+router.route('/dependency/:id').get(trdDependencyController.getDependency);
 // SERIES ROUTES
-router.route('/dependency/:id/serie').post(trdSerieController.createSerie);
+router
+    .route('/dependency/:id/serie')
+    .post(trdSerieController.createSerie)
+    .get(trdSerieController.getAllSeries);
+router.route('/dependency/:id/serie/:id').get(trdSerieController.getSerie);
 // SUBSERIES ROUTES
 router
     .route('/dependency/:id/serie/:idSerie/subserie')
-    .post(trdSubSerieController.createSubSerie);
+    .post(trdSubSerieController.createSubSerie)
+    .get(trdSubSerieController.getAllSubseries);
+router
+    .route('/dependency/:id/serie/:idSerie/subserie/:id')
+    .get(trdSubSerieController.getSubserie);
 // DOCUMENT ROUTES
 router
     .route('/dependency/:id/serie/:idserie/subserie/:idsubserie/tipodoc')
-    .post(trdTipoDocController.createTipoDoc);
+    .post(trdTipoDocController.createTipoDoc)
+    .get(trdTipoDocController.getAllTipoDocs);
+router
+    .route('/dependency/:id/serie/:idserie/subserie/:idsubserie/tipodoc/:id')
+    .get(trdTipoDocController.getTipoDoc);
 exports.default = router;

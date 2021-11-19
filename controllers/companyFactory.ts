@@ -7,6 +7,7 @@ import fs from 'fs';
 import HttpException from '../utils/httpException';
 import catchAsync from '../utils/catchAsync';
 import sendEmail from '../utils/email';
+import APIFeatures from '../utils/apiFeatures';
 
 // Importing own models to the controller
 import {
@@ -72,11 +73,14 @@ const uploadCompanyDocs = upload.fields([
 const findAll = (Model) =>
 	catchAsync(async (req: Request, res: Response, next: NextFunction) => {
 		let filter = {};
-
 		if (req.params.idCompany) filter = { company: req.params.idCompany };
-		if (req.query.status) filter['status'] = req.query.status;
 
-		const companies = await Model.find(filter);
+		const features = new APIFeatures(Model.find(filter), req.query)
+			.filter()
+			.sort()
+			.limitFields()
+			.paginate();
+		const companies = await features.query;
 
 		if (companies.length === 0) {
 			return next(
