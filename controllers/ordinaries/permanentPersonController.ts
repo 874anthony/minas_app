@@ -9,7 +9,15 @@ const uploadPermanentPersons = ordinaryFactory.uploadPermanentPerson;
 
 const createPermanentPerson = ordinaryFactory.createOrdinayPerson(
 	PermanentPerson,
-	[UserRoles.AccessControl]
+	[UserRoles.AccessControl],
+	{
+		checkRSE: false,
+		checkAccessControl: false,
+		checkSSFF: false,
+		checkSISO: false,
+		checkAuditing: false,
+		checkSMIN: false,
+	}
 );
 
 export { createPermanentPerson, uploadPermanentPersons };

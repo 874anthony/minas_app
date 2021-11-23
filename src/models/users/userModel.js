@@ -134,6 +134,11 @@ UserSchema.pre('save', function (next) {
     });
 });
 // ================================================== STATICS METHODS STARTS HERE ==========================================
+/**
+ *
+ * @param hashedPassword
+ * @returns Decrypt hashed password
+ */
 UserSchema.methods.decryptPassword = function (hashedPassword) {
     return __awaiter(this, void 0, void 0, function () {
         var passwordDecrypted;

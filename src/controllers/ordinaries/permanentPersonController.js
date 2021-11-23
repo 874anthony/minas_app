@@ -30,5 +30,12 @@ var userModel_1 = require("../../models/users/userModel");
 var ordinaryFactory = __importStar(require("../ordinaryFactory"));
 var uploadPermanentPersons = ordinaryFactory.uploadPermanentPerson;
 exports.uploadPermanentPersons = uploadPermanentPersons;
-var createPermanentPerson = ordinaryFactory.createOrdinayPerson(permanentPersonModel_1.default, [userModel_1.UserRoles.AccessControl]);
+var createPermanentPerson = ordinaryFactory.createOrdinayPerson(permanentPersonModel_1.default, [userModel_1.UserRoles.AccessControl], {
+    checkRSE: false,
+    checkAccessControl: false,
+    checkSSFF: false,
+    checkSISO: false,
+    checkAuditing: false,
+    checkSMIN: false,
+});
 exports.createPermanentPerson = createPermanentPerson;

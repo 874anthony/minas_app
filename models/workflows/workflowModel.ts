@@ -11,6 +11,7 @@ const WorkflowSchema: Schema = new Schema({
 	radicado: {
 		type: Schema.Types.ObjectId,
 		required: [true, 'Especifique el documento al que va a estar asociado'],
+		unique: true,
 	},
 	roles: {
 		type: [Schema.Types.ObjectId],

@@ -13,6 +13,7 @@ var WorkflowSchema = new mongoose_1.Schema({
     radicado: {
         type: mongoose_1.Schema.Types.ObjectId,
         required: [true, 'Especifique el documento al que va a estar asociado'],
+        unique: true,
     },
     roles: {
         type: [mongoose_1.Schema.Types.ObjectId],

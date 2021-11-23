@@ -101,9 +101,9 @@ var uploadPermanentPerson = uploadOrdinaryPerson.fields([
     { name: 'docCitizenship', maxCount: 1 },
 ]);
 exports.uploadPermanentPerson = uploadPermanentPerson;
-var createOrdinayPerson = function (Model, Roles) {
+var createOrdinayPerson = function (Model, Roles, checkRoles) {
     return (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-        var body, newOrdinaryPerson, usersPromises, usersID, usersArray, error_1;
+        var body, newOrdinaryPerson, usersPromises, usersID, usersArray, bodyWorkflow, error_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -126,8 +126,11 @@ var createOrdinayPerson = function (Model, Roles) {
                                 case 0:
                                     rolesQuery = new apiFeatures_1.default(userModel_1.default.find(), {
                                         role: role,
-                                        fields: '_id',
-                                    }).limitFields();
+                                        status: 'true',
+                                        fields: '_id,status',
+                                    })
+                                        .filter()
+                                        .limitFields();
                                     return [4 /*yield*/, rolesQuery.query];
                                 case 1: return [2 /*return*/, _a.sent()];
                             }
@@ -138,13 +141,11 @@ var createOrdinayPerson = function (Model, Roles) {
                 case 2:
                     usersArray = _a.sent();
                     usersArray[0].forEach(function (element) { return usersID.push(element._id); });
+                    bodyWorkflow = __assign({ radicado: newOrdinaryPerson._id, roles: usersID }, checkRoles);
                     _a.label = 3;
                 case 3:
                     _a.trys.push([3, 5, , 6]);
-                    return [4 /*yield*/, workflowModel_1.default.create({
-                            radicado: newOrdinaryPerson._id,
-                            roles: usersID,
-                        })];
+                    return [4 /*yield*/, workflowModel_1.default.create(bodyWorkflow)];
                 case 4:
                     _a.sent();
                     return [3 /*break*/, 6];

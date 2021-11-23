@@ -7,5 +7,6 @@ import * as authController from '../../controllers/auth/authController';
 const router = express.Router();
 
 router.route('/create-user').post(authController.createUserRole);
+router.route('/login').post(authController.login);
 
 export default router;

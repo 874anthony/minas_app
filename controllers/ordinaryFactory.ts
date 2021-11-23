@@ -68,7 +68,7 @@ const uploadPermanentPerson = uploadOrdinaryPerson.fields([
 	{ name: 'docCitizenship', maxCount: 1 },
 ]);
 
-const createOrdinayPerson = (Model, Roles: Array<string>) =>
+const createOrdinayPerson = (Model, Roles: Array<string>, checkRoles: Object) =>
 	catchAsync(async (req: Request, res: Response, next: NextFunction) => {
 		if (!req.files) {
 			return next(
@@ -101,8 +101,11 @@ const createOrdinayPerson = (Model, Roles: Array<string>) =>
 		const usersPromises = Roles.map(async (role) => {
 			const rolesQuery = new APIFeatures(User.find(), {
 				role,
-				fields: '_id',
-			}).limitFields();
+				status: 'true',
+				fields: '_id,status',
+			})
+				.filter()
+				.limitFields();
 
 			return await rolesQuery.query;
 		});
@@ -112,11 +115,14 @@ const createOrdinayPerson = (Model, Roles: Array<string>) =>
 		const usersArray = await Promise.all(usersPromises);
 		usersArray[0].forEach((element) => usersID.push(element._id));
 
+		const bodyWorkflow = {
+			radicado: newOrdinaryPerson._id,
+			roles: usersID,
+			...checkRoles,
+		};
+
 		try {
-			await Workflow.create({
-				radicado: newOrdinaryPerson._id,
-				roles: usersID,
-			});
+			await Workflow.create(bodyWorkflow);
 		} catch (error) {
 			return next(
 				new HttpException(
