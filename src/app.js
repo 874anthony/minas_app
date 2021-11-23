@@ -12,6 +12,7 @@ var companyRoutes_1 = __importDefault(require("./routes/company/companyRoutes"))
 var contractorRoutes_1 = __importDefault(require("./routes/contractors/contractorRoutes"));
 var trdRoutes_1 = __importDefault(require("./routes/trd/trdRoutes"));
 var authRoutes_1 = __importDefault(require("./routes/auth/authRoutes"));
+var ordinaryPersonRoutes_1 = __importDefault(require("./routes/ordinaries/ordinaryPersonRoutes"));
 var app = (0, express_1.default)();
 // To handle the CORS
 app.use((0, cors_1.default)());
@@ -31,6 +32,7 @@ app.use('/api/v1/companies', companyRoutes_1.default);
 app.use('/api/v1/contractors', contractorRoutes_1.default);
 app.use('/api/v1/trd-management', trdRoutes_1.default);
 app.use('/api/v1/auth', authRoutes_1.default);
+app.use('/api/v1/ordinaries-person', ordinaryPersonRoutes_1.default);
 // Define the global error handler to pass next errors
 function globalErrorHandler(err, req, res, next) {
     var status = err.status || 500;

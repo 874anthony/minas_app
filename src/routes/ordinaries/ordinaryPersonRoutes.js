@@ -22,29 +22,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-// Import 3rd-party packages
+// Importing 3rd-party packages
 var express_1 = __importDefault(require("express"));
-// Importing own routers
-var contractorRoutes_1 = __importDefault(require("../../routes/contractors/contractorRoutes"));
-var ordinaryPersonRoutes_1 = __importDefault(require("../../routes/ordinaries/ordinaryPersonRoutes"));
-// Importing own controllers
-var companyController = __importStar(require("../../controllers/companies/companyController"));
-var router = express_1.default.Router();
-// Nesting routes to redirect to contractorRouter
-router.use('/:idCompany/contractors', contractorRoutes_1.default);
-router.use('/:idCompany/ordinaries-person', ordinaryPersonRoutes_1.default);
-// Custom routes
+var permanentPersonController = __importStar(require("../../controllers/ordinaries/permanentPersonController"));
+var router = express_1.default.Router({ mergeParams: true });
 router
-    .route('/pending-companies')
-    .get(companyController.getPendingCompanies, companyController.getAllCompanies);
-// Routes
-router
-    .route('/')
-    .get(companyController.getAllCompanies)
-    .post(companyController.uploadCompanyDocs, companyController.createCompany);
-// Routes with the id
-router.route('/:id').get(companyController.getCompany);
-router
-    .route('/accept-pending-company/:id')
-    .patch(companyController.acceptCompany);
+    .route('/create-permanent-person')
+    .post(permanentPersonController.uploadPermanentPersons, permanentPersonController.createPermanentPerson);
 exports.default = router;
