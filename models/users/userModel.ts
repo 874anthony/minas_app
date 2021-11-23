@@ -8,7 +8,7 @@ interface UserSchemaInterface extends Schema {
 	surname: string;
 	role: any;
 	email: string;
-	password: string;
+	password: string | undefined;
 	passwordConfirm: string;
 	status: boolean;
 	createdAt: any;
@@ -101,6 +101,11 @@ UserSchema.pre('save', async function (next) {
 });
 
 // ================================================== STATICS METHODS STARTS HERE ==========================================
+/**
+ *
+ * @param hashedPassword
+ * @returns Decrypt hashed password
+ */
 UserSchema.methods.decryptPassword = async function (hashedPassword) {
 	const passwordDecrypted = await CryptoJS.AES.decrypt(
 		hashedPassword,

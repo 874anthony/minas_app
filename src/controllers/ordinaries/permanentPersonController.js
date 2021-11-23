@@ -22,11 +22,20 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-// Import 3rd-party packages
-var express_1 = __importDefault(require("express"));
-// Importing the controllers
-var authController = __importStar(require("../../controllers/auth/authController"));
-var router = express_1.default.Router();
-router.route('/create-user').post(authController.createUserRole);
-router.route('/login').post(authController.login);
-exports.default = router;
+exports.uploadPermanentPersons = exports.createPermanentPerson = void 0;
+// Importing own models
+var permanentPersonModel_1 = __importDefault(require("../../models/ordinaries/permanentPersonModel"));
+var userModel_1 = require("../../models/users/userModel");
+// Importing the factory
+var ordinaryFactory = __importStar(require("../ordinaryFactory"));
+var uploadPermanentPersons = ordinaryFactory.uploadPermanentPerson;
+exports.uploadPermanentPersons = uploadPermanentPersons;
+var createPermanentPerson = ordinaryFactory.createOrdinayPerson(permanentPersonModel_1.default, [userModel_1.UserRoles.AccessControl], {
+    checkRSE: false,
+    checkAccessControl: false,
+    checkSSFF: false,
+    checkSISO: false,
+    checkAuditing: false,
+    checkSMIN: false,
+});
+exports.createPermanentPerson = createPermanentPerson;

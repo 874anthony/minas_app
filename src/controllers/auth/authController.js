@@ -69,14 +69,20 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createUserRole = void 0;
+exports.login = exports.createUserRole = void 0;
+var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 // Importing our utils to this controller
 var httpException_1 = __importDefault(require("../../utils/httpException"));
 var catchAsync_1 = __importDefault(require("../../utils/catchAsync"));
 // Importing own models
 var userModel_1 = __importStar(require("../../models/users/userModel"));
+var signToken = function (id) {
+    return jsonwebtoken_1.default.sign({ id: id }, process.env.JWT_PRIVATE_KEY, {
+        expiresIn: process.env.JWT_EXPIRES_IN,
+    });
+};
 var createUserRole = (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var body, excludedField, newUser;
+    var body, excludedField, newUser, token;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -89,9 +95,13 @@ var createUserRole = (0, catchAsync_1.default)(function (req, res, next) { retur
                 return [4 /*yield*/, userModel_1.default.create(body)];
             case 1:
                 newUser = _a.sent();
+                token = signToken(newUser._id);
+                // Hide password from the output
+                newUser.password = undefined;
                 res.status(200).json({
                     status: true,
                     message: "El usuario con el rol: " + body.role + " fue creado con exito",
+                    token: token,
                     user: newUser,
                 });
                 return [2 /*return*/];
@@ -99,3 +109,37 @@ var createUserRole = (0, catchAsync_1.default)(function (req, res, next) { retur
     });
 }); });
 exports.createUserRole = createUserRole;
+var login = (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var _a, email, password, user, _b, token;
+    return __generator(this, function (_c) {
+        switch (_c.label) {
+            case 0:
+                _a = req.body, email = _a.email, password = _a.password;
+                // 1) Check if email and password exist
+                if (!email || !password) {
+                    return [2 /*return*/, next(new httpException_1.default('Por favor ingresa el email y la contraseña!', 400))];
+                }
+                return [4 /*yield*/, userModel_1.default.findOne({ email: email }).select('+password')];
+            case 1:
+                user = _c.sent();
+                _b = !user;
+                if (_b) return [3 /*break*/, 3];
+                return [4 /*yield*/, user.decryptPassword(user.password)];
+            case 2:
+                _b = !((_c.sent()) === password);
+                _c.label = 3;
+            case 3:
+                if (_b) {
+                    return [2 /*return*/, next(new httpException_1.default('Email o contraseña incorrectos!', 401))];
+                }
+                token = signToken(user._id);
+                res.status(200).json({
+                    status: true,
+                    message: 'Te has conectado con éxito',
+                    token: token,
+                });
+                return [2 /*return*/];
+        }
+    });
+}); });
+exports.login = login;

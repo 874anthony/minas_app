@@ -141,7 +141,6 @@ CompanySchema.virtual('contratistas', {
  * @param genPassword
  * @returns An automatic generated passwords
  */
-
 CompanySchema.methods.hashPassword = async function (genPassword: string) {
 	return CryptoJS.AES.encrypt(
 		genPassword,
