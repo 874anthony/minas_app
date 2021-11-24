@@ -3,7 +3,7 @@ import express from 'express';
 
 // Importing own routers
 import contractorRouter from '../../routes/contractors/contractorRoutes';
-import ordinaryPersonRouter from '../../routes/ordinaries/ordinaryPersonRoutes';
+import permanentPersonRouter from '../ordinaries/ordinariesRoutes';
 
 // Importing own controllers
 import * as companyController from '../../controllers/companies/companyController';
@@ -12,7 +12,7 @@ const router = express.Router();
 
 // Nesting routes to redirect to contractorRouter
 router.use('/:idCompany/contractors', contractorRouter);
-router.use('/:idCompany/ordinaries-person', ordinaryPersonRouter);
+router.use('/:idCompany/ordinaries-person', permanentPersonRouter);
 
 // Custom routes
 router
@@ -21,6 +21,8 @@ router
 		companyController.getPendingCompanies,
 		companyController.getAllCompanies
 	);
+
+router.route('/login').post(companyController.loginCompany);
 
 // Routes
 router

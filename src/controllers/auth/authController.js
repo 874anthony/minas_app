@@ -69,7 +69,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.login = exports.createUserRole = void 0;
+exports.guardLogin = exports.loginUsers = exports.login = exports.createUserRole = void 0;
 var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 // Importing our utils to this controller
 var httpException_1 = __importDefault(require("../../utils/httpException"));
@@ -109,37 +109,70 @@ var createUserRole = (0, catchAsync_1.default)(function (req, res, next) { retur
     });
 }); });
 exports.createUserRole = createUserRole;
-var login = (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, email, password, user, _b, token;
-    return __generator(this, function (_c) {
-        switch (_c.label) {
+var login = function (Model) {
+    return (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+        var _a, email, password, user, _b, token;
+        return __generator(this, function (_c) {
+            switch (_c.label) {
+                case 0:
+                    _a = req.body, email = _a.email, password = _a.password;
+                    // 1) Check if email and password exist
+                    if (!email || !password) {
+                        return [2 /*return*/, next(new httpException_1.default('Por favor ingresa el email y la contraseña!', 400))];
+                    }
+                    return [4 /*yield*/, Model.findOne({ email: email }).select('+password')];
+                case 1:
+                    user = _c.sent();
+                    _b = !user;
+                    if (_b) return [3 /*break*/, 3];
+                    return [4 /*yield*/, user.decryptPassword(user.password)];
+                case 2:
+                    _b = !((_c.sent()) === password);
+                    _c.label = 3;
+                case 3:
+                    if (_b) {
+                        return [2 /*return*/, next(new httpException_1.default('Email o contraseña incorrectos!', 401))];
+                    }
+                    token = signToken(user._id);
+                    res.status(200).json({
+                        status: true,
+                        message: 'Te has conectado con éxito',
+                        roleType: user.role,
+                        token: token,
+                    });
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+};
+exports.login = login;
+var guardLogin = (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var token, id, currentUser;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
             case 0:
-                _a = req.body, email = _a.email, password = _a.password;
-                // 1) Check if email and password exist
-                if (!email || !password) {
-                    return [2 /*return*/, next(new httpException_1.default('Por favor ingresa el email y la contraseña!', 400))];
+                if (req.headers.authorization &&
+                    req.headers.authorization.startsWith('Bearer')) {
+                    token = req.headers.authorization.split(' ')[1];
                 }
-                return [4 /*yield*/, userModel_1.default.findOne({ email: email }).select('+password')];
-            case 1:
-                user = _c.sent();
-                _b = !user;
-                if (_b) return [3 /*break*/, 3];
-                return [4 /*yield*/, user.decryptPassword(user.password)];
-            case 2:
-                _b = !((_c.sent()) === password);
-                _c.label = 3;
-            case 3:
-                if (_b) {
-                    return [2 /*return*/, next(new httpException_1.default('Email o contraseña incorrectos!', 401))];
+                if (!token) {
+                    return [2 /*return*/, next(new httpException_1.default('No has iniciado sesión, por favor hazlo e intenta nuevamente', 401))];
                 }
-                token = signToken(user._id);
-                res.status(200).json({
-                    status: true,
-                    message: 'Te has conectado con éxito',
-                    token: token,
+                jsonwebtoken_1.default.verify(token, process.env.JWT_PRIVATE_KEY, function (err, decoded) {
+                    id = decoded.id;
                 });
+                return [4 /*yield*/, userModel_1.default.findById(id)];
+            case 1:
+                currentUser = _a.sent();
+                if (!currentUser) {
+                    return [2 /*return*/, next(new httpException_1.default('El usuario con este token ya no existe!', 401))];
+                }
+                req['user'] = currentUser;
+                next();
                 return [2 /*return*/];
         }
     });
 }); });
-exports.login = login;
+exports.guardLogin = guardLogin;
+var loginUsers = login(userModel_1.default);
+exports.loginUsers = loginUsers;

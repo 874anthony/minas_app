@@ -275,7 +275,7 @@ var acceptOne = function (Model) {
                     return [4 /*yield*/, companyMatched.save({ validateBeforeSave: false })];
                 case 11:
                     _a.sent();
-                    emailMessage = "Ha sido aprobado su solicitud de acceso para la mina, la generaci\u00F3n de su empresa se ha generado con el radicado: " + radicado + ". Sus credenciales de accesos son las siguientes:\n\t\t\nEl correo: el mismo con el que se registr\u00F3\nSu contrase\u00F1a: " + genPassword + "!\n\nSi tiene alguna duda, no dude en contactar con nosotros!";
+                    emailMessage = "Ha sido aprobado su solicitud de acceso para la mina, la generaci\u00F3n de su empresa se ha generado con el radicado: " + radicado + ". Sus credenciales de accesos son las siguientes:\n\t\t\nEl correo: el mismo con el que se registr\u00F3\nSu contrase\u00F1a: " + genPassword + "\n\nSi tiene alguna duda, no dude en contactar con nosotros!";
                     _a.label = 12;
                 case 12:
                     _a.trys.push([12, 14, , 15]);
