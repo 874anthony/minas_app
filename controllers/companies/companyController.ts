@@ -6,6 +6,7 @@ import Company from '../../models/companies/companyModel';
 
 // Own Factory
 import * as factory from '../companyFactory';
+import { login } from '../auth/authController';
 
 // // ================================================ Middlewares starts here =========================================
 const uploadCompanyDocs = factory.uploadCompanyDocs;
@@ -30,6 +31,7 @@ const createCompany = factory.createOne(Company);
 
 // Approve a pending company and autogenerate 'Radicado'
 const acceptCompany = factory.acceptOne(Company);
+const loginCompany = login(Company);
 
 export {
 	getAllCompanies,
@@ -38,4 +40,5 @@ export {
 	acceptCompany,
 	uploadCompanyDocs,
 	getPendingCompanies,
+	loginCompany,
 };

@@ -49,8 +49,8 @@ const createUserRole = catchAsync(
 	}
 );
 
-const login = catchAsync(
-	async (req: Request, res: Response, next: NextFunction) => {
+const login = (Model) =>
+	catchAsync(async (req: Request, res: Response, next: NextFunction) => {
 		const { email, password } = req.body;
 
 		// 1) Check if email and password exist
@@ -61,7 +61,7 @@ const login = catchAsync(
 		}
 
 		// 2) Check if user exists && password is correct
-		const user = await User.findOne({ email }).select('+password');
+		const user = await Model.findOne({ email }).select('+password');
 
 		if (!user || !((await user.decryptPassword(user.password!)) === password)) {
 			return next(new HttpException('Email o contraseña incorrectos!', 401));
@@ -75,7 +75,46 @@ const login = catchAsync(
 			message: 'Te has conectado con éxito',
 			token,
 		});
+	});
+
+const guardLogin = catchAsync(
+	async (req: Request, res: Response, next: NextFunction) => {
+		let token;
+
+		if (
+			req.headers.authorization &&
+			req.headers.authorization.startsWith('Bearer')
+		) {
+			token = req.headers.authorization.split(' ')[1];
+		}
+
+		if (!token) {
+			return next(
+				new HttpException(
+					'No has iniciado sesión, por favor hazlo e intenta nuevamente',
+					401
+				)
+			);
+		}
+
+		let id;
+		jwt.verify(token, process.env.JWT_PRIVATE_KEY!, (err, decoded) => {
+			id = decoded.id;
+		});
+
+		const currentUser = await User.findById(id);
+
+		if (!currentUser) {
+			return next(
+				new HttpException('El usuario con este token ya no existe!', 401)
+			);
+		}
+
+		req['user'] = currentUser;
+		next();
 	}
 );
 
-export { createUserRole, login };
+const loginUsers = login(User);
+
+export { createUserRole, login, loginUsers, guardLogin };

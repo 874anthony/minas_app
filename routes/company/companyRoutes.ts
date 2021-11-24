@@ -22,6 +22,8 @@ router
 		companyController.getAllCompanies
 	);
 
+router.route('/login').post(companyController.loginCompany);
+
 // Routes
 router
 	.route('/')

@@ -37,6 +37,7 @@ router.use('/:idCompany/ordinaries-person', ordinaryPersonRoutes_1.default);
 router
     .route('/pending-companies')
     .get(companyController.getPendingCompanies, companyController.getAllCompanies);
+router.route('/login').post(companyController.loginCompany);
 // Routes
 router
     .route('/')
