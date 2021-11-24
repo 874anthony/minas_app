@@ -11,7 +11,7 @@ import companyRouter from './routes/company/companyRoutes';
 import contractorRouter from './routes/contractors/contractorRoutes';
 import trdRouter from './routes/trd/trdRoutes';
 import authRouter from './routes/auth/authRoutes';
-import ordinaryPersonRouter from './routes/ordinaries/ordinaryPersonRoutes';
+import ordinariesRoutes from './routes/ordinaries/ordinariesRoutes';
 
 const app = express();
 
@@ -43,7 +43,7 @@ app.use('/api/v1/companies', companyRouter);
 app.use('/api/v1/contractors', contractorRouter);
 app.use('/api/v1/trd-management', trdRouter);
 app.use('/api/v1/auth', authRouter);
-app.use('/api/v1/ordinaries-person', ordinaryPersonRouter);
+app.use('/api/v1/ordinaries-person', ordinariesRoutes);
 
 // Define the global error handler to pass next errors
 function globalErrorHandler(

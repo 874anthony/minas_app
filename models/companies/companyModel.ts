@@ -150,7 +150,7 @@ CompanySchema.methods.hashPassword = async function (genPassword: string) {
 
 CompanySchema.methods.generatePassword = async function (
 	length = 10,
-	wishlist = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
+	wishlist = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz~!@-#$'
 ) {
 	return Array.from(crypto.randomFillSync(new Uint32Array(length)))
 		.map((x) => wishlist[x % wishlist.length])

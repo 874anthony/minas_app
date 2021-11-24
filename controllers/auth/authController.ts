@@ -1,7 +1,6 @@
 // Import 3rd-party packages
 import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
-import { promisify } from 'util';
 
 // Importing our utils to this controller
 import HttpException from '../../utils/httpException';
@@ -73,6 +72,7 @@ const login = (Model) =>
 		res.status(200).json({
 			status: true,
 			message: 'Te has conectado con éxito',
+			roleType: user.role,
 			token,
 		});
 	});

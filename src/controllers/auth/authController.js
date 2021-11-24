@@ -137,6 +137,7 @@ var login = function (Model) {
                     res.status(200).json({
                         status: true,
                         message: 'Te has conectado con éxito',
+                        roleType: user.role,
                         token: token,
                     });
                     return [2 /*return*/];

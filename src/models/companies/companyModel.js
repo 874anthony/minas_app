@@ -163,7 +163,7 @@ CompanySchema.methods.hashPassword = function (genPassword) {
 };
 CompanySchema.methods.generatePassword = function (length, wishlist) {
     if (length === void 0) { length = 10; }
-    if (wishlist === void 0) { wishlist = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'; }
+    if (wishlist === void 0) { wishlist = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz~!@-#$'; }
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
             return [2 /*return*/, Array.from(crypto_1.default.randomFillSync(new Uint32Array(length)))
