@@ -30,9 +30,10 @@ var authController = __importStar(require("../../controllers/auth/authController
 var workflowController = __importStar(require("../../controllers/workflow/workflowController"));
 var router = express_1.default.Router({ mergeParams: true });
 router
-    .route('/')
-    .get(authController.guardLogin, workflowController.checkRole, workflowController.getAllOrdinaries);
-router
     .route('/permanent-person')
-    .post(permanentPersonController.uploadPermanentPersons, permanentPersonController.createPermanentPerson);
+    .post(permanentPersonController.uploadPermanentPersons, permanentPersonController.createPermanentPerson)
+    .get(authController.guardLogin, workflowController.checkRole, workflowController.getAllPermanents);
+router
+    .route('/permanent-person/:id')
+    .patch(permanentPersonController.changeStatusPermanent);
 exports.default = router;

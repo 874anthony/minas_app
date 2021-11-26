@@ -5,7 +5,7 @@ import {
 } from '../../interfaces/ordinaries/ordinariesEnum';
 
 // Definying the schema
-const PermanentPersonSchemam = new Schema({
+const PermanentPersonSchema = new Schema({
 	name: {
 		type: String,
 		required: true,
@@ -93,4 +93,4 @@ const PermanentPersonSchemam = new Schema({
 // return obj
 // }
 
-export default model('permanent_person', PermanentPersonSchemam);
+export default model('permanent_person', PermanentPersonSchema);

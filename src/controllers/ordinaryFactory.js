@@ -10,6 +10,25 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -50,7 +69,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.uploadPermanentPerson = exports.createOrdinayPerson = void 0;
+exports.uploadPermanentPerson = exports.createOrdinay = exports.changeStatusOrdinary = exports.getAllOrdinariesType = void 0;
 var multer_1 = __importDefault(require("multer"));
 var fs_1 = __importDefault(require("fs"));
 // Importing our utils to this controller
@@ -59,7 +78,7 @@ var httpException_1 = __importDefault(require("../utils/httpException"));
 var apiFeatures_1 = __importDefault(require("../utils/apiFeatures"));
 // Import own models
 var userModel_1 = __importDefault(require("../models/users/userModel"));
-var workflowModel_1 = __importDefault(require("../models/workflows/workflowModel"));
+var workflowModel_1 = __importStar(require("../models/workflows/workflowModel"));
 // ================================== MULTER CONFIGURATION TO HANDLE THE DOCUMENTS ===========================================
 // Configuring first the type of the storage
 var multerStorageOrdinary = multer_1.default.diskStorage({
@@ -101,7 +120,7 @@ var uploadPermanentPerson = uploadOrdinaryPerson.fields([
     { name: 'docCitizenship', maxCount: 1 },
 ]);
 exports.uploadPermanentPerson = uploadPermanentPerson;
-var createOrdinayPerson = function (Model, Roles, checkRoles) {
+var createOrdinay = function (Model, Roles, checkRoles, subsanarRoles) {
     return (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
         var body, newOrdinaryPerson, usersPromises, usersID, usersArray, bodyWorkflow, error_1;
         return __generator(this, function (_a) {
@@ -141,7 +160,7 @@ var createOrdinayPerson = function (Model, Roles, checkRoles) {
                 case 2:
                     usersArray = _a.sent();
                     usersArray[0].forEach(function (element) { return usersID.push(element._id); });
-                    bodyWorkflow = __assign({ radicado: newOrdinaryPerson._id, roles: usersID }, checkRoles);
+                    bodyWorkflow = __assign(__assign({ radicado: newOrdinaryPerson._id, roles: usersID }, checkRoles), subsanarRoles);
                     _a.label = 3;
                 case 3:
                     _a.trys.push([3, 5, , 6]);
@@ -163,4 +182,66 @@ var createOrdinayPerson = function (Model, Roles, checkRoles) {
         });
     }); });
 };
-exports.createOrdinayPerson = createOrdinayPerson;
+exports.createOrdinay = createOrdinay;
+var getAllOrdinariesType = function (Model) {
+    return (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+        var features, ordinaries;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    features = new apiFeatures_1.default(workflowModel_1.default.find(), req.query)
+                        .filter()
+                        .sort()
+                        .limitFields()
+                        .paginate();
+                    return [4 /*yield*/, features.query.populate({
+                            path: 'radicado',
+                            select: '-__v',
+                            model: Model,
+                        })];
+                case 1:
+                    ordinaries = _a.sent();
+                    if (ordinaries.length === 0) {
+                        return [2 /*return*/, next(new httpException_1.default('No hay permanentes pendientes!', 204))];
+                    }
+                    res.status(200).json({
+                        status: true,
+                        ordinaries: ordinaries,
+                    });
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+};
+exports.getAllOrdinariesType = getAllOrdinariesType;
+var changeStatusOrdinary = function () {
+    return (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+        var id, body, workflowDoc;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    id = req.params.id;
+                    body = __assign({}, req.body);
+                    return [4 /*yield*/, workflowModel_1.default.findById(id)];
+                case 1:
+                    workflowDoc = _a.sent();
+                    if (!workflowDoc) {
+                        return [2 /*return*/, next(new httpException_1.default('No existe ese proceso, intente nuevamente', 404))];
+                    }
+                    Object.entries(body).forEach(function (_a) {
+                        var field = _a[0], value = _a[1];
+                        workflowDoc[field] = value;
+                    });
+                    workflowDoc.status = workflowModel_1.StatusWorkflow.Rehabilitation;
+                    return [4 /*yield*/, workflowDoc.save({ validateBeforeSave: false })];
+                case 2:
+                    _a.sent();
+                    res
+                        .status(200)
+                        .json({ status: true, message: 'El proceso fue actualizado con éxito' });
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+};
+exports.changeStatusOrdinary = changeStatusOrdinary;

@@ -10,7 +10,7 @@ import APIFeatures from '../utils/apiFeatures';
 
 // Import own models
 import User from '../models/users/userModel';
-import Workflow from '../models/workflows/workflowModel';
+import Workflow, { StatusWorkflow } from '../models/workflows/workflowModel';
 
 // ================================== MULTER CONFIGURATION TO HANDLE THE DOCUMENTS ===========================================
 // Configuring first the type of the storage
@@ -68,7 +68,12 @@ const uploadPermanentPerson = uploadOrdinaryPerson.fields([
 	{ name: 'docCitizenship', maxCount: 1 },
 ]);
 
-const createOrdinayPerson = (Model, Roles: Array<string>, checkRoles: Object) =>
+const createOrdinay = (
+	Model,
+	Roles: Array<string>,
+	checkRoles: Object,
+	subsanarRoles?: Object
+) =>
 	catchAsync(async (req: Request, res: Response, next: NextFunction) => {
 		if (!req.files) {
 			return next(
@@ -119,6 +124,7 @@ const createOrdinayPerson = (Model, Roles: Array<string>, checkRoles: Object) =>
 			radicado: newOrdinaryPerson._id,
 			roles: usersID,
 			...checkRoles,
+			...subsanarRoles,
 		};
 
 		try {
@@ -139,4 +145,59 @@ const createOrdinayPerson = (Model, Roles: Array<string>, checkRoles: Object) =>
 		});
 	});
 
-export { createOrdinayPerson, uploadPermanentPerson };
+const getAllOrdinariesType = (Model) =>
+	catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+		const features = new APIFeatures(Workflow.find(), req.query)
+			.filter()
+			.sort()
+			.limitFields()
+			.paginate();
+
+		const ordinaries = await features.query.populate({
+			path: 'radicado',
+			select: '-__v',
+			model: Model,
+		});
+
+		if (ordinaries.length === 0) {
+			return next(new HttpException('No hay permanentes pendientes!', 204));
+		}
+
+		res.status(200).json({
+			status: true,
+			ordinaries,
+		});
+	});
+
+const changeStatusOrdinary = () =>
+	catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+		const id = req.params.id;
+		const body = { ...req.body };
+
+		const workflowDoc = await Workflow.findById(id);
+
+		if (!workflowDoc) {
+			return next(
+				new HttpException('No existe ese proceso, intente nuevamente', 404)
+			);
+		}
+
+		Object.entries(body).forEach(([field, value]) => {
+			workflowDoc[field] = value;
+		});
+
+		workflowDoc.status = StatusWorkflow.Rehabilitation;
+
+		await workflowDoc.save({ validateBeforeSave: false });
+
+		res
+			.status(200)
+			.json({ status: true, message: 'El proceso fue actualizado con éxito' });
+	});
+
+export {
+	getAllOrdinariesType,
+	changeStatusOrdinary,
+	createOrdinay,
+	uploadPermanentPerson,
+};

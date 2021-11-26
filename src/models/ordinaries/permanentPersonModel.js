@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var mongoose_1 = require("mongoose");
 var ordinariesEnum_1 = require("../../interfaces/ordinaries/ordinariesEnum");
 // Definying the schema
-var PermanentPersonSchemam = new mongoose_1.Schema({
+var PermanentPersonSchema = new mongoose_1.Schema({
     name: {
         type: String,
         required: true,
@@ -89,4 +89,4 @@ var PermanentPersonSchemam = new mongoose_1.Schema({
 // delete obj.passwordHash
 // return obj
 // }
-exports.default = (0, mongoose_1.model)('permanent_person', PermanentPersonSchemam);
+exports.default = (0, mongoose_1.model)('permanent_person', PermanentPersonSchema);

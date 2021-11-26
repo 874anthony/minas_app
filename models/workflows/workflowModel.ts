@@ -38,6 +38,21 @@ const WorkflowSchema: Schema = new Schema({
 	checkSMIN: {
 		type: Boolean,
 	},
+	correctAccessControl: {
+		type: Boolean,
+	},
+	correctRSE: {
+		type: Boolean,
+	},
+	correctSSFF: {
+		type: Boolean,
+	},
+	correctSISO: {
+		type: Boolean,
+	},
+	correctSMIN: {
+		type: Boolean,
+	},
 	status: {
 		type: String,
 		enum: [StatusWorkflow],

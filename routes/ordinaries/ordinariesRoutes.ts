@@ -9,17 +9,19 @@ import * as workflowController from '../../controllers/workflow/workflowControll
 const router = express.Router({ mergeParams: true });
 
 router
-	.route('/')
-	.get(
-		authController.guardLogin,
-		workflowController.checkRole,
-		workflowController.getAllOrdinaries
-	);
-
-router
 	.route('/permanent-person')
 	.post(
 		permanentPersonController.uploadPermanentPersons,
 		permanentPersonController.createPermanentPerson
+	)
+	.get(
+		authController.guardLogin,
+		workflowController.checkRole,
+		workflowController.getAllPermanents
 	);
+
+router
+	.route('/permanent-person/:id')
+	.patch(permanentPersonController.changeStatusPermanent);
+
 export default router;
