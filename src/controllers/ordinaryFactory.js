@@ -77,8 +77,8 @@ var catchAsync_1 = __importDefault(require("../utils/catchAsync"));
 var httpException_1 = __importDefault(require("../utils/httpException"));
 var apiFeatures_1 = __importDefault(require("../utils/apiFeatures"));
 // Import own models
-var userModel_1 = __importDefault(require("../models/users/userModel"));
-var workflowModel_1 = __importStar(require("../models/workflows/workflowModel"));
+var userModel_1 = __importStar(require("../models/users/userModel"));
+var workflowModel_1 = __importDefault(require("../models/workflows/workflowModel"));
 // ================================== MULTER CONFIGURATION TO HANDLE THE DOCUMENTS ===========================================
 // Configuring first the type of the storage
 var multerStorageOrdinary = multer_1.default.diskStorage({
@@ -110,6 +110,9 @@ var uploadOrdinaryPerson = (0, multer_1.default)({
     fileFilter: multerFilterOrdinary,
 });
 // ================================================ Endpoints starts here =========================================
+var getKey = function (field, user) {
+    return "" + field + Object.keys(userModel_1.UserRoles)[Object.values(userModel_1.UserRoles).indexOf(user.role)];
+};
 // UPLOADS MIDDLEWARES
 var uploadPermanentPerson = uploadOrdinaryPerson.fields([
     { name: 'docCovid19', maxCount: 1 },
@@ -160,7 +163,7 @@ var createOrdinay = function (Model, Roles, checkRoles, subsanarRoles) {
                 case 2:
                     usersArray = _a.sent();
                     usersArray[0].forEach(function (element) { return usersID.push(element._id); });
-                    bodyWorkflow = __assign(__assign({ radicado: newOrdinaryPerson._id, roles: usersID }, checkRoles), subsanarRoles);
+                    bodyWorkflow = __assign(__assign({ radicado: newOrdinaryPerson._id, roles: usersID, observations: req.body.observations }, checkRoles), subsanarRoles);
                     _a.label = 3;
                 case 3:
                     _a.trys.push([3, 5, , 6]);
@@ -216,25 +219,36 @@ var getAllOrdinariesType = function (Model) {
 exports.getAllOrdinariesType = getAllOrdinariesType;
 var changeStatusOrdinary = function () {
     return (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-        var id, body, workflowDoc;
+        var id, body, userID, user, workflowDoc, checkKey, correctKey;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     id = req.params.id;
                     body = __assign({}, req.body);
-                    return [4 /*yield*/, workflowModel_1.default.findById(id)];
+                    userID = req['user']._id;
+                    return [4 /*yield*/, userModel_1.default.findById(userID)];
                 case 1:
+                    user = _a.sent();
+                    if (!user) {
+                        return [2 /*return*/, next(new httpException_1.default('No hay un usuario con ese token, inténtelo nuevamente!', 401))];
+                    }
+                    return [4 /*yield*/, workflowModel_1.default.findById(id)];
+                case 2:
                     workflowDoc = _a.sent();
                     if (!workflowDoc) {
                         return [2 /*return*/, next(new httpException_1.default('No existe ese proceso, intente nuevamente', 404))];
                     }
-                    Object.entries(body).forEach(function (_a) {
-                        var field = _a[0], value = _a[1];
-                        workflowDoc[field] = value;
-                    });
-                    workflowDoc.status = workflowModel_1.StatusWorkflow.Rehabilitation;
+                    checkKey = getKey('check', user);
+                    correctKey = getKey('correct', user);
+                    // Modify the status.
+                    workflowDoc[checkKey] = body.check;
+                    workflowDoc[correctKey] = body.correct;
+                    if (req.body.observations) {
+                        workflowDoc.observations = req.body.observations;
+                    }
+                    workflowDoc.status = req.body.status;
                     return [4 /*yield*/, workflowDoc.save({ validateBeforeSave: false })];
-                case 2:
+                case 3:
                     _a.sent();
                     res
                         .status(200)
@@ -245,3 +259,12 @@ var changeStatusOrdinary = function () {
     }); });
 };
 exports.changeStatusOrdinary = changeStatusOrdinary;
+var rejectSSFF = function (Model) {
+    return (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+        var id;
+        return __generator(this, function (_a) {
+            id = req.params.id;
+            return [2 /*return*/];
+        });
+    }); });
+};

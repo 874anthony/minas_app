@@ -22,18 +22,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-// Importing 3rd-party packages
 var express_1 = __importDefault(require("express"));
-// Importing the controllers
-var permanentPersonController = __importStar(require("../../controllers/ordinaries/permanentPersonController"));
-var authController = __importStar(require("../../controllers/auth/authController"));
-var workflowController = __importStar(require("../../controllers/workflow/workflowController"));
-var router = express_1.default.Router({ mergeParams: true });
-router
-    .route('/permanent-person')
-    .post(permanentPersonController.uploadPermanentPersons, permanentPersonController.createPermanentPerson)
-    .get(authController.guardLogin, workflowController.checkRole, workflowController.getAllPermanents);
-router
-    .route('/permanent-person/:id')
-    .patch(authController.guardLogin, permanentPersonController.changeStatusPermanent);
+// Importing own controllers
+var userController = __importStar(require("../../controllers/users/userController"));
+var router = express_1.default.Router();
+router.route('/').get(userController.getUsers);
 exports.default = router;

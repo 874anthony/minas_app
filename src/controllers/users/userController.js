@@ -22,27 +22,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.changeStatusPermanent = exports.uploadPermanentPersons = exports.createPermanentPerson = void 0;
+exports.getUsers = void 0;
+// Importing the factory
+var factory = __importStar(require("../handlerFactory"));
 // Importing own models
-var permanentPersonModel_1 = __importDefault(require("../../models/ordinaries/permanentPersonModel"));
-var userModel_1 = require("../../models/users/userModel");
-var ordinaryFactory = __importStar(require("../ordinaryFactory"));
-var uploadPermanentPersons = ordinaryFactory.uploadPermanentPerson;
-exports.uploadPermanentPersons = uploadPermanentPersons;
-var createPermanentPerson = ordinaryFactory.createOrdinay(permanentPersonModel_1.default, [userModel_1.UserRoles.AccessControl], {
-    checkAccessControl: false,
-    checkRSE: false,
-    checkSSFF: false,
-    checkSISO: false,
-    checkAuditing: false,
-    checkSMIN: false,
-}, {
-    correctAccessControl: false,
-    correctRSE: false,
-    correctSISO: false,
-    correctAuditing: false,
-    correctSMIN: false,
-});
-exports.createPermanentPerson = createPermanentPerson;
-var changeStatusPermanent = ordinaryFactory.changeStatusOrdinary();
-exports.changeStatusPermanent = changeStatusPermanent;
+var userModel_1 = __importDefault(require("../../models/users/userModel"));
+var getUsers = factory.findAll(userModel_1.default);
+exports.getUsers = getUsers;

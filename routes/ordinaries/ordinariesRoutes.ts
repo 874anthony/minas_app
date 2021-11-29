@@ -22,6 +22,9 @@ router
 
 router
 	.route('/permanent-person/:id')
-	.patch(permanentPersonController.changeStatusPermanent);
+	.patch(
+		authController.guardLogin,
+		permanentPersonController.changeStatusPermanent
+	);
 
 export default router;

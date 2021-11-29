@@ -9,8 +9,8 @@ import HttpException from '../utils/httpException';
 import APIFeatures from '../utils/apiFeatures';
 
 // Import own models
-import User from '../models/users/userModel';
-import Workflow, { StatusWorkflow } from '../models/workflows/workflowModel';
+import User, { UserRoles } from '../models/users/userModel';
+import Workflow from '../models/workflows/workflowModel';
 
 // ================================== MULTER CONFIGURATION TO HANDLE THE DOCUMENTS ===========================================
 // Configuring first the type of the storage
@@ -57,6 +57,12 @@ const uploadOrdinaryPerson = multer({
 });
 
 // ================================================ Endpoints starts here =========================================
+
+const getKey = (field: string, user) => {
+	return `${field}${
+		Object.keys(UserRoles)[Object.values(UserRoles).indexOf(user.role)]
+	}`;
+};
 
 // UPLOADS MIDDLEWARES
 const uploadPermanentPerson = uploadOrdinaryPerson.fields([
@@ -123,6 +129,7 @@ const createOrdinay = (
 		const bodyWorkflow = {
 			radicado: newOrdinaryPerson._id,
 			roles: usersID,
+			observations: req.body.observations,
 			...checkRoles,
 			...subsanarRoles,
 		};
@@ -173,6 +180,18 @@ const changeStatusOrdinary = () =>
 	catchAsync(async (req: Request, res: Response, next: NextFunction) => {
 		const id = req.params.id;
 		const body = { ...req.body };
+		const userID = req['user']._id;
+
+		const user = await User.findById(userID);
+
+		if (!user) {
+			return next(
+				new HttpException(
+					'No hay un usuario con ese token, inténtelo nuevamente!',
+					401
+				)
+			);
+		}
 
 		const workflowDoc = await Workflow.findById(id);
 
@@ -182,17 +201,33 @@ const changeStatusOrdinary = () =>
 			);
 		}
 
-		Object.entries(body).forEach(([field, value]) => {
-			workflowDoc[field] = value;
-		});
+		// Extracting the key given the value of the enum.
+		const checkKey = getKey('check', user);
+		const correctKey = getKey('correct', user);
 
-		workflowDoc.status = StatusWorkflow.Rehabilitation;
+		// Modify the status.
+		workflowDoc[checkKey] = body.check;
+		workflowDoc[correctKey] = body.correct;
+
+		if (req.body.observations) {
+			workflowDoc.observations = req.body.observations;
+		}
+
+		workflowDoc.status = req.body.status;
 
 		await workflowDoc.save({ validateBeforeSave: false });
 
 		res
 			.status(200)
 			.json({ status: true, message: 'El proceso fue actualizado con éxito' });
+	});
+
+const rejectSSFF = (Model) =>
+	catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+		const id = req.params.id;
+		// TODO: Finish the reject SSFFF
+
+		// const deletedWorkflow =
 	});
 
 export {

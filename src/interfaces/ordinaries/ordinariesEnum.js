@@ -15,4 +15,5 @@ var StatusOrdinary;
     StatusOrdinary["Inactive"] = "INACTIVO";
     StatusOrdinary["Rejected"] = "RECHAZADO";
     StatusOrdinary["Correct"] = "SUBSANAR";
+    StatusOrdinary["Forbidden"] = "PROHIBIDO";
 })(StatusOrdinary = exports.StatusOrdinary || (exports.StatusOrdinary = {}));

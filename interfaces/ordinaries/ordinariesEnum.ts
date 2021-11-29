@@ -11,6 +11,7 @@ export enum StatusOrdinary {
 	Inactive = 'INACTIVO',
 	Rejected = 'RECHAZADO',
 	Correct = 'SUBSANAR',
+	Forbidden = 'PROHIBIDO',
 }
 
 export interface StatusBody {

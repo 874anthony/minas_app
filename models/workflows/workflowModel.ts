@@ -1,10 +1,11 @@
 import { Schema, model } from 'mongoose';
 
 export enum StatusWorkflow {
-	Active = 'ACTIVO',
-	Rehabilitation = 'SUBSANACION',
+	Blocked = 'BLOQUEADO',
+	Sanitation = 'SUBSANACION',
 	Pending = 'PENDIENTE',
 	Rejected = 'RECHAZADO',
+	Approved = 'APROBADO',
 }
 
 const WorkflowSchema: Schema = new Schema({
@@ -44,20 +45,22 @@ const WorkflowSchema: Schema = new Schema({
 	correctRSE: {
 		type: Boolean,
 	},
-	correctSSFF: {
-		type: Boolean,
-	},
 	correctSISO: {
 		type: Boolean,
 	},
 	correctSMIN: {
 		type: Boolean,
 	},
+	numberTimes: {
+		type: Number,
+		default: 1,
+	},
 	status: {
 		type: String,
 		enum: [StatusWorkflow],
 		default: StatusWorkflow.Pending,
 	},
+	observations: [String],
 	createdAt: {
 		type: Date,
 		default: Date.now(),

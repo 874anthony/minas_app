@@ -20,16 +20,19 @@ const createPermanentPerson = ordinaryFactory.createOrdinay(
 	PermanentPerson,
 	[UserRoles.AccessControl],
 	{
-		checkRSE: false,
 		checkAccessControl: false,
+		checkRSE: false,
 		checkSSFF: false,
 		checkSISO: false,
 		checkAuditing: false,
 		checkSMIN: false,
 	},
 	{
-		correctRSE: false,
 		correctAccessControl: false,
+		correctRSE: false,
+		correctSISO: false,
+		correctAuditing: false,
+		correctSMIN: false,
 	}
 );
 

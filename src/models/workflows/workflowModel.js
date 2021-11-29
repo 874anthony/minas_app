@@ -4,10 +4,11 @@ exports.StatusWorkflow = void 0;
 var mongoose_1 = require("mongoose");
 var StatusWorkflow;
 (function (StatusWorkflow) {
-    StatusWorkflow["Active"] = "ACTIVO";
-    StatusWorkflow["Rehabilitation"] = "SUBSANACION";
+    StatusWorkflow["Blocked"] = "BLOQUEADO";
+    StatusWorkflow["Sanitation"] = "SUBSANACION";
     StatusWorkflow["Pending"] = "PENDIENTE";
     StatusWorkflow["Rejected"] = "RECHAZADO";
+    StatusWorkflow["Approved"] = "APROBADO";
 })(StatusWorkflow = exports.StatusWorkflow || (exports.StatusWorkflow = {}));
 var WorkflowSchema = new mongoose_1.Schema({
     radicado: {
@@ -46,20 +47,22 @@ var WorkflowSchema = new mongoose_1.Schema({
     correctRSE: {
         type: Boolean,
     },
-    correctSSFF: {
-        type: Boolean,
-    },
     correctSISO: {
         type: Boolean,
     },
     correctSMIN: {
         type: Boolean,
     },
+    numberTimes: {
+        type: Number,
+        default: 1,
+    },
     status: {
         type: String,
         enum: [StatusWorkflow],
         default: StatusWorkflow.Pending,
     },
+    observations: [String],
     createdAt: {
         type: Date,
         default: Date.now(),
