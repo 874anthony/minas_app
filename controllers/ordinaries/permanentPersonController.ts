@@ -36,6 +36,12 @@ const createPermanentPerson = ordinaryFactory.createOrdinay(
 	}
 );
 
+const rejectSSFFPermanent = ordinaryFactory.rejectSSFF(PermanentPerson);
 const changeStatusPermanent = ordinaryFactory.changeStatusOrdinary();
 
-export { createPermanentPerson, uploadPermanentPersons, changeStatusPermanent };
+export {
+	createPermanentPerson,
+	uploadPermanentPersons,
+	rejectSSFFPermanent,
+	changeStatusPermanent,
+};

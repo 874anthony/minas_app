@@ -9,6 +9,7 @@ import HttpException from '../utils/httpException';
 import APIFeatures from '../utils/apiFeatures';
 
 // Import own models
+import { StatusOrdinary } from '../interfaces/ordinaries/ordinariesEnum';
 import User, { UserRoles } from '../models/users/userModel';
 import Workflow from '../models/workflows/workflowModel';
 
@@ -225,9 +226,26 @@ const changeStatusOrdinary = () =>
 const rejectSSFF = (Model) =>
 	catchAsync(async (req: Request, res: Response, next: NextFunction) => {
 		const id = req.params.id;
-		// TODO: Finish the reject SSFFF
 
-		// const deletedWorkflow =
+		const workflowDoc = await Workflow.findById(id);
+
+		if (!workflowDoc) {
+			return next(
+				new HttpException('No hay un proceso activo con este ID', 404)
+			);
+		}
+
+		const docMatched = await Model.findById(workflowDoc.radicado);
+
+		docMatched.status = StatusOrdinary.Forbidden;
+		await docMatched.save({ validateBeforeSave: false });
+
+		await workflowDoc.remove();
+
+		res.status(204).json({
+			status: true,
+			message: 'Seguridad Física rechazó el proceso - Documento eliminado.',
+		});
 	});
 
 export {
@@ -235,4 +253,5 @@ export {
 	changeStatusOrdinary,
 	createOrdinay,
 	uploadPermanentPerson,
+	rejectSSFF,
 };

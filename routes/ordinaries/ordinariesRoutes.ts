@@ -21,10 +21,11 @@ router
 	);
 
 router
-	.route('/permanent-person/:id')
+	.route('/workflow/permanent-person/:id')
 	.patch(
 		authController.guardLogin,
 		permanentPersonController.changeStatusPermanent
-	);
+	)
+	.delete(permanentPersonController.rejectSSFFPermanent);
 
 export default router;

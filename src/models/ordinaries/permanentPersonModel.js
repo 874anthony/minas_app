@@ -76,6 +76,10 @@ var PermanentPersonSchema = new mongoose_1.Schema({
         enum: [ordinariesEnum_1.StatusOrdinary],
         default: ordinariesEnum_1.StatusOrdinary.Pending,
     },
+    ordinaryType: {
+        type: String,
+        default: 'permanente',
+    },
     createdAt: {
         type: Date,
         default: Date.now(),

@@ -78,6 +78,10 @@ const PermanentPersonSchema = new Schema({
 		enum: [StatusOrdinary],
 		default: StatusOrdinary.Pending,
 	},
+	ordinaryType: {
+		type: String,
+		default: 'permanente',
+	},
 	createdAt: {
 		type: Date,
 		default: Date.now(),

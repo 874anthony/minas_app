@@ -69,7 +69,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.uploadPermanentPerson = exports.createOrdinay = exports.changeStatusOrdinary = exports.getAllOrdinariesType = void 0;
+exports.rejectSSFF = exports.uploadPermanentPerson = exports.createOrdinay = exports.changeStatusOrdinary = exports.getAllOrdinariesType = void 0;
 var multer_1 = __importDefault(require("multer"));
 var fs_1 = __importDefault(require("fs"));
 // Importing our utils to this controller
@@ -77,6 +77,7 @@ var catchAsync_1 = __importDefault(require("../utils/catchAsync"));
 var httpException_1 = __importDefault(require("../utils/httpException"));
 var apiFeatures_1 = __importDefault(require("../utils/apiFeatures"));
 // Import own models
+var ordinariesEnum_1 = require("../interfaces/ordinaries/ordinariesEnum");
 var userModel_1 = __importStar(require("../models/users/userModel"));
 var workflowModel_1 = __importDefault(require("../models/workflows/workflowModel"));
 // ================================== MULTER CONFIGURATION TO HANDLE THE DOCUMENTS ===========================================
@@ -261,10 +262,34 @@ var changeStatusOrdinary = function () {
 exports.changeStatusOrdinary = changeStatusOrdinary;
 var rejectSSFF = function (Model) {
     return (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-        var id;
+        var id, workflowDoc, docMatched;
         return __generator(this, function (_a) {
-            id = req.params.id;
-            return [2 /*return*/];
+            switch (_a.label) {
+                case 0:
+                    id = req.params.id;
+                    return [4 /*yield*/, workflowModel_1.default.findById(id)];
+                case 1:
+                    workflowDoc = _a.sent();
+                    if (!workflowDoc) {
+                        return [2 /*return*/, next(new httpException_1.default('No hay un proceso activo con este ID', 404))];
+                    }
+                    return [4 /*yield*/, Model.findById(workflowDoc.radicado)];
+                case 2:
+                    docMatched = _a.sent();
+                    docMatched.status = ordinariesEnum_1.StatusOrdinary.Forbidden;
+                    return [4 /*yield*/, docMatched.save({ validateBeforeSave: false })];
+                case 3:
+                    _a.sent();
+                    return [4 /*yield*/, workflowDoc.remove()];
+                case 4:
+                    _a.sent();
+                    res.status(204).json({
+                        status: true,
+                        message: 'Seguridad Física rechazó el proceso - Documento eliminado.',
+                    });
+                    return [2 /*return*/];
+            }
         });
     }); });
 };
+exports.rejectSSFF = rejectSSFF;

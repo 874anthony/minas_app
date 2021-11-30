@@ -34,6 +34,7 @@ router
     .post(permanentPersonController.uploadPermanentPersons, permanentPersonController.createPermanentPerson)
     .get(authController.guardLogin, workflowController.checkRole, workflowController.getAllPermanents);
 router
-    .route('/permanent-person/:id')
-    .patch(authController.guardLogin, permanentPersonController.changeStatusPermanent);
+    .route('/workflow/permanent-person/:id')
+    .patch(authController.guardLogin, permanentPersonController.changeStatusPermanent)
+    .delete(permanentPersonController.rejectSSFFPermanent);
 exports.default = router;
