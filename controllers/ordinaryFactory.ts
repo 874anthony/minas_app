@@ -11,7 +11,7 @@ import APIFeatures from '../utils/apiFeatures';
 // Import own models
 import { StatusOrdinary } from '../interfaces/ordinaries/ordinariesEnum';
 import User, { UserRoles } from '../models/users/userModel';
-import Workflow from '../models/workflows/workflowModel';
+import Workflow, { StatusWorkflow } from '../models/workflows/workflowModel';
 
 // ================================== MULTER CONFIGURATION TO HANDLE THE DOCUMENTS ===========================================
 // Configuring first the type of the storage
@@ -181,9 +181,21 @@ const changeStatusOrdinary = () =>
 	catchAsync(async (req: Request, res: Response, next: NextFunction) => {
 		const id = req.params.id;
 		const body = { ...req.body };
+
 		const userID = req['user']._id;
+		const excludedField = StatusWorkflow.Visa;
 
 		const user = await User.findById(userID);
+
+		// Check if they put 'POR VISAR' in the request.body
+		if (Object.values(body).includes(excludedField)) {
+			return next(
+				new HttpException(
+					'No se cambiar el status a Visado, intente nuevamente',
+					404
+				)
+			);
+		}
 
 		if (!user) {
 			return next(
@@ -211,10 +223,27 @@ const changeStatusOrdinary = () =>
 		workflowDoc[correctKey] = body.correct;
 
 		if (req.body.observations) {
-			workflowDoc.observations = req.body.observations;
+			workflowDoc.observations = body.observations;
 		}
 
-		workflowDoc.status = req.body.status;
+		if (body.status) workflowDoc.status = body.status;
+
+		//CHECK IF ALL ROLES ACCEPTED
+		const checkArray: any = [];
+
+		Object.keys(workflowDoc._doc).forEach((el) => {
+			if (el.startsWith('check')) {
+				checkArray.push(el);
+			}
+		});
+
+		const allTrues = checkArray.every(function (value) {
+			return workflowDoc[value] === true;
+		});
+
+		// if (allTrues) {
+		// console.log('TODOS están en true');
+		// }
 
 		await workflowDoc.save({ validateBeforeSave: false });
 

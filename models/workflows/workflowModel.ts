@@ -6,6 +6,7 @@ export enum StatusWorkflow {
 	Pending = 'PENDIENTE',
 	Rejected = 'RECHAZADO',
 	Approved = 'APROBADO',
+	Visa = 'POR VISAR',
 }
 
 const WorkflowSchema: Schema = new Schema({
@@ -68,30 +69,6 @@ const WorkflowSchema: Schema = new Schema({
 	updatedAt: {
 		type: Date,
 	},
-});
-
-// Document middlewares
-WorkflowSchema.post('save', function (doc, next) {
-	const newObject = { ...doc };
-	const checkArray: any = [];
-
-	Object.keys(newObject._doc).forEach((el) => {
-		if (el.startsWith('check')) {
-			checkArray.push(el);
-		}
-	});
-
-	const allTrues = checkArray.every(function (value) {
-		return newObject._doc[value] === true;
-	});
-
-	if (allTrues) {
-		console.log('Todos son true');
-	} else {
-		console.log('NO Todos son true');
-	}
-
-	next();
 });
 
 export default model('workflow_events', WorkflowSchema);

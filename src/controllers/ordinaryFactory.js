@@ -79,7 +79,7 @@ var apiFeatures_1 = __importDefault(require("../utils/apiFeatures"));
 // Import own models
 var ordinariesEnum_1 = require("../interfaces/ordinaries/ordinariesEnum");
 var userModel_1 = __importStar(require("../models/users/userModel"));
-var workflowModel_1 = __importDefault(require("../models/workflows/workflowModel"));
+var workflowModel_1 = __importStar(require("../models/workflows/workflowModel"));
 // ================================== MULTER CONFIGURATION TO HANDLE THE DOCUMENTS ===========================================
 // Configuring first the type of the storage
 var multerStorageOrdinary = multer_1.default.diskStorage({
@@ -220,16 +220,21 @@ var getAllOrdinariesType = function (Model) {
 exports.getAllOrdinariesType = getAllOrdinariesType;
 var changeStatusOrdinary = function () {
     return (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-        var id, body, userID, user, workflowDoc, checkKey, correctKey;
+        var id, body, userID, excludedField, user, workflowDoc, checkKey, correctKey, checkArray, allTrues;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     id = req.params.id;
                     body = __assign({}, req.body);
                     userID = req['user']._id;
+                    excludedField = workflowModel_1.StatusWorkflow.Visa;
                     return [4 /*yield*/, userModel_1.default.findById(userID)];
                 case 1:
                     user = _a.sent();
+                    // Check if they put 'POR VISAR' in the request.body
+                    if (Object.values(body).includes(excludedField)) {
+                        return [2 /*return*/, next(new httpException_1.default('No se cambiar el status a Visado, intente nuevamente', 404))];
+                    }
                     if (!user) {
                         return [2 /*return*/, next(new httpException_1.default('No hay un usuario con ese token, inténtelo nuevamente!', 401))];
                     }
@@ -245,11 +250,27 @@ var changeStatusOrdinary = function () {
                     workflowDoc[checkKey] = body.check;
                     workflowDoc[correctKey] = body.correct;
                     if (req.body.observations) {
-                        workflowDoc.observations = req.body.observations;
+                        workflowDoc.observations = body.observations;
                     }
-                    workflowDoc.status = req.body.status;
+                    if (body.status)
+                        workflowDoc.status = body.status;
+                    checkArray = [];
+                    Object.keys(workflowDoc._doc).forEach(function (el) {
+                        if (el.startsWith('check')) {
+                            checkArray.push(el);
+                        }
+                    });
+                    allTrues = checkArray.every(function (value) {
+                        return workflowDoc[value] === true;
+                    });
+                    // if (allTrues) {
+                    // console.log('TODOS están en true');
+                    // }
                     return [4 /*yield*/, workflowDoc.save({ validateBeforeSave: false })];
                 case 3:
+                    // if (allTrues) {
+                    // console.log('TODOS están en true');
+                    // }
                     _a.sent();
                     res
                         .status(200)
