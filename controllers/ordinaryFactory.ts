@@ -84,6 +84,15 @@ const uploadPermanentPerson = uploadOrdinaryPerson.fields([
 	{ name: 'docCitizenship', maxCount: 1 },
 ]);
 
+const uploadPunctualWorkPerson = uploadOrdinaryPerson.fields([
+	{ name: 'docCovid19', maxCount: 1 },
+	{ name: 'docHealth', maxCount: 1 },
+	{ name: 'docPension', maxCount: 1 },
+	{ name: 'docSocialSecurity', maxCount: 1 },
+	{ name: 'docCitizenship', maxCount: 1 },
+]);
+// AQUI TERMINA LOS UPLOADS MIDDLEWARES
+
 const createOrdinay = (
 	Model,
 	Roles: Array<string>,
@@ -171,7 +180,12 @@ const createOrdinay = (
 		const usersID: any = [];
 
 		const usersArray = await Promise.all(usersPromises);
-		usersArray[0].forEach((element) => usersID.push(element._id));
+
+		usersArray.forEach((ArrayPerRole: Array<any>) => {
+			ArrayPerRole.forEach((element) => {
+				usersID.push(element._id);
+			});
+		});
 
 		const bodyWorkflow = {
 			radicado: newOrdinaryPerson._id,
@@ -319,4 +333,5 @@ export {
 	changeStatusOrdinary,
 	createOrdinay,
 	uploadPermanentPerson,
+	uploadPunctualWorkPerson,
 };

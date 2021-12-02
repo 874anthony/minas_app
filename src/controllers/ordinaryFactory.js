@@ -69,7 +69,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.uploadPermanentPerson = exports.createOrdinay = exports.changeStatusOrdinary = exports.getAllOrdinariesType = void 0;
+exports.uploadPunctualWorkPerson = exports.uploadPermanentPerson = exports.createOrdinay = exports.changeStatusOrdinary = exports.getAllOrdinariesType = void 0;
 var multer_1 = __importDefault(require("multer"));
 var fs_1 = __importDefault(require("fs"));
 // Importing our utils to this controller
@@ -129,6 +129,15 @@ var uploadPermanentPerson = uploadOrdinaryPerson.fields([
     { name: 'docCitizenship', maxCount: 1 },
 ]);
 exports.uploadPermanentPerson = uploadPermanentPerson;
+var uploadPunctualWorkPerson = uploadOrdinaryPerson.fields([
+    { name: 'docCovid19', maxCount: 1 },
+    { name: 'docHealth', maxCount: 1 },
+    { name: 'docPension', maxCount: 1 },
+    { name: 'docSocialSecurity', maxCount: 1 },
+    { name: 'docCitizenship', maxCount: 1 },
+]);
+exports.uploadPunctualWorkPerson = uploadPunctualWorkPerson;
+// AQUI TERMINA LOS UPLOADS MIDDLEWARES
 var createOrdinay = function (Model, Roles, checkRoles, subsanarRoles) {
     return (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
         var body, dependency, trdOrdinary, year, dependencyCode, consecutive, radicado, newOrdinaryPerson, usersPromises, usersID, usersArray, bodyWorkflow, error_1;
@@ -198,7 +207,11 @@ var createOrdinay = function (Model, Roles, checkRoles, subsanarRoles) {
                     return [4 /*yield*/, Promise.all(usersPromises)];
                 case 7:
                     usersArray = _a.sent();
-                    usersArray[0].forEach(function (element) { return usersID.push(element._id); });
+                    usersArray.forEach(function (ArrayPerRole) {
+                        ArrayPerRole.forEach(function (element) {
+                            usersID.push(element._id);
+                        });
+                    });
                     bodyWorkflow = __assign(__assign({ radicado: newOrdinaryPerson._id, roles: usersID, observations: req.body.observations }, checkRoles), subsanarRoles);
                     _a.label = 8;
                 case 8:

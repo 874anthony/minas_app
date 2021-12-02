@@ -2,9 +2,9 @@
 import express from 'express';
 
 // Importing the controllers
-import * as permanentPersonController from '../../controllers/ordinaries/permanentPersonController';
-import * as authController from '../../controllers/auth/authController';
-import * as workflowController from '../../controllers/workflow/workflowController';
+import * as permanentPersonController from '../../../controllers/ordinaries/persons/permanentPersonController';
+import * as authController from '../../../controllers/auth/authController';
+import * as workflowController from '../../../controllers/workflow/workflowController';
 
 const router = express.Router({ mergeParams: true });
 

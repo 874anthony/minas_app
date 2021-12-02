@@ -22,30 +22,18 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-// Import 3rd-party packages
+// Importing 3rd-party packages
 var express_1 = __importDefault(require("express"));
-// Importing own routers
-var contractorRoutes_1 = __importDefault(require("../../routes/contractors/contractorRoutes"));
-var permanentPersonRoutes_1 = __importDefault(require("../ordinaries/persons/permanentPersonRoutes"));
-// Importing own controllers
-var companyController = __importStar(require("../../controllers/companies/companyController"));
-var router = express_1.default.Router();
-// Nesting routes to redirect to contractorRouter
-router.use('/:idCompany/contractors', contractorRoutes_1.default);
-router.use('/:idCompany/ordinaries-person', permanentPersonRoutes_1.default);
-// Custom routes
-router
-    .route('/pending-companies')
-    .get(companyController.getPendingCompanies, companyController.getAllCompanies);
-router.route('/login').post(companyController.loginCompany);
-// Routes
+// Importing the controllers
+var permanentPersonController = __importStar(require("../../../controllers/ordinaries/persons/permanentPersonController"));
+var authController = __importStar(require("../../../controllers/auth/authController"));
+var workflowController = __importStar(require("../../../controllers/workflow/workflowController"));
+var router = express_1.default.Router({ mergeParams: true });
 router
     .route('/')
-    .get(companyController.getAllCompanies)
-    .post(companyController.uploadCompanyDocs, companyController.createCompany);
-// Routes with the id
-router.route('/:id').get(companyController.getCompany);
+    .post(permanentPersonController.uploadPermanentPersons, permanentPersonController.createPermanentPerson)
+    .get(authController.guardLogin, workflowController.checkRole, workflowController.getAllPermanents);
 router
-    .route('/accept-pending-company/:id')
-    .patch(companyController.acceptCompany);
+    .route('/workflow/permanent-person/:id')
+    .patch(authController.guardLogin, permanentPersonController.changeStatusPermanent);
 exports.default = router;

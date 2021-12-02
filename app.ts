@@ -11,7 +11,7 @@ import companyRouter from './routes/company/companyRoutes';
 import contractorRouter from './routes/contractors/contractorRoutes';
 import trdRouter from './routes/trd/trdRoutes';
 import authRouter from './routes/auth/authRoutes';
-import permanentPersonRouter from './routes/ordinaries/permanentPersonRoutes';
+import permanentPersonRouter from './routes/ordinaries/persons/permanentPersonRoutes';
 import userRouter from './routes/users/userRoutes';
 
 const app = express();

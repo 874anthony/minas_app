@@ -12,7 +12,7 @@ var companyRoutes_1 = __importDefault(require("./routes/company/companyRoutes"))
 var contractorRoutes_1 = __importDefault(require("./routes/contractors/contractorRoutes"));
 var trdRoutes_1 = __importDefault(require("./routes/trd/trdRoutes"));
 var authRoutes_1 = __importDefault(require("./routes/auth/authRoutes"));
-var permanentPersonRoutes_1 = __importDefault(require("./routes/ordinaries/permanentPersonRoutes"));
+var permanentPersonRoutes_1 = __importDefault(require("./routes/ordinaries/persons/permanentPersonRoutes"));
 var userRoutes_1 = __importDefault(require("./routes/users/userRoutes"));
 var app = (0, express_1.default)();
 // To handle the CORS

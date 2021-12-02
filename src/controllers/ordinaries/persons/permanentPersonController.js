@@ -24,24 +24,31 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.changeStatusPermanent = exports.uploadPermanentPersons = exports.createPermanentPerson = void 0;
 // Importing own models
-var permanentPersonModel_1 = __importDefault(require("../../models/ordinaries/persons/permanentPersonModel"));
-var userModel_1 = require("../../models/users/userModel");
+var permanentPersonModel_1 = __importDefault(require("../../../models/ordinaries/persons/permanentPersonModel"));
+var userModel_1 = require("../../../models/users/userModel");
 // Importing the factory
-var ordinaryFactory = __importStar(require("../ordinaryFactory"));
+var ordinaryFactory = __importStar(require("../../ordinaryFactory"));
 var uploadPermanentPersons = ordinaryFactory.uploadPermanentPerson;
 exports.uploadPermanentPersons = uploadPermanentPersons;
-var createPermanentPerson = ordinaryFactory.createOrdinay(permanentPersonModel_1.default, [userModel_1.UserRoles.AccessControl], {
+var createPermanentPerson = ordinaryFactory.createOrdinay(permanentPersonModel_1.default, [
+    userModel_1.UserRoles.AccessControl,
+    userModel_1.UserRoles.Auditing,
+    userModel_1.UserRoles.RSE,
+    userModel_1.UserRoles.SISO,
+    userModel_1.UserRoles.SMIN,
+    userModel_1.UserRoles.SSFF,
+], {
     checkAccessControl: false,
-    checkRSE: false,
-    checkSSFF: false,
-    checkSISO: false,
     checkAuditing: false,
+    checkRSE: false,
+    checkSISO: false,
     checkSMIN: false,
+    checkSSFF: false,
 }, {
     correctAccessControl: false,
+    correctAuditing: false,
     correctRSE: false,
     correctSISO: false,
-    correctAuditing: false,
     correctSMIN: false,
 });
 exports.createPermanentPerson = createPermanentPerson;
