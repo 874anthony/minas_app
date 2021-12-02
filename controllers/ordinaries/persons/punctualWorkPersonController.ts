@@ -13,25 +13,21 @@ const createPunctualWorkPerson = ordinaryFactory.createOrdinay(
 	[UserRoles.AccessControl],
 	{
 		checkAccessControl: false,
-		checkRSE: false,
-		checkSSFF: false,
-		checkSISO: false,
-		checkAuditing: false,
-		checkSMIN: false,
 	},
 	{
 		correctAccessControl: false,
-		correctRSE: false,
-		correctSISO: false,
-		correctAuditing: false,
-		correctSMIN: false,
 	}
 );
 
 const changeStatusPunctualWork = ordinaryFactory.changeStatusOrdinary();
 
+const getAllPunctualPerson = ordinaryFactory.getAllOrdinariesType(
+	PunctualWorkPersonModel
+);
+
 export {
 	createPunctualWorkPerson,
 	uploadPunctualWorkPersons,
 	changeStatusPunctualWork,
+	getAllPunctualPerson,
 };

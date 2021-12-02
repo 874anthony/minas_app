@@ -9,7 +9,6 @@ var StatusWorkflow;
     StatusWorkflow["Pending"] = "PENDIENTE";
     StatusWorkflow["Rejected"] = "RECHAZADO";
     StatusWorkflow["Approved"] = "APROBADO";
-    StatusWorkflow["Visa"] = "POR VISAR";
 })(StatusWorkflow = exports.StatusWorkflow || (exports.StatusWorkflow = {}));
 var WorkflowSchema = new mongoose_1.Schema({
     radicado: {

@@ -268,14 +268,14 @@ var getAllOrdinariesType = function (Model) {
 exports.getAllOrdinariesType = getAllOrdinariesType;
 var changeStatusOrdinary = function () {
     return (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-        var id, body, userID, excludedField, user, workflowDoc, checkKey, correctKey, Model, docMatched, checkArray, allTrues;
+        var id, body, userID, excludedField, user, workflowDoc, checkKey, correctKey, Model, docMatched, checkArray, allTrues, Model, docMatched;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     id = req.params.id;
                     body = __assign({}, req.body);
                     userID = req['user']._id;
-                    excludedField = workflowModel_1.StatusWorkflow.Visa;
+                    excludedField = workflowModel_1.StatusWorkflow.Approved;
                     return [4 /*yield*/, userModel_1.default.findById(userID)];
                 case 1:
                     user = _a.sent();
@@ -319,6 +319,9 @@ var changeStatusOrdinary = function () {
                     }
                     if (body.status)
                         workflowDoc.status = body.status;
+                    return [4 /*yield*/, workflowDoc.save({ validateBeforeSave: false })];
+                case 7:
+                    _a.sent();
                     checkArray = [];
                     Object.keys(workflowDoc._doc).forEach(function (el) {
                         if (el.startsWith('check')) {
@@ -328,11 +331,20 @@ var changeStatusOrdinary = function () {
                     allTrues = checkArray.every(function (value) {
                         return workflowDoc[value] === true;
                     });
-                    if (allTrues)
-                        workflowDoc.status = workflowModel_1.StatusWorkflow.Visa;
-                    return [4 /*yield*/, workflowDoc.save({ validateBeforeSave: false })];
-                case 7:
+                    if (!allTrues) return [3 /*break*/, 11];
+                    Model = getModel(req.body.ordinaryType);
+                    return [4 /*yield*/, Model.findById(workflowDoc.radicado)];
+                case 8:
+                    docMatched = _a.sent();
+                    docMatched.status = ordinariesEnum_1.StatusOrdinary.Active;
+                    return [4 /*yield*/, docMatched.save({ validateBeforeSave: false })];
+                case 9:
                     _a.sent();
+                    return [4 /*yield*/, workflowDoc.remove()];
+                case 10:
+                    _a.sent();
+                    _a.label = 11;
+                case 11:
                     res
                         .status(200)
                         .json({ status: true, message: 'El proceso fue actualizado con éxito' });

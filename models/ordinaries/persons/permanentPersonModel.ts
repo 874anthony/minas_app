@@ -82,6 +82,10 @@ const PermanentPersonSchema = new Schema({
 		type: Date,
 		default: Date.now(),
 	},
+	ordinaryType: {
+		type: String,
+		default: 'permanentPerson',
+	},
 	updatedAt: {
 		type: Date,
 	},

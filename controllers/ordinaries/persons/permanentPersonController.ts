@@ -37,4 +37,12 @@ const createPermanentPerson = ordinaryFactory.createOrdinay(
 
 const changeStatusPermanent = ordinaryFactory.changeStatusOrdinary();
 
-export { createPermanentPerson, uploadPermanentPersons, changeStatusPermanent };
+const getAllPermanentPerson =
+	ordinaryFactory.getAllOrdinariesType(PermanentPerson);
+
+export {
+	createPermanentPerson,
+	uploadPermanentPersons,
+	changeStatusPermanent,
+	getAllPermanentPerson,
+};

@@ -12,13 +12,14 @@ export enum StatusOrdinary {
 	Pending = 'PENDIENTE',
 	Inactive = 'INACTIVO',
 	Rejected = 'RECHAZADO',
-	Correct = 'SUBSANAR',
+	// Correct = 'SUBSANAR',
 	Forbidden = 'PROHIBIDO',
+	Visa = 'POR VISAR',
 }
 
 export const ModelsOrdinary = {
-	permanent: ordinariesModels.PermanentPerson,
-	punctualPerson: ordinariesModels.PunctualWorkPerson,
+	permanentPerson: ordinariesModels.PermanentPerson,
+	punctualworkPerson: ordinariesModels.PunctualWorkPerson,
 };
 export interface StatusBody {
 	id: string;

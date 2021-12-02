@@ -24,7 +24,7 @@ var PunctualWorkPersonSchema = new mongoose_1.Schema({
         type: String,
         required: true,
         enum: {
-            values: ['Hombre, Mujer, Otro'],
+            values: ['Hombre', 'Mujer', 'Otro'],
             message: 'El sexo debe ser alguno de los listados',
         },
     },
@@ -70,6 +70,10 @@ var PunctualWorkPersonSchema = new mongoose_1.Schema({
     status: {
         type: String,
         default: 'PENDIENTE',
+    },
+    ordinaryType: {
+        type: String,
+        default: 'punctualworkPerson',
     },
     createdAt: {
         type: Date,

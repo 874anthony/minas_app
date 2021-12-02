@@ -34,10 +34,11 @@ var StatusOrdinary;
     StatusOrdinary["Pending"] = "PENDIENTE";
     StatusOrdinary["Inactive"] = "INACTIVO";
     StatusOrdinary["Rejected"] = "RECHAZADO";
-    StatusOrdinary["Correct"] = "SUBSANAR";
+    // Correct = 'SUBSANAR',
     StatusOrdinary["Forbidden"] = "PROHIBIDO";
+    StatusOrdinary["Visa"] = "POR VISAR";
 })(StatusOrdinary = exports.StatusOrdinary || (exports.StatusOrdinary = {}));
 exports.ModelsOrdinary = {
-    permanent: ordinariesModels.PermanentPerson,
-    punctualPerson: ordinariesModels.PunctualWorkPerson,
+    permanentPerson: ordinariesModels.PermanentPerson,
+    punctualworkPerson: ordinariesModels.PunctualWorkPerson,
 };

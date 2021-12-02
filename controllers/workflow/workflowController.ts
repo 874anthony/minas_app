@@ -16,6 +16,4 @@ const checkRole = (req: Request, res: Response, next: NextFunction) => {
 	next();
 };
 
-const getAllPermanents = ordinaryFactory.getAllOrdinariesType(PermanentPerson);
-
-export { getAllPermanents, checkRole };
+export { checkRole };

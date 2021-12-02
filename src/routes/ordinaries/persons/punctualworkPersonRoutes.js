@@ -25,15 +25,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 // Importing 3rd-party packages
 var express_1 = __importDefault(require("express"));
 // Importing the controllers
-var permanentPersonController = __importStar(require("../../../controllers/ordinaries/persons/permanentPersonController"));
+var punctualworkPersonController = __importStar(require("../../../controllers/ordinaries/persons/punctualWorkPersonController"));
 var authController = __importStar(require("../../../controllers/auth/authController"));
 var workflowController = __importStar(require("../../../controllers/workflow/workflowController"));
 var router = express_1.default.Router({ mergeParams: true });
 router
     .route('/')
-    .post(permanentPersonController.uploadPermanentPersons, permanentPersonController.createPermanentPerson)
-    .get(authController.guardLogin, workflowController.checkRole, permanentPersonController.getAllPermanentPerson);
+    .post(punctualworkPersonController.uploadPunctualWorkPersons, punctualworkPersonController.createPunctualWorkPerson)
+    .get(authController.guardLogin, workflowController.checkRole, punctualworkPersonController.getAllPunctualPerson);
 router
-    .route('/workflow/permanent-person/:id')
-    .patch(authController.guardLogin, permanentPersonController.changeStatusPermanent);
+    .route('/workflow/punctual-work-person/:id')
+    .patch(authController.guardLogin, punctualworkPersonController.changeStatusPunctualWork);
 exports.default = router;

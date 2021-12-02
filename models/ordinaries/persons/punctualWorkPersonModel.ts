@@ -27,7 +27,7 @@ const PunctualWorkPersonSchema = new Schema({
 		type: String,
 		required: true,
 		enum: {
-			values: ['Hombre, Mujer, Otro'],
+			values: ['Hombre', 'Mujer', 'Otro'],
 			message: 'El sexo debe ser alguno de los listados',
 		},
 	},
@@ -73,6 +73,10 @@ const PunctualWorkPersonSchema = new Schema({
 	status: {
 		type: String,
 		default: 'PENDIENTE',
+	},
+	ordinaryType: {
+		type: String,
+		default: 'punctualworkPerson',
 	},
 	createdAt: {
 		type: Date,

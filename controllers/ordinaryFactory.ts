@@ -243,7 +243,7 @@ const changeStatusOrdinary = () =>
 		const body = { ...req.body };
 
 		const userID = req['user']._id;
-		const excludedField = StatusWorkflow.Visa;
+		const excludedField = StatusWorkflow.Approved;
 
 		const user = await User.findById(userID);
 
@@ -283,6 +283,7 @@ const changeStatusOrdinary = () =>
 
 		if (checkKey === 'checkSSFF') {
 			const Model = getModel(req.body.ordinaryType);
+
 			const docMatched = await Model.findById(workflowDoc.radicado);
 
 			docMatched.status = StatusOrdinary.Forbidden;
@@ -306,6 +307,8 @@ const changeStatusOrdinary = () =>
 
 		if (body.status) workflowDoc.status = body.status;
 
+		await workflowDoc.save({ validateBeforeSave: false });
+
 		//CHECK IF ALL ROLES ACCEPTED
 		const checkArray: any = [];
 
@@ -319,9 +322,15 @@ const changeStatusOrdinary = () =>
 			return workflowDoc[value] === true;
 		});
 
-		if (allTrues) workflowDoc.status = StatusWorkflow.Visa;
+		if (allTrues) {
+			const Model = getModel(req.body.ordinaryType);
+			const docMatched = await Model.findById(workflowDoc.radicado);
 
-		await workflowDoc.save({ validateBeforeSave: false });
+			docMatched.status = StatusOrdinary.Active;
+			await docMatched.save({ validateBeforeSave: false });
+
+			await workflowDoc.remove();
+		}
 
 		res
 			.status(200)

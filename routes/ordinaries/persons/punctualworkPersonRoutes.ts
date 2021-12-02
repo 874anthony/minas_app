@@ -2,7 +2,7 @@
 import express from 'express';
 
 // Importing the controllers
-import * as permanentPersonController from '../../../controllers/ordinaries/persons/permanentPersonController';
+import * as punctualworkPersonController from '../../../controllers/ordinaries/persons/punctualWorkPersonController';
 import * as authController from '../../../controllers/auth/authController';
 import * as workflowController from '../../../controllers/workflow/workflowController';
 
@@ -11,20 +11,20 @@ const router = express.Router({ mergeParams: true });
 router
 	.route('/')
 	.post(
-		permanentPersonController.uploadPermanentPersons,
-		permanentPersonController.createPermanentPerson
+		punctualworkPersonController.uploadPunctualWorkPersons,
+		punctualworkPersonController.createPunctualWorkPerson
 	)
 	.get(
 		authController.guardLogin,
 		workflowController.checkRole,
-		permanentPersonController.getAllPermanentPerson
+		punctualworkPersonController.getAllPunctualPerson
 	);
 
 router
-	.route('/workflow/permanent-person/:id')
+	.route('/workflow/punctual-work-person/:id')
 	.patch(
 		authController.guardLogin,
-		permanentPersonController.changeStatusPermanent
+		punctualworkPersonController.changeStatusPunctualWork
 	);
 
 export default router;

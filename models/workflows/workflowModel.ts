@@ -6,7 +6,6 @@ export enum StatusWorkflow {
 	Pending = 'PENDIENTE',
 	Rejected = 'RECHAZADO',
 	Approved = 'APROBADO',
-	Visa = 'POR VISAR',
 }
 
 const WorkflowSchema: Schema = new Schema({
