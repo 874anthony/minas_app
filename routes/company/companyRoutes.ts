@@ -3,7 +3,7 @@ import express from 'express';
 
 // Importing own routers
 import contractorRouter from '../../routes/contractors/contractorRoutes';
-import permanentPersonRouter from '../ordinaries/ordinariesRoutes';
+import permanentPersonRouter from '../ordinaries/permanentPersonRoutes';
 
 // Importing own controllers
 import * as companyController from '../../controllers/companies/companyController';

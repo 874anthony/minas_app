@@ -22,9 +22,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.changeStatusPermanent = exports.rejectSSFFPermanent = exports.uploadPermanentPersons = exports.createPermanentPerson = void 0;
+exports.changeStatusPermanent = exports.uploadPermanentPersons = exports.createPermanentPerson = void 0;
 // Importing own models
-var permanentPersonModel_1 = __importDefault(require("../../models/ordinaries/permanentPersonModel"));
+var permanentPersonModel_1 = __importDefault(require("../../models/ordinaries/persons/permanentPersonModel"));
 var userModel_1 = require("../../models/users/userModel");
 var ordinaryFactory = __importStar(require("../ordinaryFactory"));
 var uploadPermanentPersons = ordinaryFactory.uploadPermanentPerson;
@@ -44,7 +44,5 @@ var createPermanentPerson = ordinaryFactory.createOrdinay(permanentPersonModel_1
     correctSMIN: false,
 });
 exports.createPermanentPerson = createPermanentPerson;
-var rejectSSFFPermanent = ordinaryFactory.rejectSSFF(permanentPersonModel_1.default);
-exports.rejectSSFFPermanent = rejectSSFFPermanent;
 var changeStatusPermanent = ordinaryFactory.changeStatusOrdinary();
 exports.changeStatusPermanent = changeStatusPermanent;

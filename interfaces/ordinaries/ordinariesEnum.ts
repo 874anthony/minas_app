@@ -1,3 +1,5 @@
+import * as ordinariesModels from '../../models/ordinaries/importAllOrdinaries';
+
 export enum Gender {
 	Men = 'Hombre',
 	Woman = 'Mujer',
@@ -14,6 +16,10 @@ export enum StatusOrdinary {
 	Forbidden = 'PROHIBIDO',
 }
 
+export const ModelsOrdinary = {
+	permanent: ordinariesModels.PermanentPerson,
+	punctualPerson: ordinariesModels.PunctualWorkPerson,
+};
 export interface StatusBody {
 	id: string;
 	checkAccessControl?: boolean;

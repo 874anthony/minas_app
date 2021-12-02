@@ -24,7 +24,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.checkRole = exports.getAllPermanents = void 0;
 // Importing own models
-var permanentPersonModel_1 = __importDefault(require("../../models/ordinaries/permanentPersonModel"));
+var permanentPersonModel_1 = __importDefault(require("../../models/ordinaries/persons/permanentPersonModel"));
 var ordinaryFactory = __importStar(require("../ordinaryFactory"));
 var checkRole = function (req, res, next) {
     var userID = req['user']._id;

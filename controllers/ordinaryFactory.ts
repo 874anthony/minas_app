@@ -9,9 +9,14 @@ import HttpException from '../utils/httpException';
 import APIFeatures from '../utils/apiFeatures';
 
 // Import own models
-import { StatusOrdinary } from '../interfaces/ordinaries/ordinariesEnum';
+import {
+	ModelsOrdinary,
+	StatusOrdinary,
+} from '../interfaces/ordinaries/ordinariesEnum';
 import User, { UserRoles } from '../models/users/userModel';
 import Workflow, { StatusWorkflow } from '../models/workflows/workflowModel';
+import TRDOrdinary from '../models/trd/trdOrdinary';
+import { TRDDependency } from '../models/trd/trdImportAll';
 
 // ================================== MULTER CONFIGURATION TO HANDLE THE DOCUMENTS ===========================================
 // Configuring first the type of the storage
@@ -65,6 +70,10 @@ const getKey = (field: string, user) => {
 	}`;
 };
 
+const getModel = (ordinaryType: string) => {
+	return ModelsOrdinary[ordinaryType];
+};
+
 // UPLOADS MIDDLEWARES
 const uploadPermanentPerson = uploadOrdinaryPerson.fields([
 	{ name: 'docCovid19', maxCount: 1 },
@@ -98,6 +107,43 @@ const createOrdinay = (
 		Object.keys(req.files).forEach(
 			(el) => (body[el] = req.files![el][0].filename)
 		);
+
+		// CHECK IF THE DEPENDENCY (TRD) EXISTS
+		const dependency = await TRDDependency.findById(body.dependency);
+
+		if (!dependency) {
+			return next(
+				new HttpException('No se ha encontrado ningúna tipología creada!', 404)
+			);
+		}
+
+		// NOW CHECK IF THERE HAS BEEN CONSECUTIVES BEFORE WITH THAT TRD, IF NOT CREATE ONE SEQUENCE.
+		let trdOrdinary = await TRDOrdinary.findOne({
+			dependency: body.dependency,
+		});
+
+		if (!trdOrdinary) {
+			trdOrdinary = await TRDOrdinary.create({
+				dependency: body.dependency,
+			});
+		}
+
+		// GENERATING THE RADICADO NUMBER
+		// 18 Dígitos nueva versión: 4 año + 4 dependencia + 4 serie/subserie + 5 consecutivo + E
+		const year: number = new Date().getFullYear();
+
+		const dependencyCode = dependency.dependencyCode;
+
+		let consecutive = trdOrdinary.getConsecutive() + 1;
+		consecutive = ('000000' + consecutive).slice(-6);
+
+		const radicado = `${year}${dependencyCode}${consecutive}9`;
+
+		// INCREMENT THE CONSECUTIVE
+		trdOrdinary.consecutive = trdOrdinary.getConsecutive() + 1;
+		await trdOrdinary.save({ validateBeforeSave: false });
+
+		body.radicado = radicado;
 
 		const newOrdinaryPerson = await Model.create(body);
 
@@ -210,13 +256,31 @@ const changeStatusOrdinary = () =>
 
 		if (!workflowDoc) {
 			return next(
-				new HttpException('No existe ese proceso, intente nuevamente', 404)
+				new HttpException(
+					'No existe un proceso con ese ID, intente nuevamente',
+					404
+				)
 			);
 		}
 
 		// Extracting the key given the value of the enum.
 		const checkKey = getKey('check', user);
 		const correctKey = getKey('correct', user);
+
+		if (checkKey === 'checkSSFF') {
+			const Model = getModel(req.body.ordinaryType);
+			const docMatched = await Model.findById(workflowDoc.radicado);
+
+			docMatched.status = StatusOrdinary.Forbidden;
+			await docMatched.save({ validateBeforeSave: false });
+
+			await workflowDoc.remove();
+
+			return res.status(204).json({
+				status: true,
+				message: 'Seguridad Física rechazó el proceso - Documento eliminado.',
+			});
+		}
 
 		// Modify the status.
 		workflowDoc[checkKey] = body.check;
@@ -241,9 +305,7 @@ const changeStatusOrdinary = () =>
 			return workflowDoc[value] === true;
 		});
 
-		// if (allTrues) {
-		// console.log('TODOS están en true');
-		// }
+		if (allTrues) workflowDoc.status = StatusWorkflow.Visa;
 
 		await workflowDoc.save({ validateBeforeSave: false });
 
@@ -252,35 +314,9 @@ const changeStatusOrdinary = () =>
 			.json({ status: true, message: 'El proceso fue actualizado con éxito' });
 	});
 
-const rejectSSFF = (Model) =>
-	catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-		const id = req.params.id;
-
-		const workflowDoc = await Workflow.findById(id);
-
-		if (!workflowDoc) {
-			return next(
-				new HttpException('No hay un proceso activo con este ID', 404)
-			);
-		}
-
-		const docMatched = await Model.findById(workflowDoc.radicado);
-
-		docMatched.status = StatusOrdinary.Forbidden;
-		await docMatched.save({ validateBeforeSave: false });
-
-		await workflowDoc.remove();
-
-		res.status(204).json({
-			status: true,
-			message: 'Seguridad Física rechazó el proceso - Documento eliminado.',
-		});
-	});
-
 export {
 	getAllOrdinariesType,
 	changeStatusOrdinary,
 	createOrdinay,
 	uploadPermanentPerson,
-	rejectSSFF,
 };

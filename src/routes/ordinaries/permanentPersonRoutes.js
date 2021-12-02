@@ -31,8 +31,9 @@ var workflowController = __importStar(require("../../controllers/workflow/workfl
 var router = express_1.default.Router({ mergeParams: true });
 router
     .route('/')
-    .get(authController.guardLogin, workflowController.checkRole, workflowController.getAllOrdinaries);
+    .post(permanentPersonController.uploadPermanentPersons, permanentPersonController.createPermanentPerson)
+    .get(authController.guardLogin, workflowController.checkRole, workflowController.getAllPermanents);
 router
-    .route('/permanent-person')
-    .post(permanentPersonController.uploadPermanentPersons, permanentPersonController.createPermanentPerson);
+    .route('/workflow/permanent-person/:id')
+    .patch(authController.guardLogin, permanentPersonController.changeStatusPermanent);
 exports.default = router;

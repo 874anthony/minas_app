@@ -2,10 +2,10 @@ import { Schema, model } from 'mongoose';
 import {
 	Gender,
 	StatusOrdinary,
-} from '../../interfaces/ordinaries/ordinariesEnum';
+} from '../../../interfaces/ordinaries/ordinariesEnum';
 
 // Definying the schema
-const PermanentPersonSchema = new Schema({
+const PunctualWorkPersonSchema = new Schema({
 	name: {
 		type: String,
 		required: true,
@@ -27,7 +27,7 @@ const PermanentPersonSchema = new Schema({
 		type: String,
 		required: true,
 		enum: {
-			values: Object.values(Gender),
+			values: ['Hombre, Mujer, Otro'],
 			message: 'El sexo debe ser alguno de los listados',
 		},
 	},
@@ -54,9 +54,6 @@ const PermanentPersonSchema = new Schema({
 	docSocialSecurity: {
 		type: String,
 	},
-	docMedicalFitness: {
-		type: String,
-	},
 	docCitizenship: {
 		type: String,
 	},
@@ -75,12 +72,7 @@ const PermanentPersonSchema = new Schema({
 	},
 	status: {
 		type: String,
-		enum: [StatusOrdinary],
-		default: StatusOrdinary.Pending,
-	},
-	ordinaryType: {
-		type: String,
-		default: 'permanente',
+		default: 'PENDIENTE',
 	},
 	createdAt: {
 		type: Date,
@@ -91,10 +83,4 @@ const PermanentPersonSchema = new Schema({
 	},
 });
 
-// UserSchema.methods.toJSON = function() {
-// var obj = this.toObject()
-// delete obj.passwordHash
-// return obj
-// }
-
-export default model('permanent_person', PermanentPersonSchema);
+export default model('punctualwork_person', PunctualWorkPersonSchema);

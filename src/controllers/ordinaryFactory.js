@@ -69,7 +69,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.rejectSSFF = exports.uploadPermanentPerson = exports.createOrdinay = exports.changeStatusOrdinary = exports.getAllOrdinariesType = void 0;
+exports.uploadPermanentPerson = exports.createOrdinay = exports.changeStatusOrdinary = exports.getAllOrdinariesType = void 0;
 var multer_1 = __importDefault(require("multer"));
 var fs_1 = __importDefault(require("fs"));
 // Importing our utils to this controller
@@ -80,6 +80,8 @@ var apiFeatures_1 = __importDefault(require("../utils/apiFeatures"));
 var ordinariesEnum_1 = require("../interfaces/ordinaries/ordinariesEnum");
 var userModel_1 = __importStar(require("../models/users/userModel"));
 var workflowModel_1 = __importStar(require("../models/workflows/workflowModel"));
+var trdOrdinary_1 = __importDefault(require("../models/trd/trdOrdinary"));
+var trdImportAll_1 = require("../models/trd/trdImportAll");
 // ================================== MULTER CONFIGURATION TO HANDLE THE DOCUMENTS ===========================================
 // Configuring first the type of the storage
 var multerStorageOrdinary = multer_1.default.diskStorage({
@@ -114,6 +116,9 @@ var uploadOrdinaryPerson = (0, multer_1.default)({
 var getKey = function (field, user) {
     return "" + field + Object.keys(userModel_1.UserRoles)[Object.values(userModel_1.UserRoles).indexOf(user.role)];
 };
+var getModel = function (ordinaryType) {
+    return ordinariesEnum_1.ModelsOrdinary[ordinaryType];
+};
 // UPLOADS MIDDLEWARES
 var uploadPermanentPerson = uploadOrdinaryPerson.fields([
     { name: 'docCovid19', maxCount: 1 },
@@ -126,7 +131,7 @@ var uploadPermanentPerson = uploadOrdinaryPerson.fields([
 exports.uploadPermanentPerson = uploadPermanentPerson;
 var createOrdinay = function (Model, Roles, checkRoles, subsanarRoles) {
     return (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-        var body, newOrdinaryPerson, usersPromises, usersID, usersArray, bodyWorkflow, error_1;
+        var body, dependency, trdOrdinary, year, dependencyCode, consecutive, radicado, newOrdinaryPerson, usersPromises, usersID, usersArray, bodyWorkflow, error_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -136,8 +141,38 @@ var createOrdinay = function (Model, Roles, checkRoles, subsanarRoles) {
                     body = __assign({}, req.body);
                     // Looping through the req.files object to set it to the body
                     Object.keys(req.files).forEach(function (el) { return (body[el] = req.files[el][0].filename); });
-                    return [4 /*yield*/, Model.create(body)];
+                    return [4 /*yield*/, trdImportAll_1.TRDDependency.findById(body.dependency)];
                 case 1:
+                    dependency = _a.sent();
+                    if (!dependency) {
+                        return [2 /*return*/, next(new httpException_1.default('No se ha encontrado ningúna tipología creada!', 404))];
+                    }
+                    return [4 /*yield*/, trdOrdinary_1.default.findOne({
+                            dependency: body.dependency,
+                        })];
+                case 2:
+                    trdOrdinary = _a.sent();
+                    if (!!trdOrdinary) return [3 /*break*/, 4];
+                    return [4 /*yield*/, trdOrdinary_1.default.create({
+                            dependency: body.dependency,
+                        })];
+                case 3:
+                    trdOrdinary = _a.sent();
+                    _a.label = 4;
+                case 4:
+                    year = new Date().getFullYear();
+                    dependencyCode = dependency.dependencyCode;
+                    consecutive = trdOrdinary.getConsecutive() + 1;
+                    consecutive = ('000000' + consecutive).slice(-6);
+                    radicado = "" + year + dependencyCode + consecutive + "9";
+                    // INCREMENT THE CONSECUTIVE
+                    trdOrdinary.consecutive = trdOrdinary.getConsecutive() + 1;
+                    return [4 /*yield*/, trdOrdinary.save({ validateBeforeSave: false })];
+                case 5:
+                    _a.sent();
+                    body.radicado = radicado;
+                    return [4 /*yield*/, Model.create(body)];
+                case 6:
                     newOrdinaryPerson = _a.sent();
                     if (!newOrdinaryPerson) {
                         return [2 /*return*/, next(new httpException_1.default('No se ha podido crear el ordinario, intente nuevamente', 404))];
@@ -161,21 +196,21 @@ var createOrdinay = function (Model, Roles, checkRoles, subsanarRoles) {
                     }); });
                     usersID = [];
                     return [4 /*yield*/, Promise.all(usersPromises)];
-                case 2:
+                case 7:
                     usersArray = _a.sent();
                     usersArray[0].forEach(function (element) { return usersID.push(element._id); });
                     bodyWorkflow = __assign(__assign({ radicado: newOrdinaryPerson._id, roles: usersID, observations: req.body.observations }, checkRoles), subsanarRoles);
-                    _a.label = 3;
-                case 3:
-                    _a.trys.push([3, 5, , 6]);
+                    _a.label = 8;
+                case 8:
+                    _a.trys.push([8, 10, , 11]);
                     return [4 /*yield*/, workflowModel_1.default.create(bodyWorkflow)];
-                case 4:
+                case 9:
                     _a.sent();
-                    return [3 /*break*/, 6];
-                case 5:
+                    return [3 /*break*/, 11];
+                case 10:
                     error_1 = _a.sent();
                     return [2 /*return*/, next(new httpException_1.default('No se ha asignado correctamente el workflow, por favor vuelva a intentar', 500))];
-                case 6:
+                case 11:
                     res.status(200).json({
                         status: true,
                         message: 'Se ha creado el ordinario con éxito',
@@ -220,7 +255,7 @@ var getAllOrdinariesType = function (Model) {
 exports.getAllOrdinariesType = getAllOrdinariesType;
 var changeStatusOrdinary = function () {
     return (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-        var id, body, userID, excludedField, user, workflowDoc, checkKey, correctKey, checkArray, allTrues;
+        var id, body, userID, excludedField, user, workflowDoc, checkKey, correctKey, Model, docMatched, checkArray, allTrues;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -242,10 +277,27 @@ var changeStatusOrdinary = function () {
                 case 2:
                     workflowDoc = _a.sent();
                     if (!workflowDoc) {
-                        return [2 /*return*/, next(new httpException_1.default('No existe ese proceso, intente nuevamente', 404))];
+                        return [2 /*return*/, next(new httpException_1.default('No existe un proceso con ese ID, intente nuevamente', 404))];
                     }
                     checkKey = getKey('check', user);
                     correctKey = getKey('correct', user);
+                    if (!(checkKey === 'checkSSFF')) return [3 /*break*/, 6];
+                    Model = getModel(req.body.ordinaryType);
+                    return [4 /*yield*/, Model.findById(workflowDoc.radicado)];
+                case 3:
+                    docMatched = _a.sent();
+                    docMatched.status = ordinariesEnum_1.StatusOrdinary.Forbidden;
+                    return [4 /*yield*/, docMatched.save({ validateBeforeSave: false })];
+                case 4:
+                    _a.sent();
+                    return [4 /*yield*/, workflowDoc.remove()];
+                case 5:
+                    _a.sent();
+                    return [2 /*return*/, res.status(204).json({
+                            status: true,
+                            message: 'Seguridad Física rechazó el proceso - Documento eliminado.',
+                        })];
+                case 6:
                     // Modify the status.
                     workflowDoc[checkKey] = body.check;
                     workflowDoc[correctKey] = body.correct;
@@ -263,14 +315,10 @@ var changeStatusOrdinary = function () {
                     allTrues = checkArray.every(function (value) {
                         return workflowDoc[value] === true;
                     });
-                    // if (allTrues) {
-                    // console.log('TODOS están en true');
-                    // }
+                    if (allTrues)
+                        workflowDoc.status = workflowModel_1.StatusWorkflow.Visa;
                     return [4 /*yield*/, workflowDoc.save({ validateBeforeSave: false })];
-                case 3:
-                    // if (allTrues) {
-                    // console.log('TODOS están en true');
-                    // }
+                case 7:
                     _a.sent();
                     res
                         .status(200)
@@ -281,36 +329,3 @@ var changeStatusOrdinary = function () {
     }); });
 };
 exports.changeStatusOrdinary = changeStatusOrdinary;
-var rejectSSFF = function (Model) {
-    return (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-        var id, workflowDoc, docMatched;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    id = req.params.id;
-                    return [4 /*yield*/, workflowModel_1.default.findById(id)];
-                case 1:
-                    workflowDoc = _a.sent();
-                    if (!workflowDoc) {
-                        return [2 /*return*/, next(new httpException_1.default('No hay un proceso activo con este ID', 404))];
-                    }
-                    return [4 /*yield*/, Model.findById(workflowDoc.radicado)];
-                case 2:
-                    docMatched = _a.sent();
-                    docMatched.status = ordinariesEnum_1.StatusOrdinary.Forbidden;
-                    return [4 /*yield*/, docMatched.save({ validateBeforeSave: false })];
-                case 3:
-                    _a.sent();
-                    return [4 /*yield*/, workflowDoc.remove()];
-                case 4:
-                    _a.sent();
-                    res.status(204).json({
-                        status: true,
-                        message: 'Seguridad Física rechazó el proceso - Documento eliminado.',
-                    });
-                    return [2 /*return*/];
-            }
-        });
-    }); });
-};
-exports.rejectSSFF = rejectSSFF;

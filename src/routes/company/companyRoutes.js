@@ -26,13 +26,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = __importDefault(require("express"));
 // Importing own routers
 var contractorRoutes_1 = __importDefault(require("../../routes/contractors/contractorRoutes"));
-var ordinariesRoutes_1 = __importDefault(require("../ordinaries/ordinariesRoutes"));
+var permanentPersonRoutes_1 = __importDefault(require("../ordinaries/permanentPersonRoutes"));
 // Importing own controllers
 var companyController = __importStar(require("../../controllers/companies/companyController"));
 var router = express_1.default.Router();
 // Nesting routes to redirect to contractorRouter
 router.use('/:idCompany/contractors', contractorRoutes_1.default);
-router.use('/:idCompany/ordinaries-person', ordinariesRoutes_1.default);
+router.use('/:idCompany/ordinaries-person', permanentPersonRoutes_1.default);
 // Custom routes
 router
     .route('/pending-companies')

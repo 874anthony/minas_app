@@ -9,7 +9,7 @@ import * as workflowController from '../../controllers/workflow/workflowControll
 const router = express.Router({ mergeParams: true });
 
 router
-	.route('/permanent-person')
+	.route('/')
 	.post(
 		permanentPersonController.uploadPermanentPersons,
 		permanentPersonController.createPermanentPerson
@@ -25,7 +25,6 @@ router
 	.patch(
 		authController.guardLogin,
 		permanentPersonController.changeStatusPermanent
-	)
-	.delete(permanentPersonController.rejectSSFFPermanent);
+	);
 
 export default router;

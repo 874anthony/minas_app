@@ -7,7 +7,7 @@ import catchAsync from '../../utils/catchAsync';
 import APIFeatures from '../../utils/apiFeatures';
 
 // Importing own models
-import PermanentPerson from '../../models/ordinaries/permanentPersonModel';
+import PermanentPerson from '../../models/ordinaries/persons/permanentPersonModel';
 import * as ordinaryFactory from '../ordinaryFactory';
 
 const checkRole = (req: Request, res: Response, next: NextFunction) => {

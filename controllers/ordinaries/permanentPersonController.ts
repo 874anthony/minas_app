@@ -6,7 +6,7 @@ import catchAsync from '../../utils/catchAsync';
 import HttpException from '../../utils/httpException';
 
 // Importing own models
-import PermanentPerson from '../../models/ordinaries/permanentPersonModel';
+import PermanentPerson from '../../models/ordinaries/persons/permanentPersonModel';
 import Workflow from '../../models/workflows/workflowModel';
 import { UserRoles } from '../../models/users/userModel';
 
@@ -36,12 +36,6 @@ const createPermanentPerson = ordinaryFactory.createOrdinay(
 	}
 );
 
-const rejectSSFFPermanent = ordinaryFactory.rejectSSFF(PermanentPerson);
 const changeStatusPermanent = ordinaryFactory.changeStatusOrdinary();
 
-export {
-	createPermanentPerson,
-	uploadPermanentPersons,
-	rejectSSFFPermanent,
-	changeStatusPermanent,
-};
+export { createPermanentPerson, uploadPermanentPersons, changeStatusPermanent };
