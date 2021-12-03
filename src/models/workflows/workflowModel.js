@@ -62,6 +62,10 @@ var WorkflowSchema = new mongoose_1.Schema({
         enum: [StatusWorkflow],
         default: StatusWorkflow.Pending,
     },
+    ordinaryType: {
+        type: String,
+        required: true,
+    },
     observations: [String],
     createdAt: {
         type: Date,

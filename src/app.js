@@ -13,6 +13,7 @@ var contractorRoutes_1 = __importDefault(require("./routes/contractors/contracto
 var trdRoutes_1 = __importDefault(require("./routes/trd/trdRoutes"));
 var authRoutes_1 = __importDefault(require("./routes/auth/authRoutes"));
 var userRoutes_1 = __importDefault(require("./routes/users/userRoutes"));
+var workflowRoutes_1 = __importDefault(require("./routes/ordinaries/workflowRoutes"));
 var permanentPersonRoutes_1 = __importDefault(require("./routes/ordinaries/persons/permanentPersonRoutes"));
 var punctualworkPersonRoutes_1 = __importDefault(require("./routes/ordinaries/persons/punctualworkPersonRoutes"));
 var app = (0, express_1.default)();
@@ -35,6 +36,7 @@ app.use('/api/v1/contractors', contractorRoutes_1.default);
 app.use('/api/v1/trd-management', trdRoutes_1.default);
 app.use('/api/v1/auth', authRoutes_1.default);
 app.use('/api/v1/user', userRoutes_1.default);
+app.use('/api/v1/workflow', workflowRoutes_1.default);
 app.use('/api/v1/ordinaries-person/permanent-person', permanentPersonRoutes_1.default);
 app.use('/api/v1/ordinaries-person/punctual-work-person', punctualworkPersonRoutes_1.default);
 // Define the global error handler to pass next errors

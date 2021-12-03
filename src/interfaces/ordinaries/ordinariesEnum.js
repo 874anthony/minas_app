@@ -39,6 +39,6 @@ var StatusOrdinary;
     StatusOrdinary["Visa"] = "POR VISAR";
 })(StatusOrdinary = exports.StatusOrdinary || (exports.StatusOrdinary = {}));
 exports.ModelsOrdinary = {
-    permanentPerson: ordinariesModels.PermanentPerson,
+    permanentPerson: ordinariesModels.PermanentPersonModel,
     punctualworkPerson: ordinariesModels.PunctualWorkPerson,
 };

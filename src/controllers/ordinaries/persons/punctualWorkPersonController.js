@@ -22,7 +22,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAllPunctualPerson = exports.changeStatusPunctualWork = exports.uploadPunctualWorkPersons = exports.createPunctualWorkPerson = void 0;
+exports.changeStatusPunctualWork = exports.uploadPunctualWorkPersons = exports.createPunctualWorkPerson = void 0;
 // Importing own models
 var punctualWorkPersonModel_1 = __importDefault(require("../../../models/ordinaries/persons/punctualWorkPersonModel"));
 var userModel_1 = require("../../../models/users/userModel");
@@ -38,5 +38,3 @@ var createPunctualWorkPerson = ordinaryFactory.createOrdinay(punctualWorkPersonM
 exports.createPunctualWorkPerson = createPunctualWorkPerson;
 var changeStatusPunctualWork = ordinaryFactory.changeStatusOrdinary();
 exports.changeStatusPunctualWork = changeStatusPunctualWork;
-var getAllPunctualPerson = ordinaryFactory.getAllOrdinariesType(punctualWorkPersonModel_1.default);
-exports.getAllPunctualPerson = getAllPunctualPerson;

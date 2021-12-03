@@ -21,13 +21,8 @@ const createPunctualWorkPerson = ordinaryFactory.createOrdinay(
 
 const changeStatusPunctualWork = ordinaryFactory.changeStatusOrdinary();
 
-const getAllPunctualPerson = ordinaryFactory.getAllOrdinariesType(
-	PunctualWorkPersonModel
-);
-
 export {
 	createPunctualWorkPerson,
 	uploadPunctualWorkPersons,
 	changeStatusPunctualWork,
-	getAllPunctualPerson,
 };

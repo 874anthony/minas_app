@@ -69,7 +69,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.uploadPunctualWorkPerson = exports.uploadPermanentPerson = exports.createOrdinay = exports.changeStatusOrdinary = exports.getAllOrdinariesType = void 0;
+exports.uploadPunctualWorkPerson = exports.uploadPermanentPerson = exports.createOrdinay = exports.changeStatusOrdinary = void 0;
 var multer_1 = __importDefault(require("multer"));
 var fs_1 = __importDefault(require("fs"));
 // Importing our utils to this controller
@@ -78,10 +78,10 @@ var httpException_1 = __importDefault(require("../utils/httpException"));
 var apiFeatures_1 = __importDefault(require("../utils/apiFeatures"));
 // Import own models
 var ordinariesEnum_1 = require("../interfaces/ordinaries/ordinariesEnum");
+var trdImportAll_1 = require("../models/trd/trdImportAll");
 var userModel_1 = __importStar(require("../models/users/userModel"));
 var workflowModel_1 = __importStar(require("../models/workflows/workflowModel"));
 var trdOrdinary_1 = __importDefault(require("../models/trd/trdOrdinary"));
-var trdImportAll_1 = require("../models/trd/trdImportAll");
 // ================================== MULTER CONFIGURATION TO HANDLE THE DOCUMENTS ===========================================
 // Configuring first the type of the storage
 var multerStorageOrdinary = multer_1.default.diskStorage({
@@ -212,7 +212,7 @@ var createOrdinay = function (Model, Roles, checkRoles, subsanarRoles) {
                             usersID.push(element._id);
                         });
                     });
-                    bodyWorkflow = __assign(__assign({ radicado: newOrdinaryPerson._id, roles: usersID, observations: req.body.observations }, checkRoles), subsanarRoles);
+                    bodyWorkflow = __assign(__assign({ radicado: newOrdinaryPerson._id, ordinaryType: newOrdinaryPerson.ordinaryType, roles: usersID, observations: req.body.observations }, checkRoles), subsanarRoles);
                     _a.label = 8;
                 case 8:
                     _a.trys.push([8, 10, , 11]);
@@ -235,37 +235,6 @@ var createOrdinay = function (Model, Roles, checkRoles, subsanarRoles) {
     }); });
 };
 exports.createOrdinay = createOrdinay;
-var getAllOrdinariesType = function (Model) {
-    return (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-        var features, ordinaries;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    features = new apiFeatures_1.default(workflowModel_1.default.find(), req.query)
-                        .filter()
-                        .sort()
-                        .limitFields()
-                        .paginate();
-                    return [4 /*yield*/, features.query.populate({
-                            path: 'radicado',
-                            select: '-__v',
-                            model: Model,
-                        })];
-                case 1:
-                    ordinaries = _a.sent();
-                    if (ordinaries.length === 0) {
-                        return [2 /*return*/, next(new httpException_1.default('No hay permanentes pendientes!', 204))];
-                    }
-                    res.status(200).json({
-                        status: true,
-                        ordinaries: ordinaries,
-                    });
-                    return [2 /*return*/];
-            }
-        });
-    }); });
-};
-exports.getAllOrdinariesType = getAllOrdinariesType;
 var changeStatusOrdinary = function () {
     return (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
         var id, body, userID, excludedField, user, workflowDoc, checkKey, correctKey, Model, docMatched, checkArray, allTrues, Model, docMatched;

@@ -27,7 +27,7 @@ const PermanentPersonSchema = new Schema({
 		type: String,
 		required: true,
 		enum: {
-			values: Object.values(Gender),
+			values: ['Hombre', 'Mujer', 'Otro'],
 			message: 'El sexo debe ser alguno de los listados',
 		},
 	},
@@ -75,8 +75,7 @@ const PermanentPersonSchema = new Schema({
 	},
 	status: {
 		type: String,
-		enum: [StatusOrdinary],
-		default: StatusOrdinary.Pending,
+		default: 'PENDIENTE',
 	},
 	createdAt: {
 		type: Date,

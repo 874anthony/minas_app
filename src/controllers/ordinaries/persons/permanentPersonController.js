@@ -22,7 +22,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAllPermanentPerson = exports.changeStatusPermanent = exports.uploadPermanentPersons = exports.createPermanentPerson = void 0;
+exports.changeStatusPermanent = exports.uploadPermanentPersons = exports.createPermanentPerson = void 0;
 // Importing own models
 var permanentPersonModel_1 = __importDefault(require("../../../models/ordinaries/persons/permanentPersonModel"));
 var userModel_1 = require("../../../models/users/userModel");
@@ -54,5 +54,3 @@ var createPermanentPerson = ordinaryFactory.createOrdinay(permanentPersonModel_1
 exports.createPermanentPerson = createPermanentPerson;
 var changeStatusPermanent = ordinaryFactory.changeStatusOrdinary();
 exports.changeStatusPermanent = changeStatusPermanent;
-var getAllPermanentPerson = ordinaryFactory.getAllOrdinariesType(permanentPersonModel_1.default);
-exports.getAllPermanentPerson = getAllPermanentPerson;

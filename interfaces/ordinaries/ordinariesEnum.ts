@@ -18,7 +18,7 @@ export enum StatusOrdinary {
 }
 
 export const ModelsOrdinary = {
-	permanentPerson: ordinariesModels.PermanentPerson,
+	permanentPerson: ordinariesModels.PermanentPersonModel,
 	punctualworkPerson: ordinariesModels.PunctualWorkPerson,
 };
 export interface StatusBody {

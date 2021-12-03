@@ -60,6 +60,10 @@ const WorkflowSchema: Schema = new Schema({
 		enum: [StatusWorkflow],
 		default: StatusWorkflow.Pending,
 	},
+	ordinaryType: {
+		type: String,
+		required: true,
+	},
 	observations: [String],
 	createdAt: {
 		type: Date,

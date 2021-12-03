@@ -1,7 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var mongoose_1 = require("mongoose");
-var ordinariesEnum_1 = require("../../../interfaces/ordinaries/ordinariesEnum");
 // Definying the schema
 var PermanentPersonSchema = new mongoose_1.Schema({
     name: {
@@ -25,7 +24,7 @@ var PermanentPersonSchema = new mongoose_1.Schema({
         type: String,
         required: true,
         enum: {
-            values: Object.values(ordinariesEnum_1.Gender),
+            values: ['Hombre', 'Mujer', 'Otro'],
             message: 'El sexo debe ser alguno de los listados',
         },
     },
@@ -73,8 +72,7 @@ var PermanentPersonSchema = new mongoose_1.Schema({
     },
     status: {
         type: String,
-        enum: [ordinariesEnum_1.StatusOrdinary],
-        default: ordinariesEnum_1.StatusOrdinary.Pending,
+        default: 'PENDIENTE',
     },
     createdAt: {
         type: Date,

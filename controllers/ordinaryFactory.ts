@@ -13,10 +13,10 @@ import {
 	ModelsOrdinary,
 	StatusOrdinary,
 } from '../interfaces/ordinaries/ordinariesEnum';
+import { TRDDependency } from '../models/trd/trdImportAll';
 import User, { UserRoles } from '../models/users/userModel';
 import Workflow, { StatusWorkflow } from '../models/workflows/workflowModel';
 import TRDOrdinary from '../models/trd/trdOrdinary';
-import { TRDDependency } from '../models/trd/trdImportAll';
 
 // ================================== MULTER CONFIGURATION TO HANDLE THE DOCUMENTS ===========================================
 // Configuring first the type of the storage
@@ -189,6 +189,7 @@ const createOrdinay = (
 
 		const bodyWorkflow = {
 			radicado: newOrdinaryPerson._id,
+			ordinaryType: newOrdinaryPerson.ordinaryType,
 			roles: usersID,
 			observations: req.body.observations,
 			...checkRoles,
@@ -210,30 +211,6 @@ const createOrdinay = (
 			status: true,
 			message: 'Se ha creado el ordinario con éxito',
 			ordinary: newOrdinaryPerson,
-		});
-	});
-
-const getAllOrdinariesType = (Model) =>
-	catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-		const features = new APIFeatures(Workflow.find(), req.query)
-			.filter()
-			.sort()
-			.limitFields()
-			.paginate();
-
-		const ordinaries = await features.query.populate({
-			path: 'radicado',
-			select: '-__v',
-			model: Model,
-		});
-
-		if (ordinaries.length === 0) {
-			return next(new HttpException('No hay permanentes pendientes!', 204));
-		}
-
-		res.status(200).json({
-			status: true,
-			ordinaries,
 		});
 	});
 
@@ -324,6 +301,7 @@ const changeStatusOrdinary = () =>
 
 		if (allTrues) {
 			const Model = getModel(req.body.ordinaryType);
+
 			const docMatched = await Model.findById(workflowDoc.radicado);
 
 			docMatched.status = StatusOrdinary.Active;
@@ -338,7 +316,6 @@ const changeStatusOrdinary = () =>
 	});
 
 export {
-	getAllOrdinariesType,
 	changeStatusOrdinary,
 	createOrdinay,
 	uploadPermanentPerson,
