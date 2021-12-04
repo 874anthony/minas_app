@@ -70,6 +70,8 @@ const PunctualWorkPersonSchema = new Schema({
 		type: String,
 		default: 'PENDIENTE',
 	},
+	observations: [String],
+	attached: [String],
 	ordinaryType: {
 		type: String,
 		default: 'punctualworkPerson',

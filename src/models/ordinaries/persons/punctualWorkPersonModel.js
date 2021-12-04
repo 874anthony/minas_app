@@ -71,6 +71,8 @@ var PunctualWorkPersonSchema = new mongoose_1.Schema({
         type: String,
         default: 'PENDIENTE',
     },
+    observations: [String],
+    attached: [String],
     ordinaryType: {
         type: String,
         default: 'punctualworkPerson',

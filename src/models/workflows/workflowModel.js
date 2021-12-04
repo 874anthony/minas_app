@@ -66,7 +66,6 @@ var WorkflowSchema = new mongoose_1.Schema({
         type: String,
         required: true,
     },
-    observations: [String],
     createdAt: {
         type: Date,
         default: Date.now(),

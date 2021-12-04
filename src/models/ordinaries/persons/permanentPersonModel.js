@@ -70,6 +70,8 @@ var PermanentPersonSchema = new mongoose_1.Schema({
         ref: 'contractor',
         required: false,
     },
+    observations: [String],
+    attached: [String],
     status: {
         type: String,
         default: 'PENDIENTE',

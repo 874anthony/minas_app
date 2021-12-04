@@ -64,7 +64,6 @@ const WorkflowSchema: Schema = new Schema({
 		type: String,
 		required: true,
 	},
-	observations: [String],
 	createdAt: {
 		type: Date,
 		default: Date.now(),

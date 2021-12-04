@@ -82,6 +82,15 @@ var workflowModel_1 = __importStar(require("../../models/workflows/workflowModel
 var getKey = function (field, user) {
     return "" + field + Object.keys(userModel_1.UserRoles)[Object.values(userModel_1.UserRoles).indexOf(user.role)];
 };
+var getArray = function (Document, field) {
+    var fieldsArray = [];
+    Object.keys(Document).forEach(function (el) {
+        if (el.startsWith(field)) {
+            fieldsArray.push(el);
+        }
+    });
+    return fieldsArray;
+};
 var getModel = function (ordinaryType) {
     return ordinariesEnum_1.ModelsOrdinary[ordinaryType];
 };
@@ -150,7 +159,7 @@ var getAllOrdinariesType = (0, catchAsync_1.default)(function (req, res, next) {
 }); });
 exports.getAllOrdinariesType = getAllOrdinariesType;
 var changeStatusOrdinary = (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var id, body, userID, excludedField, user, workflowDoc, checkKey, correctKey, Model, docMatched, checkArray, allTrues, Model, docMatched;
+    var id, body, userID, excludedField, user, workflowDoc, checkKey, correctKey, Model, docMatched, Model, docMatched, correctArray, oneTrue, checkArray, allTrues, Model, docMatched;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -195,39 +204,44 @@ var changeStatusOrdinary = (0, catchAsync_1.default)(function (req, res, next) {
             case 6:
                 // Modify the status.
                 workflowDoc[checkKey] = body.check;
-                if (body.correct)
-                    workflowDoc[correctKey] = body.correct;
-                if (req.body.observations) {
-                    workflowDoc.observations = body.observations;
-                }
-                if (body.status)
-                    workflowDoc.status = body.status;
-                return [4 /*yield*/, workflowDoc.save({ validateBeforeSave: false })];
+                workflowDoc[correctKey] = body.correct;
+                if (!req.body.observations) return [3 /*break*/, 9];
+                Model = getModel(workflowDoc.ordinaryType);
+                return [4 /*yield*/, Model.findById(workflowDoc.radicado)];
             case 7:
+                docMatched = _a.sent();
+                docMatched.observations = req.body.observations;
+                return [4 /*yield*/, docMatched.save({ validateBeforeSave: false })];
+            case 8:
                 _a.sent();
-                checkArray = [];
-                Object.keys(workflowDoc._doc).forEach(function (el) {
-                    if (el.startsWith('check')) {
-                        checkArray.push(el);
-                    }
-                });
+                _a.label = 9;
+            case 9:
+                correctArray = getArray(workflowDoc._doc, 'correct');
+                oneTrue = correctArray.some(function (val) { return workflowDoc[val] === true; });
+                if (oneTrue) {
+                    workflowDoc.status = workflowModel_1.StatusWorkflow.Sanitation;
+                }
+                return [4 /*yield*/, workflowDoc.save({ validateBeforeSave: false })];
+            case 10:
+                _a.sent();
+                checkArray = getArray(workflowDoc._doc, 'check');
                 allTrues = checkArray.every(function (value) {
                     return workflowDoc[value] === true;
                 });
-                if (!allTrues) return [3 /*break*/, 11];
+                if (!allTrues) return [3 /*break*/, 14];
                 Model = getModel(workflowDoc.ordinaryType);
                 return [4 /*yield*/, Model.findById(workflowDoc.radicado)];
-            case 8:
+            case 11:
                 docMatched = _a.sent();
                 docMatched.status = ordinariesEnum_1.StatusOrdinary.Active;
                 return [4 /*yield*/, docMatched.save({ validateBeforeSave: false })];
-            case 9:
+            case 12:
                 _a.sent();
                 return [4 /*yield*/, workflowDoc.remove()];
-            case 10:
+            case 13:
                 _a.sent();
-                _a.label = 11;
-            case 11:
+                _a.label = 14;
+            case 14:
                 res
                     .status(200)
                     .json({ status: true, message: 'El proceso fue actualizado con éxito' });

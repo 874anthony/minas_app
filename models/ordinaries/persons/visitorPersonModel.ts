@@ -74,6 +74,8 @@ const VisitorPersonSchema = new Schema({
 		type: String,
 		default: 'visitorPerson',
 	},
+	observations: [String],
+	attached: [String],
 	createdAt: {
 		type: Date,
 		default: Date.now(),

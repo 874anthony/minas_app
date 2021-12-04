@@ -22,6 +22,18 @@ const getKey = (field: string, user) => {
 	}`;
 };
 
+const getArray = (Document: any, field: string): Array<string> => {
+	const fieldsArray: any = [];
+
+	Object.keys(Document).forEach((el) => {
+		if (el.startsWith(field)) {
+			fieldsArray.push(el);
+		}
+	});
+
+	return fieldsArray;
+};
+
 const getModel = (ordinaryType: string) => {
 	return ModelsOrdinary[ordinaryType];
 };
@@ -33,7 +45,6 @@ const ModelsPerRole = {
 		'visitorPerson',
 	],
 };
-
 // Helpers methods Ends HERE
 
 // MIDDLEWARES STARTS HERE
@@ -152,25 +163,27 @@ const changeStatusOrdinary = catchAsync(
 
 		// Modify the status.
 		workflowDoc[checkKey] = body.check;
-
-		if (body.correct) workflowDoc[correctKey] = body.correct;
+		workflowDoc[correctKey] = body.correct;
 
 		if (req.body.observations) {
-			workflowDoc.observations = body.observations;
+			const Model = getModel(workflowDoc.ordinaryType);
+			const docMatched = await Model.findById(workflowDoc.radicado);
+
+			docMatched.observations = req.body.observations;
+			await docMatched.save({ validateBeforeSave: false });
 		}
 
-		if (body.status) workflowDoc.status = body.status;
+		// HERE IS TO CHECK IF AT LEAST ONE CORRECT FIELD IS TRUE
+		const correctArray = getArray(workflowDoc._doc, 'correct');
+		const oneTrue = correctArray.some((val) => workflowDoc[val] === true);
+
+		if (oneTrue) {
+			workflowDoc.status = StatusWorkflow.Sanitation;
+		}
 
 		await workflowDoc.save({ validateBeforeSave: false });
 
-		//CHECK IF ALL ROLES ACCEPTED
-		const checkArray: any = [];
-
-		Object.keys(workflowDoc._doc).forEach((el) => {
-			if (el.startsWith('check')) {
-				checkArray.push(el);
-			}
-		});
+		const checkArray = getArray(workflowDoc._doc, 'check');
 
 		const allTrues = checkArray.every(function (value) {
 			return workflowDoc[value] === true;
