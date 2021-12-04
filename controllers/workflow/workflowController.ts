@@ -25,16 +25,22 @@ const getKey = (field: string, user) => {
 const getModel = (ordinaryType: string) => {
 	return ModelsOrdinary[ordinaryType];
 };
+
+const ModelsPerRole = {
+	'Control de Acceso': [
+		'permanentPerson',
+		'punctualworkPerson',
+		'visitorPerson',
+	],
+};
+
 // Helpers methods Ends HERE
 
+// MIDDLEWARES STARTS HERE
 const checkRole = (req: Request, res: Response, next: NextFunction) => {
 	const userID = req['user']._id;
 	req.query.roles = userID;
 	next();
-};
-
-const ModelsPerRole = {
-	'Control de Acceso': ['permanentPerson', 'punctualworkPerson'],
 };
 
 // METHODS STARTS HERE
@@ -84,8 +90,8 @@ const getAllOrdinariesType = catchAsync(
 	}
 );
 
-const changeStatusOrdinary = () =>
-	catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+const changeStatusOrdinary = catchAsync(
+	async (req: Request, res: Response, next: NextFunction) => {
 		const id = req.params.id;
 		const body = { ...req.body };
 
@@ -184,6 +190,7 @@ const changeStatusOrdinary = () =>
 		res
 			.status(200)
 			.json({ status: true, message: 'El proceso fue actualizado con éxito' });
-	});
+	}
+);
 
 export { checkRole, getAllOrdinariesType, changeStatusOrdinary };

@@ -85,16 +85,21 @@ var getKey = function (field, user) {
 var getModel = function (ordinaryType) {
     return ordinariesEnum_1.ModelsOrdinary[ordinaryType];
 };
+var ModelsPerRole = {
+    'Control de Acceso': [
+        'permanentPerson',
+        'punctualworkPerson',
+        'visitorPerson',
+    ],
+};
 // Helpers methods Ends HERE
+// MIDDLEWARES STARTS HERE
 var checkRole = function (req, res, next) {
     var userID = req['user']._id;
     req.query.roles = userID;
     next();
 };
 exports.checkRole = checkRole;
-var ModelsPerRole = {
-    'Control de Acceso': ['permanentPerson', 'punctualworkPerson'],
-};
 // METHODS STARTS HERE
 var getAllOrdinariesType = (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     var queryModified, userID, user, ordinariesPopulated, ordinaries;
@@ -144,92 +149,90 @@ var getAllOrdinariesType = (0, catchAsync_1.default)(function (req, res, next) {
     });
 }); });
 exports.getAllOrdinariesType = getAllOrdinariesType;
-var changeStatusOrdinary = function () {
-    return (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-        var id, body, userID, excludedField, user, workflowDoc, checkKey, correctKey, Model, docMatched, checkArray, allTrues, Model, docMatched;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    id = req.params.id;
-                    body = __assign({}, req.body);
-                    userID = req['user']._id;
-                    excludedField = workflowModel_1.StatusWorkflow.Approved;
-                    return [4 /*yield*/, userModel_1.default.findById(userID)];
-                case 1:
-                    user = _a.sent();
-                    // Check if they put 'POR VISAR' in the request.body
-                    if (Object.values(body).includes(excludedField)) {
-                        return [2 /*return*/, next(new httpException_1.default('No se cambiar el status a Visado, intente nuevamente', 404))];
+var changeStatusOrdinary = (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var id, body, userID, excludedField, user, workflowDoc, checkKey, correctKey, Model, docMatched, checkArray, allTrues, Model, docMatched;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                id = req.params.id;
+                body = __assign({}, req.body);
+                userID = req['user']._id;
+                excludedField = workflowModel_1.StatusWorkflow.Approved;
+                return [4 /*yield*/, userModel_1.default.findById(userID)];
+            case 1:
+                user = _a.sent();
+                // Check if they put 'POR VISAR' in the request.body
+                if (Object.values(body).includes(excludedField)) {
+                    return [2 /*return*/, next(new httpException_1.default('No se cambiar el status a Visado, intente nuevamente', 404))];
+                }
+                if (!user) {
+                    return [2 /*return*/, next(new httpException_1.default('No hay un usuario con ese token, inténtelo nuevamente!', 401))];
+                }
+                return [4 /*yield*/, workflowModel_1.default.findById(id)];
+            case 2:
+                workflowDoc = _a.sent();
+                if (!workflowDoc) {
+                    return [2 /*return*/, next(new httpException_1.default('No existe un proceso con ese ID, intente nuevamente', 404))];
+                }
+                checkKey = getKey('check', user);
+                correctKey = getKey('correct', user);
+                if (!(checkKey === 'checkSSFF')) return [3 /*break*/, 6];
+                Model = getModel(workflowDoc.ordinaryType);
+                return [4 /*yield*/, Model.findById(workflowDoc.radicado)];
+            case 3:
+                docMatched = _a.sent();
+                docMatched.status = ordinariesEnum_1.StatusOrdinary.Forbidden;
+                return [4 /*yield*/, docMatched.save({ validateBeforeSave: false })];
+            case 4:
+                _a.sent();
+                return [4 /*yield*/, workflowDoc.remove()];
+            case 5:
+                _a.sent();
+                return [2 /*return*/, res.status(204).json({
+                        status: true,
+                        message: 'Seguridad Física rechazó el proceso - Documento eliminado.',
+                    })];
+            case 6:
+                // Modify the status.
+                workflowDoc[checkKey] = body.check;
+                if (body.correct)
+                    workflowDoc[correctKey] = body.correct;
+                if (req.body.observations) {
+                    workflowDoc.observations = body.observations;
+                }
+                if (body.status)
+                    workflowDoc.status = body.status;
+                return [4 /*yield*/, workflowDoc.save({ validateBeforeSave: false })];
+            case 7:
+                _a.sent();
+                checkArray = [];
+                Object.keys(workflowDoc._doc).forEach(function (el) {
+                    if (el.startsWith('check')) {
+                        checkArray.push(el);
                     }
-                    if (!user) {
-                        return [2 /*return*/, next(new httpException_1.default('No hay un usuario con ese token, inténtelo nuevamente!', 401))];
-                    }
-                    return [4 /*yield*/, workflowModel_1.default.findById(id)];
-                case 2:
-                    workflowDoc = _a.sent();
-                    if (!workflowDoc) {
-                        return [2 /*return*/, next(new httpException_1.default('No existe un proceso con ese ID, intente nuevamente', 404))];
-                    }
-                    checkKey = getKey('check', user);
-                    correctKey = getKey('correct', user);
-                    if (!(checkKey === 'checkSSFF')) return [3 /*break*/, 6];
-                    Model = getModel(workflowDoc.ordinaryType);
-                    return [4 /*yield*/, Model.findById(workflowDoc.radicado)];
-                case 3:
-                    docMatched = _a.sent();
-                    docMatched.status = ordinariesEnum_1.StatusOrdinary.Forbidden;
-                    return [4 /*yield*/, docMatched.save({ validateBeforeSave: false })];
-                case 4:
-                    _a.sent();
-                    return [4 /*yield*/, workflowDoc.remove()];
-                case 5:
-                    _a.sent();
-                    return [2 /*return*/, res.status(204).json({
-                            status: true,
-                            message: 'Seguridad Física rechazó el proceso - Documento eliminado.',
-                        })];
-                case 6:
-                    // Modify the status.
-                    workflowDoc[checkKey] = body.check;
-                    if (body.correct)
-                        workflowDoc[correctKey] = body.correct;
-                    if (req.body.observations) {
-                        workflowDoc.observations = body.observations;
-                    }
-                    if (body.status)
-                        workflowDoc.status = body.status;
-                    return [4 /*yield*/, workflowDoc.save({ validateBeforeSave: false })];
-                case 7:
-                    _a.sent();
-                    checkArray = [];
-                    Object.keys(workflowDoc._doc).forEach(function (el) {
-                        if (el.startsWith('check')) {
-                            checkArray.push(el);
-                        }
-                    });
-                    allTrues = checkArray.every(function (value) {
-                        return workflowDoc[value] === true;
-                    });
-                    if (!allTrues) return [3 /*break*/, 11];
-                    Model = getModel(workflowDoc.ordinaryType);
-                    return [4 /*yield*/, Model.findById(workflowDoc.radicado)];
-                case 8:
-                    docMatched = _a.sent();
-                    docMatched.status = ordinariesEnum_1.StatusOrdinary.Active;
-                    return [4 /*yield*/, docMatched.save({ validateBeforeSave: false })];
-                case 9:
-                    _a.sent();
-                    return [4 /*yield*/, workflowDoc.remove()];
-                case 10:
-                    _a.sent();
-                    _a.label = 11;
-                case 11:
-                    res
-                        .status(200)
-                        .json({ status: true, message: 'El proceso fue actualizado con éxito' });
-                    return [2 /*return*/];
-            }
-        });
-    }); });
-};
+                });
+                allTrues = checkArray.every(function (value) {
+                    return workflowDoc[value] === true;
+                });
+                if (!allTrues) return [3 /*break*/, 11];
+                Model = getModel(workflowDoc.ordinaryType);
+                return [4 /*yield*/, Model.findById(workflowDoc.radicado)];
+            case 8:
+                docMatched = _a.sent();
+                docMatched.status = ordinariesEnum_1.StatusOrdinary.Active;
+                return [4 /*yield*/, docMatched.save({ validateBeforeSave: false })];
+            case 9:
+                _a.sent();
+                return [4 /*yield*/, workflowDoc.remove()];
+            case 10:
+                _a.sent();
+                _a.label = 11;
+            case 11:
+                res
+                    .status(200)
+                    .json({ status: true, message: 'El proceso fue actualizado con éxito' });
+                return [2 /*return*/];
+        }
+    });
+}); });
 exports.changeStatusOrdinary = changeStatusOrdinary;

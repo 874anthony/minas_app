@@ -41,4 +41,5 @@ var StatusOrdinary;
 exports.ModelsOrdinary = {
     permanentPerson: ordinariesModels.PermanentPersonModel,
     punctualworkPerson: ordinariesModels.PunctualWorkPerson,
+    visitorPerson: ordinariesModels.VisitorPerson,
 };
