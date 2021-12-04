@@ -28,6 +28,7 @@ var express_1 = __importDefault(require("express"));
 var contractorRoutes_1 = __importDefault(require("../../routes/contractors/contractorRoutes"));
 var permanentPersonRoutes_1 = __importDefault(require("../ordinaries/persons/permanentPersonRoutes"));
 var punctualworkPersonRoutes_1 = __importDefault(require("../ordinaries/persons/punctualworkPersonRoutes"));
+var visitorPersonRoutes_1 = __importDefault(require("../ordinaries/persons/visitorPersonRoutes"));
 var workflowRoutes_1 = __importDefault(require("../ordinaries/workflowRoutes"));
 // Importing own controllers
 var companyController = __importStar(require("../../controllers/companies/companyController"));
@@ -37,6 +38,7 @@ router.use('/:idCompany/contractors', contractorRoutes_1.default);
 router.use('/:idCompany/workflow', workflowRoutes_1.default);
 router.use('/:idCompany/ordinaries-person/permanent-person', permanentPersonRoutes_1.default);
 router.use('/:idCompany/ordinaries-person/punctual-work-person', punctualworkPersonRoutes_1.default);
+router.use('/:idCompany/ordinaries-person/visitor-person', visitorPersonRoutes_1.default);
 // Custom routes
 router
     .route('/pending-companies')

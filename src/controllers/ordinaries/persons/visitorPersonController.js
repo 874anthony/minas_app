@@ -22,15 +22,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var express_1 = __importDefault(require("express"));
-// Importing the controllers
-var authController = __importStar(require("../../controllers/auth/authController"));
-var workflowController = __importStar(require("../../controllers/workflow/workflowController"));
-var router = express_1.default.Router({ mergeParams: true });
-router
-    .route('/')
-    .get(authController.guardLogin, workflowController.checkRole, workflowController.getAllOrdinariesType);
-router
-    .route('/:id')
-    .patch(authController.guardLogin, workflowController.changeStatusOrdinary);
-exports.default = router;
+exports.uploadVisitorPersons = exports.createVisitorPerson = void 0;
+// Importing own models
+var visitorPersonModel_1 = __importDefault(require("../../../models/ordinaries/persons/visitorPersonModel"));
+var userModel_1 = require("../../../models/users/userModel");
+// Importing the factory
+var ordinaryFactory = __importStar(require("../../ordinaryFactory"));
+var uploadVisitorPersons = ordinaryFactory.uploadVisitorPerson;
+exports.uploadVisitorPersons = uploadVisitorPersons;
+var createVisitorPerson = ordinaryFactory.createOrdinary(visitorPersonModel_1.default, [userModel_1.UserRoles.AccessControl], {
+    checkAccessControl: false,
+}, {
+    correctAccessControl: false,
+});
+exports.createVisitorPerson = createVisitorPerson;

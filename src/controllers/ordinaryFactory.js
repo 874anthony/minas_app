@@ -10,25 +10,6 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -69,18 +50,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.uploadPunctualWorkPerson = exports.uploadPermanentPerson = exports.createOrdinay = exports.changeStatusOrdinary = void 0;
+exports.uploadVisitorPerson = exports.uploadPunctualWorkPerson = exports.uploadPermanentPerson = exports.createOrdinary = void 0;
 var multer_1 = __importDefault(require("multer"));
 var fs_1 = __importDefault(require("fs"));
 // Importing our utils to this controller
 var catchAsync_1 = __importDefault(require("../utils/catchAsync"));
 var httpException_1 = __importDefault(require("../utils/httpException"));
 var apiFeatures_1 = __importDefault(require("../utils/apiFeatures"));
-// Import own models
-var ordinariesEnum_1 = require("../interfaces/ordinaries/ordinariesEnum");
 var trdImportAll_1 = require("../models/trd/trdImportAll");
-var userModel_1 = __importStar(require("../models/users/userModel"));
-var workflowModel_1 = __importStar(require("../models/workflows/workflowModel"));
+var userModel_1 = __importDefault(require("../models/users/userModel"));
+var workflowModel_1 = __importDefault(require("../models/workflows/workflowModel"));
 var trdOrdinary_1 = __importDefault(require("../models/trd/trdOrdinary"));
 // ================================== MULTER CONFIGURATION TO HANDLE THE DOCUMENTS ===========================================
 // Configuring first the type of the storage
@@ -113,12 +92,6 @@ var uploadOrdinaryPerson = (0, multer_1.default)({
     fileFilter: multerFilterOrdinary,
 });
 // ================================================ Endpoints starts here =========================================
-var getKey = function (field, user) {
-    return "" + field + Object.keys(userModel_1.UserRoles)[Object.values(userModel_1.UserRoles).indexOf(user.role)];
-};
-var getModel = function (ordinaryType) {
-    return ordinariesEnum_1.ModelsOrdinary[ordinaryType];
-};
 // UPLOADS MIDDLEWARES
 var uploadPermanentPerson = uploadOrdinaryPerson.fields([
     { name: 'docCovid19', maxCount: 1 },
@@ -137,8 +110,16 @@ var uploadPunctualWorkPerson = uploadOrdinaryPerson.fields([
     { name: 'docCitizenship', maxCount: 1 },
 ]);
 exports.uploadPunctualWorkPerson = uploadPunctualWorkPerson;
+var uploadVisitorPerson = uploadOrdinaryPerson.fields([
+    { name: 'docCovid19', maxCount: 1 },
+    { name: 'docHealth', maxCount: 1 },
+    { name: 'docPension', maxCount: 1 },
+    { name: 'docSocialSecurity', maxCount: 1 },
+    { name: 'docCitizenship', maxCount: 1 },
+]);
+exports.uploadVisitorPerson = uploadVisitorPerson;
 // AQUI TERMINA LOS UPLOADS MIDDLEWARES
-var createOrdinay = function (Model, Roles, checkRoles, subsanarRoles) {
+var createOrdinary = function (Model, Roles, checkRoles, subsanarRoles) {
     return (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
         var body, dependency, trdOrdinary, year, dependencyCode, consecutive, radicado, newOrdinaryPerson, usersPromises, usersID, usersArray, bodyWorkflow, error_1;
         return __generator(this, function (_a) {
@@ -180,6 +161,8 @@ var createOrdinay = function (Model, Roles, checkRoles, subsanarRoles) {
                 case 5:
                     _a.sent();
                     body.radicado = radicado;
+                    if (req.params.idCompany)
+                        body.companyID = req.params.idCompany;
                     return [4 /*yield*/, Model.create(body)];
                 case 6:
                     newOrdinaryPerson = _a.sent();
@@ -234,92 +217,4 @@ var createOrdinay = function (Model, Roles, checkRoles, subsanarRoles) {
         });
     }); });
 };
-exports.createOrdinay = createOrdinay;
-var changeStatusOrdinary = function () {
-    return (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-        var id, body, userID, excludedField, user, workflowDoc, checkKey, correctKey, Model, docMatched, checkArray, allTrues, Model, docMatched;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    id = req.params.id;
-                    body = __assign({}, req.body);
-                    userID = req['user']._id;
-                    excludedField = workflowModel_1.StatusWorkflow.Approved;
-                    return [4 /*yield*/, userModel_1.default.findById(userID)];
-                case 1:
-                    user = _a.sent();
-                    // Check if they put 'POR VISAR' in the request.body
-                    if (Object.values(body).includes(excludedField)) {
-                        return [2 /*return*/, next(new httpException_1.default('No se cambiar el status a Visado, intente nuevamente', 404))];
-                    }
-                    if (!user) {
-                        return [2 /*return*/, next(new httpException_1.default('No hay un usuario con ese token, inténtelo nuevamente!', 401))];
-                    }
-                    return [4 /*yield*/, workflowModel_1.default.findById(id)];
-                case 2:
-                    workflowDoc = _a.sent();
-                    if (!workflowDoc) {
-                        return [2 /*return*/, next(new httpException_1.default('No existe un proceso con ese ID, intente nuevamente', 404))];
-                    }
-                    checkKey = getKey('check', user);
-                    correctKey = getKey('correct', user);
-                    if (!(checkKey === 'checkSSFF')) return [3 /*break*/, 6];
-                    Model = getModel(req.body.ordinaryType);
-                    return [4 /*yield*/, Model.findById(workflowDoc.radicado)];
-                case 3:
-                    docMatched = _a.sent();
-                    docMatched.status = ordinariesEnum_1.StatusOrdinary.Forbidden;
-                    return [4 /*yield*/, docMatched.save({ validateBeforeSave: false })];
-                case 4:
-                    _a.sent();
-                    return [4 /*yield*/, workflowDoc.remove()];
-                case 5:
-                    _a.sent();
-                    return [2 /*return*/, res.status(204).json({
-                            status: true,
-                            message: 'Seguridad Física rechazó el proceso - Documento eliminado.',
-                        })];
-                case 6:
-                    // Modify the status.
-                    workflowDoc[checkKey] = body.check;
-                    workflowDoc[correctKey] = body.correct;
-                    if (req.body.observations) {
-                        workflowDoc.observations = body.observations;
-                    }
-                    if (body.status)
-                        workflowDoc.status = body.status;
-                    return [4 /*yield*/, workflowDoc.save({ validateBeforeSave: false })];
-                case 7:
-                    _a.sent();
-                    checkArray = [];
-                    Object.keys(workflowDoc._doc).forEach(function (el) {
-                        if (el.startsWith('check')) {
-                            checkArray.push(el);
-                        }
-                    });
-                    allTrues = checkArray.every(function (value) {
-                        return workflowDoc[value] === true;
-                    });
-                    if (!allTrues) return [3 /*break*/, 11];
-                    Model = getModel(req.body.ordinaryType);
-                    return [4 /*yield*/, Model.findById(workflowDoc.radicado)];
-                case 8:
-                    docMatched = _a.sent();
-                    docMatched.status = ordinariesEnum_1.StatusOrdinary.Active;
-                    return [4 /*yield*/, docMatched.save({ validateBeforeSave: false })];
-                case 9:
-                    _a.sent();
-                    return [4 /*yield*/, workflowDoc.remove()];
-                case 10:
-                    _a.sent();
-                    _a.label = 11;
-                case 11:
-                    res
-                        .status(200)
-                        .json({ status: true, message: 'El proceso fue actualizado con éxito' });
-                    return [2 /*return*/];
-            }
-        });
-    }); });
-};
-exports.changeStatusOrdinary = changeStatusOrdinary;
+exports.createOrdinary = createOrdinary;

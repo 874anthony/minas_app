@@ -1,7 +1,7 @@
 import { Schema, model } from 'mongoose';
 
 // Definying the schema
-const PermanentPersonSchema = new Schema({
+const VisitorPersonSchema = new Schema({
 	name: {
 		type: String,
 		required: true,
@@ -50,9 +50,6 @@ const PermanentPersonSchema = new Schema({
 	docSocialSecurity: {
 		type: String,
 	},
-	docMedicalFitness: {
-		type: String,
-	},
 	docCitizenship: {
 		type: String,
 	},
@@ -73,23 +70,17 @@ const PermanentPersonSchema = new Schema({
 		type: String,
 		default: 'PENDIENTE',
 	},
+	ordinaryType: {
+		type: String,
+		default: 'visitorPerson',
+	},
 	createdAt: {
 		type: Date,
 		default: Date.now(),
-	},
-	ordinaryType: {
-		type: String,
-		default: 'permanentPerson',
 	},
 	updatedAt: {
 		type: Date,
 	},
 });
 
-// UserSchema.methods.toJSON = function() {
-// var obj = this.toObject()
-// delete obj.passwordHash
-// return obj
-// }
-
-export default model('permanent_person', PermanentPersonSchema);
+export default model('visitor_person', VisitorPersonSchema);

@@ -8,7 +8,7 @@ import * as ordinaryFactory from '../../ordinaryFactory';
 
 const uploadPermanentPersons = ordinaryFactory.uploadPermanentPerson;
 
-const createPermanentPerson = ordinaryFactory.createOrdinay(
+const createPermanentPerson = ordinaryFactory.createOrdinary(
 	PermanentPerson,
 	[
 		UserRoles.AccessControl,
@@ -35,6 +35,4 @@ const createPermanentPerson = ordinaryFactory.createOrdinay(
 	}
 );
 
-const changeStatusPermanent = ordinaryFactory.changeStatusOrdinary();
-
-export { createPermanentPerson, uploadPermanentPersons, changeStatusPermanent };
+export { createPermanentPerson, uploadPermanentPersons };

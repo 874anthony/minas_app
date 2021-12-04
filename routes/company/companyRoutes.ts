@@ -5,6 +5,7 @@ import express from 'express';
 import contractorRouter from '../../routes/contractors/contractorRoutes';
 import permanentPersonRouter from '../ordinaries/persons/permanentPersonRoutes';
 import punctualworkPersonRouter from '../ordinaries/persons/punctualworkPersonRoutes';
+import visitorPersonRouter from '../ordinaries/persons/visitorPersonRoutes';
 import workflowRouter from '../ordinaries/workflowRoutes';
 
 // Importing own controllers
@@ -23,6 +24,7 @@ router.use(
 	'/:idCompany/ordinaries-person/punctual-work-person',
 	punctualworkPersonRouter
 );
+router.use('/:idCompany/ordinaries-person/visitor-person', visitorPersonRouter);
 
 // Custom routes
 router

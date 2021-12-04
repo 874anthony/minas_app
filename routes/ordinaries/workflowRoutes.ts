@@ -14,9 +14,8 @@ router
 		workflowController.getAllOrdinariesType
 	);
 
-router.route('/:id').patch(
-	authController.guardLogin
-	// permanentPersonController.changeStatusPermanent
-);
+router
+	.route('/:id')
+	.patch(authController.guardLogin, workflowController.changeStatusOrdinary);
 
 export default router;

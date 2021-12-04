@@ -1,8 +1,4 @@
 import { Schema, model } from 'mongoose';
-import {
-	Gender,
-	StatusOrdinary,
-} from '../../../interfaces/ordinaries/ordinariesEnum';
 
 // Definying the schema
 const PunctualWorkPersonSchema = new Schema({

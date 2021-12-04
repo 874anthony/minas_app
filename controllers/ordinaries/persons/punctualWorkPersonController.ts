@@ -8,7 +8,7 @@ import * as ordinaryFactory from '../../ordinaryFactory';
 
 const uploadPunctualWorkPersons = ordinaryFactory.uploadPunctualWorkPerson;
 
-const createPunctualWorkPerson = ordinaryFactory.createOrdinay(
+const createPunctualWorkPerson = ordinaryFactory.createOrdinary(
 	PunctualWorkPersonModel,
 	[UserRoles.AccessControl],
 	{
@@ -19,10 +19,4 @@ const createPunctualWorkPerson = ordinaryFactory.createOrdinay(
 	}
 );
 
-const changeStatusPunctualWork = ordinaryFactory.changeStatusOrdinary();
-
-export {
-	createPunctualWorkPerson,
-	uploadPunctualWorkPersons,
-	changeStatusPunctualWork,
-};
+export { createPunctualWorkPerson, uploadPunctualWorkPersons };
