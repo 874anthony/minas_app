@@ -8,6 +8,9 @@ import * as ordinaryFactory from '../../ordinaryFactory';
 
 const uploadVisitorPersons = ordinaryFactory.uploadVisitorPerson;
 
+const getCitizenship =
+	ordinaryFactory.getOrdinaryCitizenship(VisitorPersonModel);
+
 const createVisitorPerson = ordinaryFactory.createOrdinary(
 	VisitorPersonModel,
 	[UserRoles.AccessControl],
@@ -19,4 +22,11 @@ const createVisitorPerson = ordinaryFactory.createOrdinary(
 	}
 );
 
-export { createVisitorPerson, uploadVisitorPersons };
+const updateVisitorPerson = ordinaryFactory.updateOrdinary(VisitorPersonModel);
+
+export {
+	createVisitorPerson,
+	getCitizenship,
+	uploadVisitorPersons,
+	updateVisitorPerson,
+};

@@ -3,7 +3,6 @@ import express from 'express';
 
 // Importing the controllers
 import * as visitorPersonController from '../../../controllers/ordinaries/persons/visitorPersonController';
-// import * as authController from '../../../controllers/auth/authController';
 
 const router = express.Router({ mergeParams: true });
 
@@ -12,6 +11,14 @@ router
 	.post(
 		visitorPersonController.uploadVisitorPersons,
 		visitorPersonController.createVisitorPerson
+	);
+
+router
+	.route('/:id')
+	.put(
+		visitorPersonController.getCitizenship,
+		visitorPersonController.uploadVisitorPersons,
+		visitorPersonController.updateVisitorPerson
 	);
 
 export default router;

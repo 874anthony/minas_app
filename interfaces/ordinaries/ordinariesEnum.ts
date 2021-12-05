@@ -12,7 +12,7 @@ export enum StatusOrdinary {
 	Pending = 'PENDIENTE',
 	Inactive = 'INACTIVO',
 	Rejected = 'RECHAZADO',
-	// Correct = 'SUBSANAR',
+	Sanitation = 'SUBSANAR',
 	Forbidden = 'PROHIBIDO',
 	Visa = 'POR VISAR',
 }

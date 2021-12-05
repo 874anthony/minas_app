@@ -34,7 +34,7 @@ var StatusOrdinary;
     StatusOrdinary["Pending"] = "PENDIENTE";
     StatusOrdinary["Inactive"] = "INACTIVO";
     StatusOrdinary["Rejected"] = "RECHAZADO";
-    // Correct = 'SUBSANAR',
+    StatusOrdinary["Sanitation"] = "SUBSANAR";
     StatusOrdinary["Forbidden"] = "PROHIBIDO";
     StatusOrdinary["Visa"] = "POR VISAR";
 })(StatusOrdinary = exports.StatusOrdinary || (exports.StatusOrdinary = {}));

@@ -107,19 +107,8 @@ const changeStatusOrdinary = catchAsync(
 		const body = { ...req.body };
 
 		const userID = req['user']._id;
-		const excludedField = StatusWorkflow.Approved;
 
 		const user = await User.findById(userID);
-
-		// Check if they put 'POR VISAR' in the request.body
-		if (Object.values(body).includes(excludedField)) {
-			return next(
-				new HttpException(
-					'No se cambiar el status a Visado, intente nuevamente',
-					404
-				)
-			);
-		}
 
 		if (!user) {
 			return next(
@@ -145,22 +134,6 @@ const changeStatusOrdinary = catchAsync(
 		const checkKey = getKey('check', user);
 		const correctKey = getKey('correct', user);
 
-		if (checkKey === 'checkSSFF') {
-			const Model = getModel(workflowDoc.ordinaryType);
-
-			const docMatched = await Model.findById(workflowDoc.radicado);
-
-			docMatched.status = StatusOrdinary.Forbidden;
-			await docMatched.save({ validateBeforeSave: false });
-
-			await workflowDoc.remove();
-
-			return res.status(204).json({
-				status: true,
-				message: 'Seguridad Física rechazó el proceso - Documento eliminado.',
-			});
-		}
-
 		// Modify the status.
 		workflowDoc[checkKey] = body.check;
 		workflowDoc[correctKey] = body.correct;
@@ -169,36 +142,12 @@ const changeStatusOrdinary = catchAsync(
 			const Model = getModel(workflowDoc.ordinaryType);
 			const docMatched = await Model.findById(workflowDoc.radicado);
 
-			docMatched.observations = req.body.observations;
+			docMatched.observations.push(req.body.observations);
+
 			await docMatched.save({ validateBeforeSave: false });
-		}
-
-		// HERE IS TO CHECK IF AT LEAST ONE CORRECT FIELD IS TRUE
-		const correctArray = getArray(workflowDoc._doc, 'correct');
-		const oneTrue = correctArray.some((val) => workflowDoc[val] === true);
-
-		if (oneTrue) {
-			workflowDoc.status = StatusWorkflow.Sanitation;
 		}
 
 		await workflowDoc.save({ validateBeforeSave: false });
-
-		const checkArray = getArray(workflowDoc._doc, 'check');
-
-		const allTrues = checkArray.every(function (value) {
-			return workflowDoc[value] === true;
-		});
-
-		if (allTrues) {
-			const Model = getModel(workflowDoc.ordinaryType);
-
-			const docMatched = await Model.findById(workflowDoc.radicado);
-
-			docMatched.status = StatusOrdinary.Active;
-			await docMatched.save({ validateBeforeSave: false });
-
-			await workflowDoc.remove();
-		}
 
 		res
 			.status(200)

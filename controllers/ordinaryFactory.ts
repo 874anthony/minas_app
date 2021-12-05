@@ -18,7 +18,15 @@ import TRDOrdinary from '../models/trd/trdOrdinary';
 const multerStorageOrdinary = multer.diskStorage({
 	// Define the destination
 	destination: (req: Request, file: Express.Multer.File, callback) => {
-		const directory = `store/documents/ordinaries/person/${req.body.citizenship}`;
+		let predicate;
+
+		if (req.body.citizenship === undefined) {
+			predicate = req['ordCitizenship'];
+		} else {
+			predicate = req.body.citizenship;
+		}
+
+		const directory = `store/documents/ordinaries/person/${predicate}`;
 
 		if (!fs.existsSync(directory)) {
 			fs.mkdirSync(directory, { recursive: true });
@@ -27,12 +35,17 @@ const multerStorageOrdinary = multer.diskStorage({
 		callback(null, directory);
 	},
 	filename: (req: Request, file: Express.Multer.File, callback) => {
+		let predicate;
+
+		if (req.body.citizenship === undefined) {
+			predicate = req['ordCitizenship'];
+		} else {
+			predicate = req.body.citizenship;
+		}
+
 		// Extracting the extension.
 		const extension = file.mimetype.split('/')[1];
-		callback(
-			null,
-			`ordinary-${req.body.citizenship}-${Date.now()}.${extension}`
-		);
+		callback(null, `ordinary-${predicate}-${Date.now()}.${extension}`);
 	},
 });
 
@@ -60,6 +73,8 @@ const uploadOrdinaryPerson = multer({
 // ================================================ Endpoints starts here =========================================
 
 // UPLOADS MIDDLEWARES
+// const uploadAttached = uploadOrdinaryPerson.single()
+
 const uploadPermanentPerson = uploadOrdinaryPerson.fields([
 	{ name: 'docCovid19', maxCount: 1 },
 	{ name: 'docHealth', maxCount: 1 },
@@ -85,7 +100,25 @@ const uploadVisitorPerson = uploadOrdinaryPerson.fields([
 	{ name: 'docCitizenship', maxCount: 1 },
 ]);
 // AQUI TERMINA LOS UPLOADS MIDDLEWARES
+const getOrdinaryCitizenship = (Model) =>
+	catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+		const id = req.params.id;
+		const currentOrdinary = await Model.findById(id);
 
+		if (!currentOrdinary) {
+			return next(
+				new HttpException(
+					'No hay ningún ordinario con ese ID, intente nuevamente',
+					404
+				)
+			);
+		}
+
+		req['ordCitizenship'] = currentOrdinary.citizenship;
+		next();
+	});
+
+// AQUI TERMINA LOS MIDDLEWARES
 const createOrdinary = (
 	Model,
 	Roles: Array<string>,
@@ -209,8 +242,58 @@ const createOrdinary = (
 		});
 	});
 
+const updateOrdinary = (Model) =>
+	catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+		const id = req.params.id;
+
+		// TODO: VERIFICAR SI ME MANDA QUE ES POR SUBSANACIÓN!
+
+		if (!req.files) {
+			return next(
+				new HttpException(
+					'No ha subido ningún archivo, intente nuevamente',
+					404
+				)
+			);
+		}
+
+		// Mutating the object req.body
+		const body = { ...req.body };
+
+		// Looping through the req.files object to set it to the body
+		Object.keys(req.files).forEach(
+			(el) => (body[el] = req.files![el][0].filename)
+		);
+
+		body['updatedAt'] = Date.now();
+
+		const ordinaryUpdated = await Model.findByIdAndUpdate(id, body, {
+			new: true,
+			validateBeforeSave: false,
+		});
+
+		if (!ordinaryUpdated) {
+			return next(
+				new HttpException(
+					'Ha ocurrido un problema al intentar actualizar, intente nuevamente!',
+					404
+				)
+			);
+		}
+
+		res.status(200).json({
+			status: true,
+			message: 'Se ha actualizado el registro con éxito',
+			ordinaryUpdated,
+		});
+	});
+
+// TODO: GET ALL ORDINARIES, GET ORDINARY BY ID
+
 export {
+	getOrdinaryCitizenship,
 	createOrdinary,
+	updateOrdinary,
 	uploadPermanentPerson,
 	uploadPunctualWorkPerson,
 	uploadVisitorPerson,

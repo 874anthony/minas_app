@@ -77,7 +77,7 @@ var apiFeatures_1 = __importDefault(require("../../utils/apiFeatures"));
 var ordinariesEnum_1 = require("../../interfaces/ordinaries/ordinariesEnum");
 // Importing own models
 var userModel_1 = __importStar(require("../../models/users/userModel"));
-var workflowModel_1 = __importStar(require("../../models/workflows/workflowModel"));
+var workflowModel_1 = __importDefault(require("../../models/workflows/workflowModel"));
 // Helpers methods
 var getKey = function (field, user) {
     return "" + field + Object.keys(userModel_1.UserRoles)[Object.values(userModel_1.UserRoles).indexOf(user.role)];
@@ -159,21 +159,16 @@ var getAllOrdinariesType = (0, catchAsync_1.default)(function (req, res, next) {
 }); });
 exports.getAllOrdinariesType = getAllOrdinariesType;
 var changeStatusOrdinary = (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var id, body, userID, excludedField, user, workflowDoc, checkKey, correctKey, Model, docMatched, Model, docMatched, correctArray, oneTrue, checkArray, allTrues, Model, docMatched;
+    var id, body, userID, user, workflowDoc, checkKey, correctKey, Model, docMatched;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 id = req.params.id;
                 body = __assign({}, req.body);
                 userID = req['user']._id;
-                excludedField = workflowModel_1.StatusWorkflow.Approved;
                 return [4 /*yield*/, userModel_1.default.findById(userID)];
             case 1:
                 user = _a.sent();
-                // Check if they put 'POR VISAR' in the request.body
-                if (Object.values(body).includes(excludedField)) {
-                    return [2 /*return*/, next(new httpException_1.default('No se cambiar el status a Visado, intente nuevamente', 404))];
-                }
                 if (!user) {
                     return [2 /*return*/, next(new httpException_1.default('No hay un usuario con ese token, inténtelo nuevamente!', 401))];
                 }
@@ -185,63 +180,22 @@ var changeStatusOrdinary = (0, catchAsync_1.default)(function (req, res, next) {
                 }
                 checkKey = getKey('check', user);
                 correctKey = getKey('correct', user);
-                if (!(checkKey === 'checkSSFF')) return [3 /*break*/, 6];
+                // Modify the status.
+                workflowDoc[checkKey] = body.check;
+                workflowDoc[correctKey] = body.correct;
+                if (!req.body.observations) return [3 /*break*/, 5];
                 Model = getModel(workflowDoc.ordinaryType);
                 return [4 /*yield*/, Model.findById(workflowDoc.radicado)];
             case 3:
                 docMatched = _a.sent();
-                docMatched.status = ordinariesEnum_1.StatusOrdinary.Forbidden;
+                docMatched.observations.push(req.body.observations);
                 return [4 /*yield*/, docMatched.save({ validateBeforeSave: false })];
             case 4:
                 _a.sent();
-                return [4 /*yield*/, workflowDoc.remove()];
-            case 5:
-                _a.sent();
-                return [2 /*return*/, res.status(204).json({
-                        status: true,
-                        message: 'Seguridad Física rechazó el proceso - Documento eliminado.',
-                    })];
+                _a.label = 5;
+            case 5: return [4 /*yield*/, workflowDoc.save({ validateBeforeSave: false })];
             case 6:
-                // Modify the status.
-                workflowDoc[checkKey] = body.check;
-                workflowDoc[correctKey] = body.correct;
-                if (!req.body.observations) return [3 /*break*/, 9];
-                Model = getModel(workflowDoc.ordinaryType);
-                return [4 /*yield*/, Model.findById(workflowDoc.radicado)];
-            case 7:
-                docMatched = _a.sent();
-                docMatched.observations = req.body.observations;
-                return [4 /*yield*/, docMatched.save({ validateBeforeSave: false })];
-            case 8:
                 _a.sent();
-                _a.label = 9;
-            case 9:
-                correctArray = getArray(workflowDoc._doc, 'correct');
-                oneTrue = correctArray.some(function (val) { return workflowDoc[val] === true; });
-                if (oneTrue) {
-                    workflowDoc.status = workflowModel_1.StatusWorkflow.Sanitation;
-                }
-                return [4 /*yield*/, workflowDoc.save({ validateBeforeSave: false })];
-            case 10:
-                _a.sent();
-                checkArray = getArray(workflowDoc._doc, 'check');
-                allTrues = checkArray.every(function (value) {
-                    return workflowDoc[value] === true;
-                });
-                if (!allTrues) return [3 /*break*/, 14];
-                Model = getModel(workflowDoc.ordinaryType);
-                return [4 /*yield*/, Model.findById(workflowDoc.radicado)];
-            case 11:
-                docMatched = _a.sent();
-                docMatched.status = ordinariesEnum_1.StatusOrdinary.Active;
-                return [4 /*yield*/, docMatched.save({ validateBeforeSave: false })];
-            case 12:
-                _a.sent();
-                return [4 /*yield*/, workflowDoc.remove()];
-            case 13:
-                _a.sent();
-                _a.label = 14;
-            case 14:
                 res
                     .status(200)
                     .json({ status: true, message: 'El proceso fue actualizado con éxito' });

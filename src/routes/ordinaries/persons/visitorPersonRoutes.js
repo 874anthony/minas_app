@@ -26,9 +26,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = __importDefault(require("express"));
 // Importing the controllers
 var visitorPersonController = __importStar(require("../../../controllers/ordinaries/persons/visitorPersonController"));
-// import * as authController from '../../../controllers/auth/authController';
 var router = express_1.default.Router({ mergeParams: true });
 router
     .route('/')
     .post(visitorPersonController.uploadVisitorPersons, visitorPersonController.createVisitorPerson);
+router
+    .route('/:id')
+    .put(visitorPersonController.getCitizenship, visitorPersonController.uploadVisitorPersons, visitorPersonController.updateVisitorPerson);
 exports.default = router;

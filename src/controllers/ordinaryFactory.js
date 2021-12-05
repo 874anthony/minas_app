@@ -50,7 +50,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.uploadVisitorPerson = exports.uploadPunctualWorkPerson = exports.uploadPermanentPerson = exports.createOrdinary = void 0;
+exports.uploadVisitorPerson = exports.uploadPunctualWorkPerson = exports.uploadPermanentPerson = exports.updateOrdinary = exports.createOrdinary = exports.getOrdinaryCitizenship = void 0;
 var multer_1 = __importDefault(require("multer"));
 var fs_1 = __importDefault(require("fs"));
 // Importing our utils to this controller
@@ -66,16 +66,30 @@ var trdOrdinary_1 = __importDefault(require("../models/trd/trdOrdinary"));
 var multerStorageOrdinary = multer_1.default.diskStorage({
     // Define the destination
     destination: function (req, file, callback) {
-        var directory = "store/documents/ordinaries/person/" + req.body.citizenship;
+        var predicate;
+        if (req.body.citizenship === undefined) {
+            predicate = req['ordCitizenship'];
+        }
+        else {
+            predicate = req.body.citizenship;
+        }
+        var directory = "store/documents/ordinaries/person/" + predicate;
         if (!fs_1.default.existsSync(directory)) {
             fs_1.default.mkdirSync(directory, { recursive: true });
         }
         callback(null, directory);
     },
     filename: function (req, file, callback) {
+        var predicate;
+        if (req.body.citizenship === undefined) {
+            predicate = req['ordCitizenship'];
+        }
+        else {
+            predicate = req.body.citizenship;
+        }
         // Extracting the extension.
         var extension = file.mimetype.split('/')[1];
-        callback(null, "ordinary-" + req.body.citizenship + "-" + Date.now() + "." + extension);
+        callback(null, "ordinary-" + predicate + "-" + Date.now() + "." + extension);
     },
 });
 // Filtering for only PDF files
@@ -93,6 +107,7 @@ var uploadOrdinaryPerson = (0, multer_1.default)({
 });
 // ================================================ Endpoints starts here =========================================
 // UPLOADS MIDDLEWARES
+// const uploadAttached = uploadOrdinaryPerson.single()
 var uploadPermanentPerson = uploadOrdinaryPerson.fields([
     { name: 'docCovid19', maxCount: 1 },
     { name: 'docHealth', maxCount: 1 },
@@ -119,6 +134,28 @@ var uploadVisitorPerson = uploadOrdinaryPerson.fields([
 ]);
 exports.uploadVisitorPerson = uploadVisitorPerson;
 // AQUI TERMINA LOS UPLOADS MIDDLEWARES
+var getOrdinaryCitizenship = function (Model) {
+    return (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+        var id, currentOrdinary;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    id = req.params.id;
+                    return [4 /*yield*/, Model.findById(id)];
+                case 1:
+                    currentOrdinary = _a.sent();
+                    if (!currentOrdinary) {
+                        return [2 /*return*/, next(new httpException_1.default('No hay ningún ordinario con ese ID, intente nuevamente', 404))];
+                    }
+                    req['ordCitizenship'] = currentOrdinary.citizenship;
+                    next();
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+};
+exports.getOrdinaryCitizenship = getOrdinaryCitizenship;
+// AQUI TERMINA LOS MIDDLEWARES
 var createOrdinary = function (Model, Roles, checkRoles, subsanarRoles) {
     return (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
         var body, dependency, trdOrdinary, year, dependencyCode, consecutive, radicado, newOrdinaryPerson, usersPromises, usersID, usersArray, bodyWorkflow, error_1;
@@ -218,3 +255,38 @@ var createOrdinary = function (Model, Roles, checkRoles, subsanarRoles) {
     }); });
 };
 exports.createOrdinary = createOrdinary;
+var updateOrdinary = function (Model) {
+    return (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+        var id, body, ordinaryUpdated;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    id = req.params.id;
+                    // TODO: VERIFICAR SI ME MANDA QUE ES POR SUBSANACIÓN!
+                    if (!req.files) {
+                        return [2 /*return*/, next(new httpException_1.default('No ha subido ningún archivo, intente nuevamente', 404))];
+                    }
+                    body = __assign({}, req.body);
+                    // Looping through the req.files object to set it to the body
+                    Object.keys(req.files).forEach(function (el) { return (body[el] = req.files[el][0].filename); });
+                    body['updatedAt'] = Date.now();
+                    return [4 /*yield*/, Model.findByIdAndUpdate(id, body, {
+                            new: true,
+                            validateBeforeSave: false,
+                        })];
+                case 1:
+                    ordinaryUpdated = _a.sent();
+                    if (!ordinaryUpdated) {
+                        return [2 /*return*/, next(new httpException_1.default('Ha ocurrido un problema al intentar actualizar, intente nuevamente!', 404))];
+                    }
+                    res.status(200).json({
+                        status: true,
+                        message: 'Se ha actualizado el registro con éxito',
+                        ordinaryUpdated: ordinaryUpdated,
+                    });
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+};
+exports.updateOrdinary = updateOrdinary;
