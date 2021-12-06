@@ -7,6 +7,7 @@ import permanentPersonRouter from '../ordinaries/persons/permanentPersonRoutes';
 import punctualworkPersonRouter from '../ordinaries/persons/punctualworkPersonRoutes';
 import visitorPersonRouter from '../ordinaries/persons/visitorPersonRoutes';
 import workflowRouter from '../ordinaries/workflowRoutes';
+import ordinariesRouter from '../ordinaries/ordinariesRoutes';
 
 // Importing own controllers
 import * as companyController from '../../controllers/companies/companyController';
@@ -16,6 +17,7 @@ const router = express.Router();
 // Nesting routes to redirect to contractorRouter
 router.use('/:idCompany/contractors', contractorRouter);
 router.use('/:idCompany/workflow', workflowRouter);
+router.use('/:idCompany/ordinaries', ordinariesRouter);
 router.use(
 	'/:idCompany/ordinaries-person/permanent-person',
 	permanentPersonRouter
@@ -48,5 +50,9 @@ router.route('/:id').get(companyController.getCompany);
 router
 	.route('/accept-pending-company/:id')
 	.patch(companyController.acceptCompany);
+
+router
+	.route('/reject-pending-company/:id')
+	.delete(companyController.rejectCompany);
 
 export default router;

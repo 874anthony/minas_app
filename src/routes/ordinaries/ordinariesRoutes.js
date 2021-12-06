@@ -23,20 +23,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = __importDefault(require("express"));
-// Importing own controllers
-var contractorController = __importStar(require("../../controllers/contractor/contractorController"));
-// Enabling the mergeParams to get access to the idCompany
+var ordinaryFactory = __importStar(require("../../controllers/ordinaryFactory"));
 var router = express_1.default.Router({ mergeParams: true });
+// Aliases routes
 router
-    .route('/')
-    .get(contractorController.getAllContractors)
-    .post(contractorController.uploadContractorDocs, contractorController.addContractor, contractorController.createContractor);
-// Routes with the id
-router.route('/:id').get(contractorController.getContractor);
-router
-    .route('/accept-pending-contractor/:id')
-    .patch(contractorController.acceptContractor);
-router
-    .route('/reject-pending-contractor/:id')
-    .delete(contractorController.rejectContractor);
+    .route('/ordinaries-by-company')
+    .get(ordinaryFactory.checkCompanyID, ordinaryFactory.getAllOrds);
+router.route('/').get(ordinaryFactory.getAllOrds);
+router.route('/:id').get(ordinaryFactory.getOrdById);
 exports.default = router;

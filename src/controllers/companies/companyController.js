@@ -22,7 +22,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.loginCompany = exports.getPendingCompanies = exports.uploadCompanyDocs = exports.acceptCompany = exports.createCompany = exports.getCompany = exports.getAllCompanies = void 0;
+exports.loginCompany = exports.getPendingCompanies = exports.uploadCompanyDocs = exports.rejectCompany = exports.acceptCompany = exports.createCompany = exports.getCompany = exports.getAllCompanies = void 0;
 // Own models
 var companyModel_1 = __importDefault(require("../../models/companies/companyModel"));
 // Own Factory
@@ -49,5 +49,7 @@ exports.createCompany = createCompany;
 // Approve a pending company and autogenerate 'Radicado'
 var acceptCompany = factory.acceptOne(companyModel_1.default);
 exports.acceptCompany = acceptCompany;
+var rejectCompany = factory.rejectOne(companyModel_1.default);
+exports.rejectCompany = rejectCompany;
 var loginCompany = (0, authController_1.login)(companyModel_1.default);
 exports.loginCompany = loginCompany;

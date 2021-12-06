@@ -167,6 +167,48 @@ const createOne = (Model) =>
 		});
 	});
 
+const rejectOne = (Model) =>
+	catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+		const id = req.params.id;
+		const { emailMessage } = req.body;
+
+		const companyMatched = await Model.findById(id);
+
+		// CHECK IF THE COMPANY EXISTS
+		if (!companyMatched) {
+			return next(
+				new HttpException(
+					'No existe una compañía con ese ID, inténtelo nuevamente',
+					404
+				)
+			);
+		}
+
+		try {
+			await sendEmail({
+				email: companyMatched.email,
+				subject: 'Ha sido denegado su acceso a la Mina San Jorge!',
+				message: emailMessage,
+			});
+		} catch (error) {
+			return next(
+				new HttpException(
+					'Hubo un error al enviar el correo, por favor intente más tarde',
+					500
+				)
+			);
+		}
+
+		await companyMatched.remove();
+
+		// SENDING THE FINAL RESPONSE TO THE CLIENT
+		return res.status(204).json({
+			status: true,
+			message:
+				'La empresa fue rechazada y se le envió un correo con las observaciones',
+		});
+	});
+
 const acceptOne = (Model) =>
 	catchAsync(async (req: Request, res: Response, next: NextFunction) => {
 		const id = req.params.id;
@@ -238,7 +280,7 @@ const acceptOne = (Model) =>
 
 		// To save observations as well
 		if (req.body.observations)
-			companyMatched.observations = req.body.observations;
+			companyMatched.observations.push(req.body.observations);
 
 		await companyMatched.save({ validateBeforeSave: false });
 
@@ -269,4 +311,4 @@ const acceptOne = (Model) =>
 		});
 	});
 
-export { createOne, findAll, findOne, acceptOne, uploadCompanyDocs };
+export { createOne, findAll, findOne, acceptOne, rejectOne, uploadCompanyDocs };

@@ -22,4 +22,8 @@ router
 	.route('/accept-pending-contractor/:id')
 	.patch(contractorController.acceptContractor);
 
+router
+	.route('/reject-pending-contractor/:id')
+	.delete(contractorController.rejectContractor);
+
 export default router;

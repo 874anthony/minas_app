@@ -1,11 +1,6 @@
 // Import 3rd-party packages
 import { NextFunction, Request, Response } from 'express';
 
-// // Importing our utils to this controller
-// import HttpException from '../../utils/httpException';
-// import catchAsync from '../../utils/catchAsync';
-// import sendEmail from '../../utils/email';
-
 // Own models
 import Contractor from '../../models/contractors/contractorModel';
 
@@ -25,6 +20,7 @@ const getAllContractors = factory.findAll(Contractor);
 const getContractor = factory.findOne(Contractor);
 const createContractor = factory.createOne(Contractor);
 const acceptContractor = factory.acceptOne(Contractor);
+const rejectContractor = factory.rejectOne(Contractor);
 
 export {
 	getAllContractors,
@@ -32,5 +28,6 @@ export {
 	createContractor,
 	addContractor,
 	acceptContractor,
+	rejectContractor,
 	uploadContractorDocs,
 };

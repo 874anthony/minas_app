@@ -82,15 +82,6 @@ var workflowModel_1 = __importDefault(require("../../models/workflows/workflowMo
 var getKey = function (field, user) {
     return "" + field + Object.keys(userModel_1.UserRoles)[Object.values(userModel_1.UserRoles).indexOf(user.role)];
 };
-var getArray = function (Document, field) {
-    var fieldsArray = [];
-    Object.keys(Document).forEach(function (el) {
-        if (el.startsWith(field)) {
-            fieldsArray.push(el);
-        }
-    });
-    return fieldsArray;
-};
 var getModel = function (ordinaryType) {
     return ordinariesEnum_1.ModelsOrdinary[ordinaryType];
 };

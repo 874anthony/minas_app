@@ -30,12 +30,14 @@ var permanentPersonRoutes_1 = __importDefault(require("../ordinaries/persons/per
 var punctualworkPersonRoutes_1 = __importDefault(require("../ordinaries/persons/punctualworkPersonRoutes"));
 var visitorPersonRoutes_1 = __importDefault(require("../ordinaries/persons/visitorPersonRoutes"));
 var workflowRoutes_1 = __importDefault(require("../ordinaries/workflowRoutes"));
+var ordinariesRoutes_1 = __importDefault(require("../ordinaries/ordinariesRoutes"));
 // Importing own controllers
 var companyController = __importStar(require("../../controllers/companies/companyController"));
 var router = express_1.default.Router();
 // Nesting routes to redirect to contractorRouter
 router.use('/:idCompany/contractors', contractorRoutes_1.default);
 router.use('/:idCompany/workflow', workflowRoutes_1.default);
+router.use('/:idCompany/ordinaries', ordinariesRoutes_1.default);
 router.use('/:idCompany/ordinaries-person/permanent-person', permanentPersonRoutes_1.default);
 router.use('/:idCompany/ordinaries-person/punctual-work-person', punctualworkPersonRoutes_1.default);
 router.use('/:idCompany/ordinaries-person/visitor-person', visitorPersonRoutes_1.default);
@@ -54,4 +56,7 @@ router.route('/:id').get(companyController.getCompany);
 router
     .route('/accept-pending-company/:id')
     .patch(companyController.acceptCompany);
+router
+    .route('/reject-pending-company/:id')
+    .delete(companyController.rejectCompany);
 exports.default = router;

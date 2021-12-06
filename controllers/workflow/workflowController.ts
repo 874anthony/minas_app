@@ -22,18 +22,6 @@ const getKey = (field: string, user) => {
 	}`;
 };
 
-const getArray = (Document: any, field: string): Array<string> => {
-	const fieldsArray: any = [];
-
-	Object.keys(Document).forEach((el) => {
-		if (el.startsWith(field)) {
-			fieldsArray.push(el);
-		}
-	});
-
-	return fieldsArray;
-};
-
 const getModel = (ordinaryType: string) => {
 	return ModelsOrdinary[ordinaryType];
 };

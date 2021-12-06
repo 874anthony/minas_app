@@ -50,13 +50,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.uploadVisitorPerson = exports.uploadPunctualWorkPerson = exports.uploadPermanentPerson = exports.updateOrdinary = exports.createOrdinary = exports.getOrdinaryCitizenship = void 0;
+exports.uploadVisitorPerson = exports.uploadPunctualWorkPerson = exports.uploadPermanentPerson = exports.updateOrdinary = exports.createOrdinary = exports.getOrdById = exports.getAllOrds = exports.checkCompanyID = exports.getOrdinaryCitizenship = void 0;
 var multer_1 = __importDefault(require("multer"));
 var fs_1 = __importDefault(require("fs"));
 // Importing our utils to this controller
 var catchAsync_1 = __importDefault(require("../utils/catchAsync"));
 var httpException_1 = __importDefault(require("../utils/httpException"));
 var apiFeatures_1 = __importDefault(require("../utils/apiFeatures"));
+var ordinariesEnum_1 = require("../interfaces/ordinaries/ordinariesEnum");
 var trdImportAll_1 = require("../models/trd/trdImportAll");
 var userModel_1 = __importDefault(require("../models/users/userModel"));
 var workflowModel_1 = __importDefault(require("../models/workflows/workflowModel"));
@@ -155,6 +156,12 @@ var getOrdinaryCitizenship = function (Model) {
     }); });
 };
 exports.getOrdinaryCitizenship = getOrdinaryCitizenship;
+var checkCompanyID = function (req, res, next) {
+    var companyID = req.params.idCompany;
+    req.query.companyID = companyID;
+    next();
+};
+exports.checkCompanyID = checkCompanyID;
 // AQUI TERMINA LOS MIDDLEWARES
 var createOrdinary = function (Model, Roles, checkRoles, subsanarRoles) {
     return (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
@@ -257,28 +264,49 @@ var createOrdinary = function (Model, Roles, checkRoles, subsanarRoles) {
 exports.createOrdinary = createOrdinary;
 var updateOrdinary = function (Model) {
     return (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-        var id, body, ordinaryUpdated;
+        var id, ordinaryUpdated, body, workflowDoc_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     id = req.params.id;
-                    // TODO: VERIFICAR SI ME MANDA QUE ES POR SUBSANACIÓN!
                     if (!req.files) {
                         return [2 /*return*/, next(new httpException_1.default('No ha subido ningún archivo, intente nuevamente', 404))];
+                    }
+                    return [4 /*yield*/, Model.findById(id)];
+                case 1:
+                    ordinaryUpdated = _a.sent();
+                    if (!ordinaryUpdated) {
+                        return [2 /*return*/, next(new httpException_1.default('No hay un ordinario con ese ID, intente nuevamente!', 404))];
                     }
                     body = __assign({}, req.body);
                     // Looping through the req.files object to set it to the body
                     Object.keys(req.files).forEach(function (el) { return (body[el] = req.files[el][0].filename); });
                     body['updatedAt'] = Date.now();
-                    return [4 /*yield*/, Model.findByIdAndUpdate(id, body, {
-                            new: true,
-                            validateBeforeSave: false,
-                        })];
-                case 1:
-                    ordinaryUpdated = _a.sent();
-                    if (!ordinaryUpdated) {
-                        return [2 /*return*/, next(new httpException_1.default('Ha ocurrido un problema al intentar actualizar, intente nuevamente!', 404))];
-                    }
+                    Object.keys(body).forEach(function (key) {
+                        if (key === 'observations') {
+                            ordinaryUpdated.observations.push(body[key]);
+                        }
+                        else {
+                            ordinaryUpdated[key] = body[key];
+                        }
+                    });
+                    return [4 /*yield*/, ordinaryUpdated.save({ validateBeforeSave: false })];
+                case 2:
+                    _a.sent();
+                    if (!req.body.isHealing) return [3 /*break*/, 5];
+                    return [4 /*yield*/, workflowModel_1.default.findOne({ radicado: id })];
+                case 3:
+                    workflowDoc_1 = _a.sent();
+                    Object.keys(workflowDoc_1._doc).forEach(function (el) {
+                        if (el.startsWith('correct')) {
+                            workflowDoc_1[el] = false;
+                        }
+                    });
+                    return [4 /*yield*/, workflowDoc_1.save({ validateBeforeSave: false })];
+                case 4:
+                    _a.sent();
+                    _a.label = 5;
+                case 5:
                     res.status(200).json({
                         status: true,
                         message: 'Se ha actualizado el registro con éxito',
@@ -290,3 +318,59 @@ var updateOrdinary = function (Model) {
     }); });
 };
 exports.updateOrdinary = updateOrdinary;
+var getAllOrds = (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var ordinariesPromises, ordinaries;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                ordinariesPromises = Object.values(ordinariesEnum_1.ModelsOrdinary).map(function (Model) { return __awaiter(void 0, void 0, void 0, function () {
+                    var featuresQuery;
+                    return __generator(this, function (_a) {
+                        switch (_a.label) {
+                            case 0:
+                                featuresQuery = new apiFeatures_1.default(Model.find(), req.query)
+                                    .filter()
+                                    .limitFields()
+                                    .paginate()
+                                    .sort();
+                                return [4 /*yield*/, featuresQuery.query];
+                            case 1: return [2 /*return*/, _a.sent()];
+                        }
+                    });
+                }); });
+                return [4 /*yield*/, Promise.all(ordinariesPromises)];
+            case 1:
+                ordinaries = _a.sent();
+                res.status(200).json({
+                    status: true,
+                    ordinaries: ordinaries,
+                });
+                return [2 /*return*/];
+        }
+    });
+}); });
+exports.getAllOrds = getAllOrds;
+var getOrdById = (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var id, ordinaryType, ordinary;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                id = req.params.id;
+                ordinaryType = req.body.ordinaryType;
+                if (!id)
+                    return [2 /*return*/, next(new httpException_1.default('No hay ningún ID, por favor intente nuevamente', 404))];
+                return [4 /*yield*/, ordinariesEnum_1.ModelsOrdinary[ordinaryType].findById(id)];
+            case 1:
+                ordinary = _a.sent();
+                if (!ordinary) {
+                    return [2 /*return*/, next(new httpException_1.default('No se ha podido encontrar un ordinario, intente nuevamente', 404))];
+                }
+                res.status(200).json({
+                    status: true,
+                    ordinary: ordinary,
+                });
+                return [2 /*return*/];
+        }
+    });
+}); });
+exports.getOrdById = getOrdById;

@@ -8,7 +8,9 @@ import catchAsync from '../utils/catchAsync';
 import HttpException from '../utils/httpException';
 import APIFeatures from '../utils/apiFeatures';
 
+import { ModelsOrdinary } from '../interfaces/ordinaries/ordinariesEnum';
 import { TRDDependency } from '../models/trd/trdImportAll';
+
 import User from '../models/users/userModel';
 import Workflow from '../models/workflows/workflowModel';
 import TRDOrdinary from '../models/trd/trdOrdinary';
@@ -117,6 +119,12 @@ const getOrdinaryCitizenship = (Model) =>
 		req['ordCitizenship'] = currentOrdinary.citizenship;
 		next();
 	});
+
+const checkCompanyID = (req: Request, res: Response, next: NextFunction) => {
+	const companyID = req.params.idCompany;
+	req.query.companyID = companyID;
+	next();
+};
 
 // AQUI TERMINA LOS MIDDLEWARES
 const createOrdinary = (
@@ -246,12 +254,21 @@ const updateOrdinary = (Model) =>
 	catchAsync(async (req: Request, res: Response, next: NextFunction) => {
 		const id = req.params.id;
 
-		// TODO: VERIFICAR SI ME MANDA QUE ES POR SUBSANACIÓN!
-
 		if (!req.files) {
 			return next(
 				new HttpException(
 					'No ha subido ningún archivo, intente nuevamente',
+					404
+				)
+			);
+		}
+
+		const ordinaryUpdated = await Model.findById(id);
+
+		if (!ordinaryUpdated) {
+			return next(
+				new HttpException(
+					'No hay un ordinario con ese ID, intente nuevamente!',
 					404
 				)
 			);
@@ -267,18 +284,26 @@ const updateOrdinary = (Model) =>
 
 		body['updatedAt'] = Date.now();
 
-		const ordinaryUpdated = await Model.findByIdAndUpdate(id, body, {
-			new: true,
-			validateBeforeSave: false,
+		Object.keys(body).forEach((key) => {
+			if (key === 'observations') {
+				ordinaryUpdated.observations.push(body[key]);
+			} else {
+				ordinaryUpdated[key] = body[key];
+			}
 		});
 
-		if (!ordinaryUpdated) {
-			return next(
-				new HttpException(
-					'Ha ocurrido un problema al intentar actualizar, intente nuevamente!',
-					404
-				)
-			);
+		await ordinaryUpdated.save({ validateBeforeSave: false });
+
+		if (req.body.isHealing) {
+			const workflowDoc = await Workflow.findOne({ radicado: id });
+
+			Object.keys(workflowDoc._doc).forEach((el) => {
+				if (el.startsWith('correct')) {
+					workflowDoc[el] = false;
+				}
+			});
+
+			await workflowDoc.save({ validateBeforeSave: false });
 		}
 
 		res.status(200).json({
@@ -288,10 +313,62 @@ const updateOrdinary = (Model) =>
 		});
 	});
 
-// TODO: GET ALL ORDINARIES, GET ORDINARY BY ID
+const getAllOrds = catchAsync(
+	async (req: Request, res: Response, next: NextFunction) => {
+		const ordinariesPromises = Object.values(ModelsOrdinary).map(
+			async (Model) => {
+				let featuresQuery = new APIFeatures(Model.find(), req.query)
+					.filter()
+					.limitFields()
+					.paginate()
+					.sort();
+
+				return await featuresQuery.query;
+			}
+		);
+
+		const ordinaries = await Promise.all(ordinariesPromises);
+
+		res.status(200).json({
+			status: true,
+			ordinaries,
+		});
+	}
+);
+
+const getOrdById = catchAsync(
+	async (req: Request, res: Response, next: NextFunction) => {
+		const id = req.params.id;
+		const { ordinaryType } = req.body;
+
+		if (!id)
+			return next(
+				new HttpException('No hay ningún ID, por favor intente nuevamente', 404)
+			);
+
+		const ordinary = await ModelsOrdinary[ordinaryType].findById(id);
+
+		if (!ordinary) {
+			return next(
+				new HttpException(
+					'No se ha podido encontrar un ordinario, intente nuevamente',
+					404
+				)
+			);
+		}
+
+		res.status(200).json({
+			status: true,
+			ordinary,
+		});
+	}
+);
 
 export {
 	getOrdinaryCitizenship,
+	checkCompanyID,
+	getAllOrds,
+	getOrdById,
 	createOrdinary,
 	updateOrdinary,
 	uploadPermanentPerson,

@@ -31,6 +31,8 @@ const createCompany = factory.createOne(Company);
 
 // Approve a pending company and autogenerate 'Radicado'
 const acceptCompany = factory.acceptOne(Company);
+const rejectCompany = factory.rejectOne(Company);
+
 const loginCompany = login(Company);
 
 export {
@@ -38,6 +40,7 @@ export {
 	getCompany,
 	createCompany,
 	acceptCompany,
+	rejectCompany,
 	uploadCompanyDocs,
 	getPendingCompanies,
 	loginCompany,
