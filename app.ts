@@ -17,6 +17,7 @@ import ordinaryRouter from './routes/ordinaries/ordinariesRoutes';
 import permanentPersonRouter from './routes/ordinaries/persons/permanentPersonRoutes';
 import punctualworkPersonRouter from './routes/ordinaries/persons/punctualworkPersonRoutes';
 import visitorPersonRouter from './routes/ordinaries/persons/visitorPersonRoutes';
+import specialworkPersonRouter from './routes/ordinaries/persons/specialworkPersonRoutes';
 
 const app = express();
 
@@ -57,6 +58,10 @@ app.use(
 	punctualworkPersonRouter
 );
 app.use('/api/v1/ordinaries-person/visitor-person', visitorPersonRouter);
+app.use(
+	'/api/v1/ordinaries-person/special-work-person',
+	specialworkPersonRouter
+);
 
 // Define the global error handler to pass next errors
 function globalErrorHandler(

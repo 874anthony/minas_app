@@ -22,21 +22,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateVisitorPerson = exports.uploadVisitorPersons = exports.getCitizenship = exports.createVisitorPerson = void 0;
-// Importing own models
-var visitorPersonModel_1 = __importDefault(require("../../../models/ordinaries/persons/visitorPersonModel"));
-var userModel_1 = require("../../../models/users/userModel");
-// Importing the factory
-var ordinaryFactory = __importStar(require("../../ordinaryFactory"));
-var uploadVisitorPersons = ordinaryFactory.uploadPerson;
-exports.uploadVisitorPersons = uploadVisitorPersons;
-var getCitizenship = ordinaryFactory.getOrdinaryCitizenship(visitorPersonModel_1.default);
-exports.getCitizenship = getCitizenship;
-var createVisitorPerson = ordinaryFactory.createOrdinary(visitorPersonModel_1.default, [userModel_1.UserRoles.AccessControl], {
-    checkAccessControl: false,
-}, {
-    correctAccessControl: false,
-});
-exports.createVisitorPerson = createVisitorPerson;
-var updateVisitorPerson = ordinaryFactory.updateOrdinary(visitorPersonModel_1.default);
-exports.updateVisitorPerson = updateVisitorPerson;
+// Importing 3rd-party packages
+var express_1 = __importDefault(require("express"));
+// Importing the controllers
+var specialworkPersonController = __importStar(require("../../../controllers/ordinaries/persons/specialWorkPersonController"));
+// import * as authController from '../../../controllers/auth/authController';
+var router = express_1.default.Router({ mergeParams: true });
+router
+    .route('/')
+    .post(specialworkPersonController.uploadSpecialWorkPersons, specialworkPersonController.createSpecialWorkPerson);
+router
+    .route('/:id')
+    .put(specialworkPersonController.getCitizenship, specialworkPersonController.uploadSpecialWorkPersons, specialworkPersonController.updateSpecialWorkPerson);
+exports.default = router;

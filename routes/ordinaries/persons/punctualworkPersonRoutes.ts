@@ -14,4 +14,12 @@ router
 		punctualworkPersonController.createPunctualWorkPerson
 	);
 
+router
+	.route('/:id')
+	.put(
+		punctualworkPersonController.getCitizenship,
+		punctualworkPersonController.uploadPunctualWorkPersons,
+		punctualworkPersonController.updatePunctualWorkPerson
+	);
+
 export default router;

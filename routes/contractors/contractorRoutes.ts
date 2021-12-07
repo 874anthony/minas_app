@@ -16,7 +16,14 @@ router
 	);
 
 // Routes with the id
-router.route('/:id').get(contractorController.getContractor);
+router
+	.route('/:id')
+	.get(contractorController.getContractor)
+	.put(
+		contractorController.getContractorNIT,
+		contractorController.uploadContractorDocs,
+		contractorController.updateContractor
+	);
 
 router
 	.route('/accept-pending-contractor/:id')

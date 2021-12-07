@@ -13,4 +13,12 @@ router
 		permanentPersonController.createPermanentPerson
 	);
 
+router
+	.route('/:id')
+	.put(
+		permanentPersonController.getCitizenship,
+		permanentPersonController.uploadPermanentPersons,
+		permanentPersonController.updatePermanentPerson
+	);
+
 export default router;

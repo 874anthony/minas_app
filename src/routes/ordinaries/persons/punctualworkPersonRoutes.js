@@ -31,4 +31,7 @@ var router = express_1.default.Router({ mergeParams: true });
 router
     .route('/')
     .post(punctualworkPersonController.uploadPunctualWorkPersons, punctualworkPersonController.createPunctualWorkPerson);
+router
+    .route('/:id')
+    .put(punctualworkPersonController.getCitizenship, punctualworkPersonController.uploadPunctualWorkPersons, punctualworkPersonController.updatePunctualWorkPerson);
 exports.default = router;

@@ -27,7 +27,15 @@ import DtoCreateCompany from '../interfaces/company/post-createCompany';
 const multerStorage = multer.diskStorage({
 	// Define the destination
 	destination: (req: Request, file: Express.Multer.File, callback) => {
-		const directory = `store/documents/company/${req.body.nit}`;
+		let predicate;
+
+		if (req.body.nit === undefined) {
+			predicate = req['companyNit'];
+		} else {
+			predicate = req.body.nit;
+		}
+
+		const directory = `store/documents/company/${predicate}`;
 
 		if (!fs.existsSync(directory)) {
 			fs.mkdirSync(directory, { recursive: true });
@@ -36,9 +44,17 @@ const multerStorage = multer.diskStorage({
 		callback(null, directory);
 	},
 	filename: (req: Request, file: Express.Multer.File, callback) => {
+		let predicate;
+
+		if (req.body.nit === undefined) {
+			predicate = req['companyNit'];
+		} else {
+			predicate = req.body.nit;
+		}
+
 		// Extracting the extension.
 		const extension = file.mimetype.split('/')[1];
-		callback(null, `company-${req.body.nit}-${Date.now()}.${extension}`);
+		callback(null, `company-${predicate}-${Date.now()}.${extension}`);
 	},
 });
 
@@ -63,11 +79,31 @@ const upload = multer({
 	fileFilter: multerFilter,
 });
 
+// MIDDLEWARES STARTS HERE!
+const getCompanyNIT = (Model) =>
+	catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+		const id = req.params.id;
+		const currentCompany = await Model.findById(id);
+
+		if (!currentCompany) {
+			return next(
+				new HttpException(
+					'No hay ningún ordinario con ese ID, intente nuevamente',
+					404
+				)
+			);
+		}
+
+		req['companyNit'] = currentCompany.nit;
+		next();
+	});
+
 // ================================================ Endpoints starts here =========================================
 const uploadCompanyDocs = upload.fields([
 	{ name: 'docComCam', maxCount: 1 },
 	{ name: 'docRUT', maxCount: 1 },
 	{ name: 'docLegalRepresentativeID', maxCount: 1 },
+	{ name: 'docSocialSecurity', maxCount: 1 },
 ]);
 
 const findAll = (Model) =>
@@ -164,6 +200,54 @@ const createOne = (Model) =>
 			status: true,
 			message: 'La empresa se ha creado éxitosamente',
 			company: companyCreated,
+		});
+	});
+
+const updateOne = (Model) =>
+	catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+		const id = req.params.id;
+
+		const companyUpdated = await Model.findById(id);
+
+		if (!companyUpdated) {
+			return next(
+				new HttpException(
+					'No hay una empresa con ese ID, intente nuevamente!',
+					404
+				)
+			);
+		}
+
+		// Mutating the object req.body
+		const body = { ...req.body };
+
+		if (req.files) {
+			// Looping through the req.files object to set it to the body
+			Object.keys(req.files).forEach(
+				(el) => (body[el] = req.files![el][0].filename)
+			);
+		}
+
+		body['updatedAt'] = Date.now();
+
+		Object.keys(body).forEach((key) => {
+			if (
+				key === 'observations' ||
+				key === 'docSocialSecurity' ||
+				key === 'finishDates'
+			) {
+				companyUpdated[key].push(body[key]);
+			} else {
+				companyUpdated[key] = body[key];
+			}
+		});
+
+		await companyUpdated.save({ validateBeforeSave: false });
+
+		res.status(200).json({
+			status: true,
+			message: 'Se ha actualizado la compañía con éxito',
+			companyUpdated,
 		});
 	});
 
@@ -311,4 +395,13 @@ const acceptOne = (Model) =>
 		});
 	});
 
-export { createOne, findAll, findOne, acceptOne, rejectOne, uploadCompanyDocs };
+export {
+	createOne,
+	findAll,
+	findOne,
+	acceptOne,
+	rejectOne,
+	updateOne,
+	uploadCompanyDocs,
+	getCompanyNIT,
+};

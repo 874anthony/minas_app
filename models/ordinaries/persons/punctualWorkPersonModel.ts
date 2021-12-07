@@ -1,4 +1,5 @@
 import { Schema, model } from 'mongoose';
+import { addDate } from '../../../utils/date';
 
 // Definying the schema
 const PunctualWorkPersonSchema = new Schema({
@@ -8,16 +9,17 @@ const PunctualWorkPersonSchema = new Schema({
 		trim: true,
 		minlength: 3,
 	},
+
+	appointment: {
+		type: String,
+		required: true,
+		minlength: 4,
+	},
 	citizenship: {
 		type: Number,
 		unique: true,
 		required: true,
 		min: 7,
-	},
-	appointment: {
-		type: String,
-		required: true,
-		minlength: 4,
 	},
 	gender: {
 		type: String,
@@ -32,31 +34,34 @@ const PunctualWorkPersonSchema = new Schema({
 		required: true,
 		minlength: 4,
 	},
+	residentPlace: {
+		type: String,
+		minlength: 4,
+	},
 	licenseCategory: {
 		type: String,
 		required: true,
 		maxlength: [3, 'La categoría solo puede tener 3 letras como máximo'],
 		trim: true,
 	},
-	docCovid19: {
-		type: String,
-	},
 	docHealth: {
 		type: String,
 	},
-	docPension: {
-		type: String,
-	},
-	docSocialSecurity: {
-		type: String,
-	},
+	docPension: String,
+	docARL: String,
 	docCitizenship: {
 		type: String,
 	},
+	docSocialSecurity: String,
 	radicado: {
 		type: String,
 		default: 'Sin radicado',
 	},
+	observations: [String],
+	medicalConceptDate: Date,
+
+	inductionDate: Date,
+	inductionValidity: Boolean,
 	companyID: {
 		type: Schema.Types.ObjectId,
 		ref: 'company',
@@ -66,23 +71,34 @@ const PunctualWorkPersonSchema = new Schema({
 		ref: 'contractor',
 		required: false,
 	},
+	startDates: [Date],
+	finishDates: [Date],
 	status: {
 		type: String,
 		default: 'PENDIENTE',
 	},
-	observations: [String],
 	attached: [String],
+	recepcionDate: {
+		type: Date,
+		default: Date.now(),
+	},
+	maxAuthorizationDate: Date,
 	ordinaryType: {
 		type: String,
 		default: 'punctualworkPerson',
 	},
-	createdAt: {
-		type: Date,
-		default: Date.now(),
-	},
+	licenseValidity: Boolean,
 	updatedAt: {
 		type: Date,
 	},
+});
+
+PunctualWorkPersonSchema.pre('save', function (next) {
+	if (this.isNew) {
+		const days = 3;
+		this.maxAuthorizationDate = addDate(this.recepcionDate, days);
+	}
+	next();
 });
 
 export default model('punctualwork_person', PunctualWorkPersonSchema);

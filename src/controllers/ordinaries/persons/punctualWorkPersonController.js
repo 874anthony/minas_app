@@ -22,17 +22,21 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.uploadPunctualWorkPersons = exports.createPunctualWorkPerson = void 0;
+exports.updatePunctualWorkPerson = exports.getCitizenship = exports.uploadPunctualWorkPersons = exports.createPunctualWorkPerson = void 0;
 // Importing own models
 var punctualWorkPersonModel_1 = __importDefault(require("../../../models/ordinaries/persons/punctualWorkPersonModel"));
 var userModel_1 = require("../../../models/users/userModel");
 // Importing the factory
 var ordinaryFactory = __importStar(require("../../ordinaryFactory"));
-var uploadPunctualWorkPersons = ordinaryFactory.uploadPunctualWorkPerson;
+var uploadPunctualWorkPersons = ordinaryFactory.uploadPerson;
 exports.uploadPunctualWorkPersons = uploadPunctualWorkPersons;
+var getCitizenship = ordinaryFactory.getOrdinaryCitizenship(punctualWorkPersonModel_1.default);
+exports.getCitizenship = getCitizenship;
 var createPunctualWorkPerson = ordinaryFactory.createOrdinary(punctualWorkPersonModel_1.default, [userModel_1.UserRoles.AccessControl], {
     checkAccessControl: false,
 }, {
     correctAccessControl: false,
 });
 exports.createPunctualWorkPerson = createPunctualWorkPerson;
+var updatePunctualWorkPerson = ordinaryFactory.updateOrdinary(punctualWorkPersonModel_1.default);
+exports.updatePunctualWorkPerson = updatePunctualWorkPerson;

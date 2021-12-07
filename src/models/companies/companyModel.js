@@ -123,7 +123,7 @@ var CompanySchema = new mongoose_1.Schema({
     updatedAt: {
         type: Date,
     },
-    finishDates: [Date],
+    docSocialSecurity: [String],
     observations: [
         {
             type: String,

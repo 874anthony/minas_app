@@ -28,6 +28,7 @@ var express_1 = __importDefault(require("express"));
 var contractorRoutes_1 = __importDefault(require("../../routes/contractors/contractorRoutes"));
 var permanentPersonRoutes_1 = __importDefault(require("../ordinaries/persons/permanentPersonRoutes"));
 var punctualworkPersonRoutes_1 = __importDefault(require("../ordinaries/persons/punctualworkPersonRoutes"));
+var specialworkPersonRoutes_1 = __importDefault(require("../ordinaries/persons/specialworkPersonRoutes"));
 var visitorPersonRoutes_1 = __importDefault(require("../ordinaries/persons/visitorPersonRoutes"));
 var workflowRoutes_1 = __importDefault(require("../ordinaries/workflowRoutes"));
 var ordinariesRoutes_1 = __importDefault(require("../ordinaries/ordinariesRoutes"));
@@ -40,6 +41,7 @@ router.use('/:idCompany/workflow', workflowRoutes_1.default);
 router.use('/:idCompany/ordinaries', ordinariesRoutes_1.default);
 router.use('/:idCompany/ordinaries-person/permanent-person', permanentPersonRoutes_1.default);
 router.use('/:idCompany/ordinaries-person/punctual-work-person', punctualworkPersonRoutes_1.default);
+router.use('/:idCompany/ordinaries-person/special-work-person', specialworkPersonRoutes_1.default);
 router.use('/:idCompany/ordinaries-person/visitor-person', visitorPersonRoutes_1.default);
 // Custom routes
 router
@@ -52,7 +54,10 @@ router
     .get(companyController.getAllCompanies)
     .post(companyController.uploadCompanyDocs, companyController.createCompany);
 // Routes with the id
-router.route('/:id').get(companyController.getCompany);
+router
+    .route('/:id')
+    .get(companyController.getCompany)
+    .put(companyController.getCompanyNIT, companyController.uploadCompanyDocs, companyController.updateCompany);
 router
     .route('/accept-pending-company/:id')
     .patch(companyController.acceptCompany);

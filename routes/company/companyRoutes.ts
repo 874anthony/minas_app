@@ -5,6 +5,7 @@ import express from 'express';
 import contractorRouter from '../../routes/contractors/contractorRoutes';
 import permanentPersonRouter from '../ordinaries/persons/permanentPersonRoutes';
 import punctualworkPersonRouter from '../ordinaries/persons/punctualworkPersonRoutes';
+import specialworkPersonRouter from '../ordinaries/persons/specialworkPersonRoutes';
 import visitorPersonRouter from '../ordinaries/persons/visitorPersonRoutes';
 import workflowRouter from '../ordinaries/workflowRoutes';
 import ordinariesRouter from '../ordinaries/ordinariesRoutes';
@@ -26,6 +27,10 @@ router.use(
 	'/:idCompany/ordinaries-person/punctual-work-person',
 	punctualworkPersonRouter
 );
+router.use(
+	'/:idCompany/ordinaries-person/special-work-person',
+	specialworkPersonRouter
+);
 router.use('/:idCompany/ordinaries-person/visitor-person', visitorPersonRouter);
 
 // Custom routes
@@ -45,7 +50,14 @@ router
 	.post(companyController.uploadCompanyDocs, companyController.createCompany);
 
 // Routes with the id
-router.route('/:id').get(companyController.getCompany);
+router
+	.route('/:id')
+	.get(companyController.getCompany)
+	.put(
+		companyController.getCompanyNIT,
+		companyController.uploadCompanyDocs,
+		companyController.updateCompany
+	);
 
 router
 	.route('/accept-pending-company/:id')

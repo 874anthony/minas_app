@@ -80,6 +80,7 @@ const ContractorSchema: Schema<ContractorInterface> = new Schema({
 	updatedAt: {
 		type: Date,
 	},
+	docSocialSecurity: [String],
 	finishDates: [Date],
 	observations: [
 		{

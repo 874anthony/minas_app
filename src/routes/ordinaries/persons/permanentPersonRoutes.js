@@ -30,4 +30,7 @@ var router = express_1.default.Router({ mergeParams: true });
 router
     .route('/')
     .post(permanentPersonController.uploadPermanentPersons, permanentPersonController.createPermanentPerson);
+router
+    .route('/:id')
+    .put(permanentPersonController.getCitizenship, permanentPersonController.uploadPermanentPersons, permanentPersonController.updatePermanentPerson);
 exports.default = router;

@@ -2,7 +2,7 @@ import { Schema, model } from 'mongoose';
 import { addDate } from '../../../utils/date';
 
 // Definying the schema
-const VisitorPersonSchema = new Schema({
+const SpecialWorkPersonSchema = new Schema({
 	name: {
 		type: String,
 		required: true,
@@ -53,6 +53,15 @@ const VisitorPersonSchema = new Schema({
 		type: String,
 	},
 	docSocialSecurity: String,
+	docMedicalFitness: String,
+	docCV: String,
+	docDrivingLicense: String,
+	docPsycho: String,
+	docDefDrivingLicense: String,
+	docDrivingTest: String,
+	docCraneOperator: String,
+	docSafeworkHeights: String,
+	docRigger: String,
 	radicado: {
 		type: String,
 		default: 'Sin radicado',
@@ -85,7 +94,7 @@ const VisitorPersonSchema = new Schema({
 	maxAuthorizationDate: Date,
 	ordinaryType: {
 		type: String,
-		default: 'visitorPerson',
+		default: 'specialworkPerson',
 	},
 	licenseValidity: Boolean,
 	updatedAt: {
@@ -93,7 +102,7 @@ const VisitorPersonSchema = new Schema({
 	},
 });
 
-VisitorPersonSchema.pre('save', function (next) {
+SpecialWorkPersonSchema.pre('save', function (next) {
 	if (this.isNew) {
 		const days = 3;
 		this.maxAuthorizationDate = addDate(this.recepcionDate, days);
@@ -101,4 +110,4 @@ VisitorPersonSchema.pre('save', function (next) {
 	next();
 });
 
-export default model('visitor_person', VisitorPersonSchema);
+export default model('specialwork_person', SpecialWorkPersonSchema);

@@ -50,7 +50,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.uploadVisitorPerson = exports.uploadPunctualWorkPerson = exports.uploadPermanentPerson = exports.updateOrdinary = exports.createOrdinary = exports.getOrdById = exports.getAllOrds = exports.checkCompanyID = exports.getOrdinaryCitizenship = void 0;
+exports.uploadPerson = exports.updateOrdinary = exports.createOrdinary = exports.getOrdById = exports.getAllOrds = exports.checkCompanyID = exports.getOrdinaryCitizenship = void 0;
 var multer_1 = __importDefault(require("multer"));
 var fs_1 = __importDefault(require("fs"));
 // Importing our utils to this controller
@@ -109,31 +109,23 @@ var uploadOrdinaryPerson = (0, multer_1.default)({
 // ================================================ Endpoints starts here =========================================
 // UPLOADS MIDDLEWARES
 // const uploadAttached = uploadOrdinaryPerson.single()
-var uploadPermanentPerson = uploadOrdinaryPerson.fields([
-    { name: 'docCovid19', maxCount: 1 },
+var uploadPerson = uploadOrdinaryPerson.fields([
     { name: 'docHealth', maxCount: 1 },
     { name: 'docPension', maxCount: 1 },
+    { name: 'docARL', maxCount: 1 },
     { name: 'docSocialSecurity', maxCount: 1 },
     { name: 'docMedicalFitness', maxCount: 1 },
     { name: 'docCitizenship', maxCount: 1 },
+    { name: 'docCV', maxCount: 1 },
+    { name: 'docDrivingLicense', maxCount: 1 },
+    { name: 'docPsycho', maxCount: 1 },
+    { name: 'docDefDrivingLicense', maxCount: 1 },
+    { name: 'docDrivingTest', maxCount: 1 },
+    { name: 'docCraneOperator', maxCount: 1 },
+    { name: 'docSafeworkHeights', maxCount: 1 },
+    { name: 'docRigger', maxCount: 1 },
 ]);
-exports.uploadPermanentPerson = uploadPermanentPerson;
-var uploadPunctualWorkPerson = uploadOrdinaryPerson.fields([
-    { name: 'docCovid19', maxCount: 1 },
-    { name: 'docHealth', maxCount: 1 },
-    { name: 'docPension', maxCount: 1 },
-    { name: 'docSocialSecurity', maxCount: 1 },
-    { name: 'docCitizenship', maxCount: 1 },
-]);
-exports.uploadPunctualWorkPerson = uploadPunctualWorkPerson;
-var uploadVisitorPerson = uploadOrdinaryPerson.fields([
-    { name: 'docCovid19', maxCount: 1 },
-    { name: 'docHealth', maxCount: 1 },
-    { name: 'docPension', maxCount: 1 },
-    { name: 'docSocialSecurity', maxCount: 1 },
-    { name: 'docCitizenship', maxCount: 1 },
-]);
-exports.uploadVisitorPerson = uploadVisitorPerson;
+exports.uploadPerson = uploadPerson;
 // AQUI TERMINA LOS UPLOADS MIDDLEWARES
 var getOrdinaryCitizenship = function (Model) {
     return (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
@@ -269,9 +261,6 @@ var updateOrdinary = function (Model) {
             switch (_a.label) {
                 case 0:
                     id = req.params.id;
-                    if (!req.files) {
-                        return [2 /*return*/, next(new httpException_1.default('No ha subido ningún archivo, intente nuevamente', 404))];
-                    }
                     return [4 /*yield*/, Model.findById(id)];
                 case 1:
                     ordinaryUpdated = _a.sent();
@@ -279,12 +268,17 @@ var updateOrdinary = function (Model) {
                         return [2 /*return*/, next(new httpException_1.default('No hay un ordinario con ese ID, intente nuevamente!', 404))];
                     }
                     body = __assign({}, req.body);
-                    // Looping through the req.files object to set it to the body
-                    Object.keys(req.files).forEach(function (el) { return (body[el] = req.files[el][0].filename); });
+                    if (req.files) {
+                        // Looping through the req.files object to set it to the body
+                        Object.keys(req.files).forEach(function (el) { return (body[el] = req.files[el][0].filename); });
+                    }
                     body['updatedAt'] = Date.now();
                     Object.keys(body).forEach(function (key) {
-                        if (key === 'observations') {
-                            ordinaryUpdated.observations.push(body[key]);
+                        if (key === 'observations' ||
+                            key === 'startDates' ||
+                            key === 'finishDates' ||
+                            key === 'attached') {
+                            ordinaryUpdated[key].push(body[key]);
                         }
                         else {
                             ordinaryUpdated[key] = body[key];

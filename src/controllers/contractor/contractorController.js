@@ -22,7 +22,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.uploadContractorDocs = exports.rejectContractor = exports.acceptContractor = exports.addContractor = exports.createContractor = exports.getContractor = exports.getAllContractors = void 0;
+exports.getContractorNIT = exports.uploadContractorDocs = exports.rejectContractor = exports.updateContractor = exports.acceptContractor = exports.addContractor = exports.createContractor = exports.getContractor = exports.getAllContractors = void 0;
 // Own models
 var contractorModel_1 = __importDefault(require("../../models/contractors/contractorModel"));
 // Own Factory
@@ -43,7 +43,11 @@ var getContractor = factory.findOne(contractorModel_1.default);
 exports.getContractor = getContractor;
 var createContractor = factory.createOne(contractorModel_1.default);
 exports.createContractor = createContractor;
+var updateContractor = factory.updateOne(contractorModel_1.default);
+exports.updateContractor = updateContractor;
 var acceptContractor = factory.acceptOne(contractorModel_1.default);
 exports.acceptContractor = acceptContractor;
 var rejectContractor = factory.rejectOne(contractorModel_1.default);
 exports.rejectContractor = rejectContractor;
+var getContractorNIT = factory.getCompanyNIT(contractorModel_1.default);
+exports.getContractorNIT = getContractorNIT;

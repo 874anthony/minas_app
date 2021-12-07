@@ -31,6 +31,7 @@ const ModelsPerRole = {
 		'permanentPerson',
 		'punctualworkPerson',
 		'visitorPerson',
+		'specialworkPerson',
 	],
 };
 // Helpers methods Ends HERE

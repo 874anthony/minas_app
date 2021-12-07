@@ -22,21 +22,25 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateVisitorPerson = exports.uploadVisitorPersons = exports.getCitizenship = exports.createVisitorPerson = void 0;
+exports.updateSpecialWorkPerson = exports.getCitizenship = exports.uploadSpecialWorkPersons = exports.createSpecialWorkPerson = void 0;
 // Importing own models
-var visitorPersonModel_1 = __importDefault(require("../../../models/ordinaries/persons/visitorPersonModel"));
+var specialworkPersonModel_1 = __importDefault(require("../../../models/ordinaries/persons/specialworkPersonModel"));
 var userModel_1 = require("../../../models/users/userModel");
 // Importing the factory
 var ordinaryFactory = __importStar(require("../../ordinaryFactory"));
-var uploadVisitorPersons = ordinaryFactory.uploadPerson;
-exports.uploadVisitorPersons = uploadVisitorPersons;
-var getCitizenship = ordinaryFactory.getOrdinaryCitizenship(visitorPersonModel_1.default);
+var uploadSpecialWorkPersons = ordinaryFactory.uploadPerson;
+exports.uploadSpecialWorkPersons = uploadSpecialWorkPersons;
+var getCitizenship = ordinaryFactory.getOrdinaryCitizenship(specialworkPersonModel_1.default);
 exports.getCitizenship = getCitizenship;
-var createVisitorPerson = ordinaryFactory.createOrdinary(visitorPersonModel_1.default, [userModel_1.UserRoles.AccessControl], {
+var createSpecialWorkPerson = ordinaryFactory.createOrdinary(specialworkPersonModel_1.default, [userModel_1.UserRoles.AccessControl, userModel_1.UserRoles.SISO, userModel_1.UserRoles.Auditing], {
     checkAccessControl: false,
+    checkSISO: false,
+    checkAuditing: false,
 }, {
     correctAccessControl: false,
+    correctSISO: false,
+    correctAuditing: false,
 });
-exports.createVisitorPerson = createVisitorPerson;
-var updateVisitorPerson = ordinaryFactory.updateOrdinary(visitorPersonModel_1.default);
-exports.updateVisitorPerson = updateVisitorPerson;
+exports.createSpecialWorkPerson = createSpecialWorkPerson;
+var updateSpecialWorkPerson = ordinaryFactory.updateOrdinary(specialworkPersonModel_1.default);
+exports.updateSpecialWorkPerson = updateSpecialWorkPerson;

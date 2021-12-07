@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var mongoose_1 = require("mongoose");
 var date_1 = require("../../../utils/date");
 // Definying the schema
-var PunctualWorkPersonSchema = new mongoose_1.Schema({
+var SpecialWorkPersonSchema = new mongoose_1.Schema({
     name: {
         type: String,
         required: true,
@@ -53,6 +53,15 @@ var PunctualWorkPersonSchema = new mongoose_1.Schema({
         type: String,
     },
     docSocialSecurity: String,
+    docMedicalFitness: String,
+    docCV: String,
+    docDrivingLicense: String,
+    docPsycho: String,
+    docDefDrivingLicense: String,
+    docDrivingTest: String,
+    docCraneOperator: String,
+    docSafeworkHeights: String,
+    docRigger: String,
     radicado: {
         type: String,
         default: 'Sin radicado',
@@ -84,18 +93,18 @@ var PunctualWorkPersonSchema = new mongoose_1.Schema({
     maxAuthorizationDate: Date,
     ordinaryType: {
         type: String,
-        default: 'punctualworkPerson',
+        default: 'specialworkPerson',
     },
     licenseValidity: Boolean,
     updatedAt: {
         type: Date,
     },
 });
-PunctualWorkPersonSchema.pre('save', function (next) {
+SpecialWorkPersonSchema.pre('save', function (next) {
     if (this.isNew) {
         var days = 3;
         this.maxAuthorizationDate = (0, date_1.addDate)(this.recepcionDate, days);
     }
     next();
 });
-exports.default = (0, mongoose_1.model)('punctualwork_person', PunctualWorkPersonSchema);
+exports.default = (0, mongoose_1.model)('specialwork_person', SpecialWorkPersonSchema);

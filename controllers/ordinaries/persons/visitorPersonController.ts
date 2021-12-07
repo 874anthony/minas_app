@@ -6,7 +6,7 @@ import { UserRoles } from '../../../models/users/userModel';
 // Importing the factory
 import * as ordinaryFactory from '../../ordinaryFactory';
 
-const uploadVisitorPersons = ordinaryFactory.uploadVisitorPerson;
+const uploadVisitorPersons = ordinaryFactory.uploadPerson;
 
 const getCitizenship =
 	ordinaryFactory.getOrdinaryCitizenship(VisitorPersonModel);

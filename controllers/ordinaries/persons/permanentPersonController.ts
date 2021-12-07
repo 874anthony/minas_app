@@ -6,7 +6,9 @@ import { UserRoles } from '../../../models/users/userModel';
 // Importing the factory
 import * as ordinaryFactory from '../../ordinaryFactory';
 
-const uploadPermanentPersons = ordinaryFactory.uploadPermanentPerson;
+const uploadPermanentPersons = ordinaryFactory.uploadPerson;
+
+const getCitizenship = ordinaryFactory.getOrdinaryCitizenship(PermanentPerson);
 
 const createPermanentPerson = ordinaryFactory.createOrdinary(
 	PermanentPerson,
@@ -35,4 +37,11 @@ const createPermanentPerson = ordinaryFactory.createOrdinary(
 	}
 );
 
-export { createPermanentPerson, uploadPermanentPersons };
+const updatePermanentPerson = ordinaryFactory.updateOrdinary(PermanentPerson);
+
+export {
+	createPermanentPerson,
+	uploadPermanentPersons,
+	getCitizenship,
+	updatePermanentPerson,
+};

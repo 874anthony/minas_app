@@ -22,14 +22,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.uploadPermanentPersons = exports.createPermanentPerson = void 0;
+exports.updatePermanentPerson = exports.getCitizenship = exports.uploadPermanentPersons = exports.createPermanentPerson = void 0;
 // Importing own models
 var permanentPersonModel_1 = __importDefault(require("../../../models/ordinaries/persons/permanentPersonModel"));
 var userModel_1 = require("../../../models/users/userModel");
 // Importing the factory
 var ordinaryFactory = __importStar(require("../../ordinaryFactory"));
-var uploadPermanentPersons = ordinaryFactory.uploadPermanentPerson;
+var uploadPermanentPersons = ordinaryFactory.uploadPerson;
 exports.uploadPermanentPersons = uploadPermanentPersons;
+var getCitizenship = ordinaryFactory.getOrdinaryCitizenship(permanentPersonModel_1.default);
+exports.getCitizenship = getCitizenship;
 var createPermanentPerson = ordinaryFactory.createOrdinary(permanentPersonModel_1.default, [
     userModel_1.UserRoles.AccessControl,
     userModel_1.UserRoles.Auditing,
@@ -52,3 +54,5 @@ var createPermanentPerson = ordinaryFactory.createOrdinary(permanentPersonModel_
     correctSMIN: false,
 });
 exports.createPermanentPerson = createPermanentPerson;
+var updatePermanentPerson = ordinaryFactory.updateOrdinary(permanentPersonModel_1.default);
+exports.updatePermanentPerson = updatePermanentPerson;

@@ -77,30 +77,23 @@ const uploadOrdinaryPerson = multer({
 // UPLOADS MIDDLEWARES
 // const uploadAttached = uploadOrdinaryPerson.single()
 
-const uploadPermanentPerson = uploadOrdinaryPerson.fields([
-	{ name: 'docCovid19', maxCount: 1 },
+const uploadPerson = uploadOrdinaryPerson.fields([
 	{ name: 'docHealth', maxCount: 1 },
 	{ name: 'docPension', maxCount: 1 },
+	{ name: 'docARL', maxCount: 1 },
 	{ name: 'docSocialSecurity', maxCount: 1 },
 	{ name: 'docMedicalFitness', maxCount: 1 },
 	{ name: 'docCitizenship', maxCount: 1 },
+	{ name: 'docCV', maxCount: 1 },
+	{ name: 'docDrivingLicense', maxCount: 1 },
+	{ name: 'docPsycho', maxCount: 1 },
+	{ name: 'docDefDrivingLicense', maxCount: 1 },
+	{ name: 'docDrivingTest', maxCount: 1 },
+	{ name: 'docCraneOperator', maxCount: 1 },
+	{ name: 'docSafeworkHeights', maxCount: 1 },
+	{ name: 'docRigger', maxCount: 1 },
 ]);
 
-const uploadPunctualWorkPerson = uploadOrdinaryPerson.fields([
-	{ name: 'docCovid19', maxCount: 1 },
-	{ name: 'docHealth', maxCount: 1 },
-	{ name: 'docPension', maxCount: 1 },
-	{ name: 'docSocialSecurity', maxCount: 1 },
-	{ name: 'docCitizenship', maxCount: 1 },
-]);
-
-const uploadVisitorPerson = uploadOrdinaryPerson.fields([
-	{ name: 'docCovid19', maxCount: 1 },
-	{ name: 'docHealth', maxCount: 1 },
-	{ name: 'docPension', maxCount: 1 },
-	{ name: 'docSocialSecurity', maxCount: 1 },
-	{ name: 'docCitizenship', maxCount: 1 },
-]);
 // AQUI TERMINA LOS UPLOADS MIDDLEWARES
 const getOrdinaryCitizenship = (Model) =>
 	catchAsync(async (req: Request, res: Response, next: NextFunction) => {
@@ -254,15 +247,6 @@ const updateOrdinary = (Model) =>
 	catchAsync(async (req: Request, res: Response, next: NextFunction) => {
 		const id = req.params.id;
 
-		if (!req.files) {
-			return next(
-				new HttpException(
-					'No ha subido ningún archivo, intente nuevamente',
-					404
-				)
-			);
-		}
-
 		const ordinaryUpdated = await Model.findById(id);
 
 		if (!ordinaryUpdated) {
@@ -277,16 +261,23 @@ const updateOrdinary = (Model) =>
 		// Mutating the object req.body
 		const body = { ...req.body };
 
-		// Looping through the req.files object to set it to the body
-		Object.keys(req.files).forEach(
-			(el) => (body[el] = req.files![el][0].filename)
-		);
+		if (req.files) {
+			// Looping through the req.files object to set it to the body
+			Object.keys(req.files).forEach(
+				(el) => (body[el] = req.files![el][0].filename)
+			);
+		}
 
 		body['updatedAt'] = Date.now();
 
 		Object.keys(body).forEach((key) => {
-			if (key === 'observations') {
-				ordinaryUpdated.observations.push(body[key]);
+			if (
+				key === 'observations' ||
+				key === 'startDates' ||
+				key === 'finishDates' ||
+				key === 'attached'
+			) {
+				ordinaryUpdated[key].push(body[key]);
 			} else {
 				ordinaryUpdated[key] = body[key];
 			}
@@ -371,7 +362,5 @@ export {
 	getOrdById,
 	createOrdinary,
 	updateOrdinary,
-	uploadPermanentPerson,
-	uploadPunctualWorkPerson,
-	uploadVisitorPerson,
+	uploadPerson,
 };
