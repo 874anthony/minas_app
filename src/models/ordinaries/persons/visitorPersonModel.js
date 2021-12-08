@@ -60,7 +60,7 @@ var VisitorPersonSchema = new mongoose_1.Schema({
     observations: [String],
     medicalConceptDate: Date,
     inductionDate: Date,
-    inductionValidity: Boolean,
+    inductionVigency: Date,
     companyID: {
         type: mongoose_1.Schema.Types.ObjectId,
         ref: 'company',
@@ -86,7 +86,7 @@ var VisitorPersonSchema = new mongoose_1.Schema({
         type: String,
         default: 'visitorPerson',
     },
-    licenseValidity: Boolean,
+    licenseVigency: Date,
     updatedAt: {
         type: Date,
     },

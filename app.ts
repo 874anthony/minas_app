@@ -18,6 +18,12 @@ import permanentPersonRouter from './routes/ordinaries/persons/permanentPersonRo
 import punctualworkPersonRouter from './routes/ordinaries/persons/punctualworkPersonRoutes';
 import visitorPersonRouter from './routes/ordinaries/persons/visitorPersonRoutes';
 import specialworkPersonRouter from './routes/ordinaries/persons/specialworkPersonRoutes';
+import visitorVehicleRouter from './routes/ordinaries/vehicles/light/visitorlightVehicleRoutes';
+import permanentLightVehicleRouter from './routes/ordinaries/vehicles/light/permanentlightVehicleRoutes';
+import permanentHeavyVehicleRouter from './routes/ordinaries/vehicles/heavy/permanentheavyVehicleRoutes';
+import punctualLightVehicleRouter from './routes/ordinaries/vehicles/light/punctuallightVehicleRoutes';
+import punctualHeavyVehicleRouter from './routes/ordinaries/vehicles/heavy/punctualheavyVehicleRoutes';
+import specialpunctualHeavyVehicleRouter from './routes/ordinaries/vehicles/heavy/specialpunctualheavyVehicleRoutes';
 
 const app = express();
 
@@ -44,6 +50,11 @@ app.use(
 	express.static(path.join(__dirname, '../store/documents/contractors'))
 );
 
+app.use(
+	'/pdf-ordinaries',
+	express.static(path.join(__dirname, '../store/documents/ordinaries'))
+);
+
 // Importing routes
 app.use('/api/v1/companies', companyRouter);
 app.use('/api/v1/contractors', contractorRouter);
@@ -61,6 +72,28 @@ app.use('/api/v1/ordinaries-person/visitor-person', visitorPersonRouter);
 app.use(
 	'/api/v1/ordinaries-person/special-work-person',
 	specialworkPersonRouter
+);
+// Vehicle starts here
+app.use('/api/v1/ordinaries-vehicle/visitor-vehicle', visitorVehicleRouter);
+app.use(
+	'/api/v1/ordinaries-vehicle/permanent-light-vehicle',
+	permanentLightVehicleRouter
+);
+app.use(
+	'/api/v1/ordinaries-vehicle/permanent-heavy-vehicle',
+	permanentHeavyVehicleRouter
+);
+app.use(
+	'/api/v1/ordinaries-vehicle/punctual-light-vehicle',
+	punctualLightVehicleRouter
+);
+app.use(
+	'/api/v1/ordinaries-vehicle/punctual-heavy-vehicle',
+	punctualHeavyVehicleRouter
+);
+app.use(
+	'/api/v1/ordinaries-vehicle/special-punctual-heavy-vehicle',
+	specialpunctualHeavyVehicleRouter
 );
 
 // Define the global error handler to pass next errors

@@ -61,7 +61,7 @@ const VisitorPersonSchema = new Schema({
 	medicalConceptDate: Date,
 
 	inductionDate: Date,
-	inductionValidity: Boolean,
+	inductionVigency: Date,
 	companyID: {
 		type: Schema.Types.ObjectId,
 		ref: 'company',
@@ -87,7 +87,7 @@ const VisitorPersonSchema = new Schema({
 		type: String,
 		default: 'visitorPerson',
 	},
-	licenseValidity: Boolean,
+	licenseVigency: Date,
 	updatedAt: {
 		type: Date,
 	},

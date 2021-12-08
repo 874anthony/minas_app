@@ -24,15 +24,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.updateSpecialWorkPerson = exports.getCitizenship = exports.uploadSpecialWorkPersons = exports.createSpecialWorkPerson = void 0;
 // Importing own models
-var specialworkPersonModel_1 = __importDefault(require("../../../models/ordinaries/persons/specialworkPersonModel"));
+var specialWorkPersonModel_1 = __importDefault(require("../../../models/ordinaries/persons/specialWorkPersonModel"));
 var userModel_1 = require("../../../models/users/userModel");
 // Importing the factory
 var ordinaryFactory = __importStar(require("../../ordinaryFactory"));
 var uploadSpecialWorkPersons = ordinaryFactory.uploadPerson;
 exports.uploadSpecialWorkPersons = uploadSpecialWorkPersons;
-var getCitizenship = ordinaryFactory.getOrdinaryCitizenship(specialworkPersonModel_1.default);
+var getCitizenship = ordinaryFactory.getOrdinaryCitizenship(specialWorkPersonModel_1.default);
 exports.getCitizenship = getCitizenship;
-var createSpecialWorkPerson = ordinaryFactory.createOrdinary(specialworkPersonModel_1.default, [userModel_1.UserRoles.AccessControl, userModel_1.UserRoles.SISO, userModel_1.UserRoles.Auditing], {
+var createSpecialWorkPerson = ordinaryFactory.createOrdinary(specialWorkPersonModel_1.default, [userModel_1.UserRoles.AccessControl, userModel_1.UserRoles.SISO, userModel_1.UserRoles.Auditing], {
     checkAccessControl: false,
     checkSISO: false,
     checkAuditing: false,
@@ -42,5 +42,5 @@ var createSpecialWorkPerson = ordinaryFactory.createOrdinary(specialworkPersonMo
     correctAuditing: false,
 });
 exports.createSpecialWorkPerson = createSpecialWorkPerson;
-var updateSpecialWorkPerson = ordinaryFactory.updateOrdinary(specialworkPersonModel_1.default);
+var updateSpecialWorkPerson = ordinaryFactory.updateOrdinary(specialWorkPersonModel_1.default);
 exports.updateSpecialWorkPerson = updateSpecialWorkPerson;

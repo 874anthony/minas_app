@@ -22,6 +22,7 @@ export interface CompanyInterface extends Schema {
 	docRUT: string;
 	docLegalRepresentativeID: string;
 	docSocialSecurity: string;
+	finishDates: Array<any>;
 	radicado: string;
 	password: string;
 	status: any;
@@ -106,6 +107,7 @@ const CompanySchema: Schema<CompanyInterface> = new Schema(
 			type: Date,
 		},
 		docSocialSecurity: [String],
+		finishDates: [Date],
 		observations: [
 			{
 				type: String,

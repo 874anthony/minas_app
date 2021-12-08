@@ -70,7 +70,7 @@ const SpecialWorkPersonSchema = new Schema({
 	medicalConceptDate: Date,
 
 	inductionDate: Date,
-	inductionValidity: Boolean,
+	inductionVigency: Date,
 	companyID: {
 		type: Schema.Types.ObjectId,
 		ref: 'company',
@@ -96,7 +96,7 @@ const SpecialWorkPersonSchema = new Schema({
 		type: String,
 		default: 'specialworkPerson',
 	},
-	licenseValidity: Boolean,
+	licenseVigency: Date,
 	updatedAt: {
 		type: Date,
 	},

@@ -30,6 +30,12 @@ var permanentPersonRoutes_1 = __importDefault(require("../ordinaries/persons/per
 var punctualworkPersonRoutes_1 = __importDefault(require("../ordinaries/persons/punctualworkPersonRoutes"));
 var specialworkPersonRoutes_1 = __importDefault(require("../ordinaries/persons/specialworkPersonRoutes"));
 var visitorPersonRoutes_1 = __importDefault(require("../ordinaries/persons/visitorPersonRoutes"));
+var visitorlightVehicleRoutes_1 = __importDefault(require("../ordinaries/vehicles/light/visitorlightVehicleRoutes"));
+var permanentlightVehicleRoutes_1 = __importDefault(require("../ordinaries/vehicles/light/permanentlightVehicleRoutes"));
+var permanentheavyVehicleRoutes_1 = __importDefault(require("../ordinaries/vehicles/heavy/permanentheavyVehicleRoutes"));
+var punctuallightVehicleRoutes_1 = __importDefault(require("../ordinaries/vehicles/light/punctuallightVehicleRoutes"));
+var punctualheavyVehicleRoutes_1 = __importDefault(require("../ordinaries/vehicles/heavy/punctualheavyVehicleRoutes"));
+var specialpunctualheavyVehicleRoutes_1 = __importDefault(require("../ordinaries/vehicles/heavy/specialpunctualheavyVehicleRoutes"));
 var workflowRoutes_1 = __importDefault(require("../ordinaries/workflowRoutes"));
 var ordinariesRoutes_1 = __importDefault(require("../ordinaries/ordinariesRoutes"));
 // Importing own controllers
@@ -43,6 +49,12 @@ router.use('/:idCompany/ordinaries-person/permanent-person', permanentPersonRout
 router.use('/:idCompany/ordinaries-person/punctual-work-person', punctualworkPersonRoutes_1.default);
 router.use('/:idCompany/ordinaries-person/special-work-person', specialworkPersonRoutes_1.default);
 router.use('/:idCompany/ordinaries-person/visitor-person', visitorPersonRoutes_1.default);
+router.use('/:idCompany/ordinaries-vehicle/visitor-vehicle', visitorlightVehicleRoutes_1.default);
+router.use('/:idCompany/ordinaries-vehicle/permanent-light-vehicle', permanentlightVehicleRoutes_1.default);
+router.use('/:idCompany/ordinaries-vehicle/permanent-heavy-vehicle', permanentheavyVehicleRoutes_1.default);
+router.use('/:idCompany/ordinaries-vehicle/punctual-light-vehicle', punctuallightVehicleRoutes_1.default);
+router.use('/:idCompany/ordinaries-vehicle/punctual-heavy-vehicle', punctualheavyVehicleRoutes_1.default);
+router.use('/:idCompany/ordinaries-vehicle/special-punctual-heavy-vehicle', specialpunctualheavyVehicleRoutes_1.default);
 // Custom routes
 router
     .route('/pending-companies')

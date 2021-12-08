@@ -62,7 +62,7 @@ const PermanentPersonSchema = new Schema({
 	medicalConceptDate: Date,
 
 	inductionDate: Date,
-	inductionValidity: Boolean,
+	inductionVigency: Date,
 	companyID: {
 		type: Schema.Types.ObjectId,
 		ref: 'company',
@@ -88,7 +88,7 @@ const PermanentPersonSchema = new Schema({
 		type: String,
 		default: 'permanentPerson',
 	},
-	licenseValidity: Boolean,
+	licenseVigency: Date,
 	updatedAt: {
 		type: Date,
 	},
