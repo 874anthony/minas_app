@@ -16,10 +16,21 @@ router
 	);
 
 // Routes with the id
-router.route('/:id').get(contractorController.getContractor);
+router
+	.route('/:id')
+	.get(contractorController.getContractor)
+	.put(
+		contractorController.getContractorNIT,
+		contractorController.uploadContractorDocs,
+		contractorController.updateContractor
+	);
 
 router
 	.route('/accept-pending-contractor/:id')
 	.patch(contractorController.acceptContractor);
+
+router
+	.route('/reject-pending-contractor/:id')
+	.delete(contractorController.rejectContractor);
 
 export default router;

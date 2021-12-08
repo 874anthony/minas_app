@@ -1,4 +1,34 @@
 "use strict";
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -39,44 +69,136 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.checkRole = exports.getAllOrdinaries = void 0;
-// Importing our utils to this controller
+exports.changeStatusOrdinary = exports.getAllOrdinariesType = exports.checkRole = void 0;
+// // Importing our utils to this controller
 var httpException_1 = __importDefault(require("../../utils/httpException"));
 var catchAsync_1 = __importDefault(require("../../utils/catchAsync"));
 var apiFeatures_1 = __importDefault(require("../../utils/apiFeatures"));
+var ordinariesEnum_1 = require("../../interfaces/ordinaries/ordinariesEnum");
 // Importing own models
-// import PermanentPerson from '../../models/ordinaries/permanentPersonModel';
+var userModel_1 = __importStar(require("../../models/users/userModel"));
 var workflowModel_1 = __importDefault(require("../../models/workflows/workflowModel"));
+// Helpers methods
+var getKey = function (field, user) {
+    return "" + field + Object.keys(userModel_1.UserRoles)[Object.values(userModel_1.UserRoles).indexOf(user.role)];
+};
+var getModel = function (ordinaryType) {
+    return ordinariesEnum_1.ModelsOrdinary[ordinaryType];
+};
+var ModelsPerRole = {
+    'Control de Acceso': [
+        'permanentPerson',
+        'punctualworkPerson',
+        'visitorPerson',
+        'specialworkPerson',
+        'visitorVehicle',
+        'permanentLightVehicle',
+        'permanentHeavyVehicle',
+        'punctualLightVehicle',
+        'punctualHeavyVehicle',
+        'specialpunctualHeavyVehicle',
+    ],
+};
+// Helpers methods Ends HERE
+// MIDDLEWARES STARTS HERE
 var checkRole = function (req, res, next) {
     var userID = req['user']._id;
     req.query.roles = userID;
     next();
 };
 exports.checkRole = checkRole;
-var getAllOrdinaries = (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var features, permanents;
+// METHODS STARTS HERE
+var getAllOrdinariesType = (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var queryModified, userID, user, ordinariesPopulated, ordinaries;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                features = new apiFeatures_1.default(workflowModel_1.default.find(), req.query)
-                    .filter()
-                    .sort()
-                    .limitFields()
-                    .paginate();
-                return [4 /*yield*/, features.query];
+                queryModified = __assign({}, req.query);
+                userID = req['user']._id;
+                return [4 /*yield*/, userModel_1.default.findById(userID)];
             case 1:
-                permanents = _a.sent();
-                if (permanents.length === 0) {
-                    return [2 /*return*/, next(new httpException_1.default('No hay permanentes pendientes!', 204))];
+                user = _a.sent();
+                if (!user) {
+                    return [2 /*return*/, next(new httpException_1.default('No hay un usuario logeado con ese ID, intente nuevamente', 401))];
                 }
+                ordinariesPopulated = ModelsPerRole[user.role].map(function (keyModel) { return __awaiter(void 0, void 0, void 0, function () {
+                    var Model, populateQuery, ordinaryResult;
+                    return __generator(this, function (_a) {
+                        switch (_a.label) {
+                            case 0:
+                                Model = ordinariesEnum_1.ModelsOrdinary[keyModel];
+                                queryModified['ordinaryType'] = keyModel;
+                                populateQuery = new apiFeatures_1.default(workflowModel_1.default.find(), queryModified)
+                                    .filter()
+                                    .limitFields()
+                                    .sort()
+                                    .paginate();
+                                return [4 /*yield*/, populateQuery.query.populate({
+                                        path: 'radicado',
+                                        select: '-__v',
+                                        model: Model,
+                                    })];
+                            case 1:
+                                ordinaryResult = _a.sent();
+                                return [2 /*return*/, ordinaryResult];
+                        }
+                    });
+                }); });
+                return [4 /*yield*/, Promise.all(ordinariesPopulated)];
+            case 2:
+                ordinaries = _a.sent();
                 res.status(200).json({
                     status: true,
-                    data: {
-                        permanents: permanents,
-                    },
+                    ordinaries: ordinaries,
                 });
                 return [2 /*return*/];
         }
     });
 }); });
-exports.getAllOrdinaries = getAllOrdinaries;
+exports.getAllOrdinariesType = getAllOrdinariesType;
+var changeStatusOrdinary = (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var id, body, userID, user, workflowDoc, checkKey, correctKey, Model, docMatched;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                id = req.params.id;
+                body = __assign({}, req.body);
+                userID = req['user']._id;
+                return [4 /*yield*/, userModel_1.default.findById(userID)];
+            case 1:
+                user = _a.sent();
+                if (!user) {
+                    return [2 /*return*/, next(new httpException_1.default('No hay un usuario con ese token, inténtelo nuevamente!', 401))];
+                }
+                return [4 /*yield*/, workflowModel_1.default.findById(id)];
+            case 2:
+                workflowDoc = _a.sent();
+                if (!workflowDoc) {
+                    return [2 /*return*/, next(new httpException_1.default('No existe un proceso con ese ID, intente nuevamente', 404))];
+                }
+                checkKey = getKey('check', user);
+                correctKey = getKey('correct', user);
+                // Modify the status.
+                workflowDoc[checkKey] = body.check;
+                workflowDoc[correctKey] = body.correct;
+                if (!req.body.observations) return [3 /*break*/, 5];
+                Model = getModel(workflowDoc.ordinaryType);
+                return [4 /*yield*/, Model.findById(workflowDoc.radicado)];
+            case 3:
+                docMatched = _a.sent();
+                docMatched.observations.push(req.body.observations);
+                return [4 /*yield*/, docMatched.save({ validateBeforeSave: false })];
+            case 4:
+                _a.sent();
+                _a.label = 5;
+            case 5: return [4 /*yield*/, workflowDoc.save({ validateBeforeSave: false })];
+            case 6:
+                _a.sent();
+                res
+                    .status(200)
+                    .json({ status: true, message: 'El proceso fue actualizado con éxito' });
+                return [2 /*return*/];
+        }
+    });
+}); });
+exports.changeStatusOrdinary = changeStatusOrdinary;

@@ -28,9 +28,13 @@ const getCompany = factory.findOne(Company, {
 	select: 'businessName nit email address phone legalRepresentative -company',
 });
 const createCompany = factory.createOne(Company);
+const updateCompany = factory.updateOne(Company);
 
 // Approve a pending company and autogenerate 'Radicado'
 const acceptCompany = factory.acceptOne(Company);
+const rejectCompany = factory.rejectOne(Company);
+const getCompanyNIT = factory.getCompanyNIT(Company);
+
 const loginCompany = login(Company);
 
 export {
@@ -38,7 +42,10 @@ export {
 	getCompany,
 	createCompany,
 	acceptCompany,
+	rejectCompany,
+	updateCompany,
 	uploadCompanyDocs,
 	getPendingCompanies,
 	loginCompany,
+	getCompanyNIT,
 };

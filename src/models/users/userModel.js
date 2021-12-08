@@ -85,17 +85,6 @@ var UserSchema = new mongoose_1.Schema({
         type: String,
         select: false,
     },
-    passwordConfirm: {
-        type: String,
-        required: [true, 'Por favor, confirma tu contraseña'],
-        // ONLY WORKS ON .create() and .save();
-        validate: {
-            validator: function (value) {
-                return value === this.password;
-            },
-            message: 'Las contraseñas no coinciden',
-        },
-    },
     status: {
         type: Boolean,
         default: true,
@@ -125,8 +114,6 @@ UserSchema.pre('save', function (next) {
                 case 1:
                     // Hash the password with cost of 12
                     _a.password = _b.sent();
-                    // Delete passwordConfirm field
-                    this.passwordConfirm = undefined;
                     next();
                     return [2 /*return*/];
             }

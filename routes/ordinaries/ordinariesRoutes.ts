@@ -1,25 +1,16 @@
-// Importing 3rd-party packages
 import express from 'express';
 
-// Importing the controllers
-import * as permanentPersonController from '../../controllers/ordinaries/permanentPersonController';
-import * as authController from '../../controllers/auth/authController';
-import * as workflowController from '../../controllers/workflow/workflowController';
+import * as ordinaryFactory from '../../controllers/ordinaryFactory';
 
 const router = express.Router({ mergeParams: true });
 
+// Aliases routes
 router
-	.route('/')
-	.get(
-		authController.guardLogin,
-		workflowController.checkRole,
-		workflowController.getAllOrdinaries
-	);
+	.route('/ordinaries-by-company')
+	.get(ordinaryFactory.checkCompanyID, ordinaryFactory.getAllOrds);
 
-router
-	.route('/permanent-person')
-	.post(
-		permanentPersonController.uploadPermanentPersons,
-		permanentPersonController.createPermanentPerson
-	);
+router.route('/').get(ordinaryFactory.getAllOrds);
+
+router.route('/:id').get(ordinaryFactory.getOrdById);
+
 export default router;

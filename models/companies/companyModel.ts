@@ -21,11 +21,12 @@ export interface CompanyInterface extends Schema {
 	docComCam: string;
 	docRUT: string;
 	docLegalRepresentativeID: string;
+	docSocialSecurity: string;
+	finishDates: Array<any>;
 	radicado: string;
 	password: string;
 	status: any;
 	observations: Array<string>;
-	finishDates: Array<any>;
 	createdAt: any;
 	updatedAt: any;
 	generatePassword: () => Promise<string>;
@@ -105,6 +106,7 @@ const CompanySchema: Schema<CompanyInterface> = new Schema(
 		updatedAt: {
 			type: Date,
 		},
+		docSocialSecurity: [String],
 		finishDates: [Date],
 		observations: [
 			{

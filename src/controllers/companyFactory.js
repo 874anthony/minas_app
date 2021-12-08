@@ -50,7 +50,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.uploadCompanyDocs = exports.acceptOne = exports.findOne = exports.findAll = exports.createOne = void 0;
+exports.getCompanyNIT = exports.uploadCompanyDocs = exports.updateOne = exports.rejectOne = exports.acceptOne = exports.findOne = exports.findAll = exports.createOne = void 0;
 var multer_1 = __importDefault(require("multer"));
 var fs_1 = __importDefault(require("fs"));
 // Importing our utils to this controller
@@ -67,16 +67,30 @@ var companyModel_1 = require("../models/companies/companyModel");
 var multerStorage = multer_1.default.diskStorage({
     // Define the destination
     destination: function (req, file, callback) {
-        var directory = "store/documents/company/" + req.body.nit;
+        var predicate;
+        if (req.body.nit === undefined) {
+            predicate = req['companyNit'];
+        }
+        else {
+            predicate = req.body.nit;
+        }
+        var directory = "store/documents/company/" + predicate;
         if (!fs_1.default.existsSync(directory)) {
             fs_1.default.mkdirSync(directory, { recursive: true });
         }
         callback(null, directory);
     },
     filename: function (req, file, callback) {
+        var predicate;
+        if (req.body.nit === undefined) {
+            predicate = req['companyNit'];
+        }
+        else {
+            predicate = req.body.nit;
+        }
         // Extracting the extension.
         var extension = file.mimetype.split('/')[1];
-        callback(null, "company-" + req.body.nit + "-" + Date.now() + "." + extension);
+        callback(null, "company-" + predicate + "-" + Date.now() + "." + extension);
     },
 });
 // Filtering for only PDF files
@@ -92,11 +106,34 @@ var upload = (0, multer_1.default)({
     storage: multerStorage,
     fileFilter: multerFilter,
 });
+// MIDDLEWARES STARTS HERE!
+var getCompanyNIT = function (Model) {
+    return (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+        var id, currentCompany;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    id = req.params.id;
+                    return [4 /*yield*/, Model.findById(id)];
+                case 1:
+                    currentCompany = _a.sent();
+                    if (!currentCompany) {
+                        return [2 /*return*/, next(new httpException_1.default('No hay ningún ordinario con ese ID, intente nuevamente', 404))];
+                    }
+                    req['companyNit'] = currentCompany.nit;
+                    next();
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+};
+exports.getCompanyNIT = getCompanyNIT;
 // ================================================ Endpoints starts here =========================================
 var uploadCompanyDocs = upload.fields([
     { name: 'docComCam', maxCount: 1 },
     { name: 'docRUT', maxCount: 1 },
     { name: 'docLegalRepresentativeID', maxCount: 1 },
+    { name: 'docSocialSecurity', maxCount: 1 },
 ]);
 exports.uploadCompanyDocs = uploadCompanyDocs;
 var findAll = function (Model) {
@@ -202,9 +239,94 @@ var createOne = function (Model) {
     }); });
 };
 exports.createOne = createOne;
+var updateOne = function (Model) {
+    return (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+        var id, companyUpdated, body;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    id = req.params.id;
+                    return [4 /*yield*/, Model.findById(id)];
+                case 1:
+                    companyUpdated = _a.sent();
+                    if (!companyUpdated) {
+                        return [2 /*return*/, next(new httpException_1.default('No hay una empresa con ese ID, intente nuevamente!', 404))];
+                    }
+                    body = __assign({}, req.body);
+                    if (req.files) {
+                        // Looping through the req.files object to set it to the body
+                        Object.keys(req.files).forEach(function (el) { return (body[el] = req.files[el][0].filename); });
+                    }
+                    body['updatedAt'] = Date.now();
+                    Object.keys(body).forEach(function (key) {
+                        if (key === 'observations' ||
+                            key === 'docSocialSecurity' ||
+                            key === 'finishDates') {
+                            companyUpdated[key].push(body[key]);
+                        }
+                        else {
+                            companyUpdated[key] = body[key];
+                        }
+                    });
+                    return [4 /*yield*/, companyUpdated.save({ validateBeforeSave: false })];
+                case 2:
+                    _a.sent();
+                    res.status(200).json({
+                        status: true,
+                        message: 'Se ha actualizado la compañía con éxito',
+                        companyUpdated: companyUpdated,
+                    });
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+};
+exports.updateOne = updateOne;
+var rejectOne = function (Model) {
+    return (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+        var id, emailMessage, companyMatched, error_2;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    id = req.params.id;
+                    emailMessage = req.body.emailMessage;
+                    return [4 /*yield*/, Model.findById(id)];
+                case 1:
+                    companyMatched = _a.sent();
+                    // CHECK IF THE COMPANY EXISTS
+                    if (!companyMatched) {
+                        return [2 /*return*/, next(new httpException_1.default('No existe una compañía con ese ID, inténtelo nuevamente', 404))];
+                    }
+                    _a.label = 2;
+                case 2:
+                    _a.trys.push([2, 4, , 5]);
+                    return [4 /*yield*/, (0, email_1.default)({
+                            email: companyMatched.email,
+                            subject: 'Ha sido denegado su acceso a la Mina San Jorge!',
+                            message: emailMessage,
+                        })];
+                case 3:
+                    _a.sent();
+                    return [3 /*break*/, 5];
+                case 4:
+                    error_2 = _a.sent();
+                    return [2 /*return*/, next(new httpException_1.default('Hubo un error al enviar el correo, por favor intente más tarde', 500))];
+                case 5: return [4 /*yield*/, companyMatched.remove()];
+                case 6:
+                    _a.sent();
+                    // SENDING THE FINAL RESPONSE TO THE CLIENT
+                    return [2 /*return*/, res.status(204).json({
+                            status: true,
+                            message: 'La empresa fue rechazada y se le envió un correo con las observaciones',
+                        })];
+            }
+        });
+    }); });
+};
+exports.rejectOne = rejectOne;
 var acceptOne = function (Model) {
     return (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-        var id, body, companyMatched, dependency, serie, subserie, trd, year, dependencyCode, serieCode, subserieCode, consecutive, radicado, genPassword, hashedPassword, emailMessage, error_2;
+        var id, body, companyMatched, dependency, serie, subserie, trd, year, dependencyCode, serieCode, subserieCode, consecutive, radicado, genPassword, hashedPassword, emailMessage, error_3;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -271,7 +393,7 @@ var acceptOne = function (Model) {
                     companyMatched.updatedAt = Date.now();
                     // To save observations as well
                     if (req.body.observations)
-                        companyMatched.observations = req.body.observations;
+                        companyMatched.observations.push(req.body.observations);
                     return [4 /*yield*/, companyMatched.save({ validateBeforeSave: false })];
                 case 11:
                     _a.sent();
@@ -288,7 +410,7 @@ var acceptOne = function (Model) {
                     _a.sent();
                     return [3 /*break*/, 15];
                 case 14:
-                    error_2 = _a.sent();
+                    error_3 = _a.sent();
                     return [2 /*return*/, next(new httpException_1.default('Hubo un error al enviar el correo, por favor intente más tarde', 500))];
                 case 15: 
                 // SENDING THE FINAL RESPONSE TO THE CLIENT

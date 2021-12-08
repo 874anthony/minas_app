@@ -22,17 +22,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-// Importing 3rd-party packages
 var express_1 = __importDefault(require("express"));
-// Importing the controllers
-var permanentPersonController = __importStar(require("../../controllers/ordinaries/permanentPersonController"));
-var authController = __importStar(require("../../controllers/auth/authController"));
-var workflowController = __importStar(require("../../controllers/workflow/workflowController"));
+var ordinaryFactory = __importStar(require("../../controllers/ordinaryFactory"));
 var router = express_1.default.Router({ mergeParams: true });
+// Aliases routes
 router
-    .route('/')
-    .get(authController.guardLogin, workflowController.checkRole, workflowController.getAllOrdinaries);
-router
-    .route('/permanent-person')
-    .post(permanentPersonController.uploadPermanentPersons, permanentPersonController.createPermanentPerson);
+    .route('/ordinaries-by-company')
+    .get(ordinaryFactory.checkCompanyID, ordinaryFactory.getAllOrds);
+router.route('/').get(ordinaryFactory.getAllOrds);
+router.route('/:id').get(ordinaryFactory.getOrdById);
 exports.default = router;

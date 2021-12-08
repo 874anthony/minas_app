@@ -9,7 +9,6 @@ interface UserSchemaInterface extends Schema {
 	role: any;
 	email: string;
 	password: string | undefined;
-	passwordConfirm: string;
 	status: boolean;
 	createdAt: any;
 	updatedAt: any;
@@ -59,17 +58,6 @@ const UserSchema: Schema<UserSchemaInterface> = new Schema({
 		type: String,
 		select: false,
 	},
-	passwordConfirm: {
-		type: String,
-		required: [true, 'Por favor, confirma tu contraseña'],
-		// ONLY WORKS ON .create() and .save();
-		validate: {
-			validator: function (this: UserSchemaInterface, value) {
-				return value === this.password;
-			},
-			message: 'Las contraseñas no coinciden',
-		},
-	},
 	status: {
 		type: Boolean,
 		default: true,
@@ -95,8 +83,6 @@ UserSchema.pre('save', async function (next) {
 		process.env.PASSWORD_PHARAPRHASE!
 	).toString();
 
-	// Delete passwordConfirm field
-	this.passwordConfirm = undefined;
 	next();
 });
 
