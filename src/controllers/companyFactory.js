@@ -284,7 +284,7 @@ var updateOne = function (Model) {
 exports.updateOne = updateOne;
 var rejectOne = function (Model) {
     return (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-        var id, emailMessage, companyMatched, error_2;
+        var id, emailMessage, companyMatched;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -297,22 +297,36 @@ var rejectOne = function (Model) {
                     if (!companyMatched) {
                         return [2 /*return*/, next(new httpException_1.default('No existe una compañía con ese ID, inténtelo nuevamente', 404))];
                     }
-                    _a.label = 2;
+                    // try {
+                    // 	await Email({
+                    // 		email: companyMatched.email,
+                    // 		subject: 'Ha sido denegado su acceso a la Mina San Jorge!',
+                    // 		message: emailMessage,
+                    // 	});
+                    // } catch (error) {
+                    // 	return next(
+                    // 		new HttpException(
+                    // 			'Hubo un error al enviar el correo, por favor intente más tarde',
+                    // 			500
+                    // 		)
+                    // 	);
+                    // }
+                    return [4 /*yield*/, companyMatched.remove()];
                 case 2:
-                    _a.trys.push([2, 4, , 5]);
-                    return [4 /*yield*/, (0, email_1.default)({
-                            email: companyMatched.email,
-                            subject: 'Ha sido denegado su acceso a la Mina San Jorge!',
-                            message: emailMessage,
-                        })];
-                case 3:
-                    _a.sent();
-                    return [3 /*break*/, 5];
-                case 4:
-                    error_2 = _a.sent();
-                    return [2 /*return*/, next(new httpException_1.default('Hubo un error al enviar el correo, por favor intente más tarde', 500))];
-                case 5: return [4 /*yield*/, companyMatched.remove()];
-                case 6:
+                    // try {
+                    // 	await Email({
+                    // 		email: companyMatched.email,
+                    // 		subject: 'Ha sido denegado su acceso a la Mina San Jorge!',
+                    // 		message: emailMessage,
+                    // 	});
+                    // } catch (error) {
+                    // 	return next(
+                    // 		new HttpException(
+                    // 			'Hubo un error al enviar el correo, por favor intente más tarde',
+                    // 			500
+                    // 		)
+                    // 	);
+                    // }
                     _a.sent();
                     // SENDING THE FINAL RESPONSE TO THE CLIENT
                     return [2 /*return*/, res.status(204).json({
@@ -326,7 +340,7 @@ var rejectOne = function (Model) {
 exports.rejectOne = rejectOne;
 var acceptOne = function (Model) {
     return (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-        var id, body, companyMatched, dependency, serie, subserie, trd, year, dependencyCode, serieCode, subserieCode, consecutive, radicado, genPassword, hashedPassword, emailMessage, error_3;
+        var id, body, companyMatched, dependency, serie, subserie, trd, year, dependencyCode, serieCode, subserieCode, consecutive, radicado, genPassword, hashedPassword, companyCredentials, error_2;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -397,20 +411,19 @@ var acceptOne = function (Model) {
                     return [4 /*yield*/, companyMatched.save({ validateBeforeSave: false })];
                 case 11:
                     _a.sent();
-                    emailMessage = "Ha sido aprobado su solicitud de acceso para la mina, la generaci\u00F3n de su empresa se ha generado con el radicado: " + radicado + ". Sus credenciales de accesos son las siguientes:\n\t\t\nEl correo: el mismo con el que se registr\u00F3\nSu contrase\u00F1a: " + genPassword + "\n\nSi tiene alguna duda, no dude en contactar con nosotros!";
+                    companyCredentials = {
+                        genPassword: genPassword,
+                        radicado: radicado,
+                    };
                     _a.label = 12;
                 case 12:
                     _a.trys.push([12, 14, , 15]);
-                    return [4 /*yield*/, (0, email_1.default)({
-                            email: companyMatched.email,
-                            subject: 'Ha sido aprobado su acceso a la Mina San Jorge!',
-                            message: emailMessage,
-                        })];
+                    return [4 /*yield*/, new email_1.default(companyMatched).sendWelcomeCompany(companyCredentials)];
                 case 13:
                     _a.sent();
                     return [3 /*break*/, 15];
                 case 14:
-                    error_3 = _a.sent();
+                    error_2 = _a.sent();
                     return [2 /*return*/, next(new httpException_1.default('Hubo un error al enviar el correo, por favor intente más tarde', 500))];
                 case 15: 
                 // SENDING THE FINAL RESPONSE TO THE CLIENT

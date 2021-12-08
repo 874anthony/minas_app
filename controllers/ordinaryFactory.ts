@@ -75,6 +75,24 @@ const getOrdinaryCitizenship = (Model) =>
 		next();
 	});
 
+const getVehicleNumber = (Model) =>
+	catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+		const id = req.params.id;
+		const currentOrdinary = await Model.findById(id);
+
+		if (!currentOrdinary) {
+			return next(
+				new HttpException(
+					'No hay ningún ordinario con ese ID, intente nuevamente',
+					404
+				)
+			);
+		}
+
+		req['ordVehicleNumber'] = currentOrdinary.vehicleNumber;
+		next();
+	});
+
 const checkCompanyID = (req: Request, res: Response, next: NextFunction) => {
 	const companyID = req.params.idCompany;
 	req.query.companyID = companyID;
@@ -326,4 +344,5 @@ export {
 	updateOrdinary,
 	uploadPerson,
 	uploadVehicle,
+	getVehicleNumber,
 };

@@ -8,8 +8,7 @@ import * as ordinaryFactory from '../../../ordinaryFactory';
 
 const uploadVisitorVehicles = ordinaryFactory.uploadVehicle;
 
-// const getCitizenship =
-// 	ordinaryFactory.getOrdinaryCitizenship(VisitorVehicleModel);
+const getVehicleNumber = ordinaryFactory.getVehicleNumber(VisitorVehicleModel);
 
 const createVisitorVehicle = ordinaryFactory.createOrdinary(
 	VisitorVehicleModel,
@@ -27,7 +26,7 @@ const updateVisitorVehicle =
 
 export {
 	createVisitorVehicle,
-	// getCitizenship,
+	getVehicleNumber,
 	uploadVisitorVehicles,
 	updateVisitorVehicle,
 };

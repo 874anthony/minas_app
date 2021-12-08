@@ -40,6 +40,8 @@ if (process.env.NODE_ENV === 'development') {
 app.use('/pdf-companies', express_1.default.static(path_1.default.join(__dirname, '../store/documents/company')));
 app.use('/pdf-contractors', express_1.default.static(path_1.default.join(__dirname, '../store/documents/contractors')));
 app.use('/pdf-ordinaries', express_1.default.static(path_1.default.join(__dirname, '../store/documents/ordinaries')));
+app.set('view engine', 'ejs');
+app.set('views', __dirname + "/views");
 // Importing routes
 app.use('/api/v1/companies', companyRoutes_1.default);
 app.use('/api/v1/contractors', contractorRoutes_1.default);

@@ -32,5 +32,5 @@ router
     .post(punctualLightVehicleController.uploadPunctualLightVehicles, punctualLightVehicleController.createPunctualLightVehicle);
 router
     .route('/:id')
-    .put(punctualLightVehicleController.updatePunctualLightVehicle);
+    .put(punctualLightVehicleController.getVehicleNumber, punctualLightVehicleController.uploadPunctualLightVehicles, punctualLightVehicleController.updatePunctualLightVehicle);
 exports.default = router;

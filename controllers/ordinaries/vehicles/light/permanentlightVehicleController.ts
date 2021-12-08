@@ -8,8 +8,9 @@ import * as ordinaryFactory from '../../../ordinaryFactory';
 
 const uploadPermanentLightVehicles = ordinaryFactory.uploadVehicle;
 
-// const getCitizenship =
-// 	ordinaryFactory.getOrdinaryCitizenship(PermanentLightVehicleModel);
+const getVehicleNumber = ordinaryFactory.getVehicleNumber(
+	PermanentLightVehicleModel
+);
 
 const createPermanentLightVehicle = ordinaryFactory.createOrdinary(
 	PermanentLightVehicleModel,
@@ -33,6 +34,6 @@ const updatePermanentLightVehicle = ordinaryFactory.updateOrdinary(
 export {
 	createPermanentLightVehicle,
 	updatePermanentLightVehicle,
-	// getCitizenship,
 	uploadPermanentLightVehicles,
+	getVehicleNumber,
 };

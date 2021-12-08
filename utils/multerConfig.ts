@@ -65,7 +65,11 @@ const multerStorageVehicle = multer.diskStorage({
 	destination: (req: Request, file: Express.Multer.File, callback) => {
 		let predicate;
 
-		predicate = req.body.vehicleNumber;
+		if (req.body.vehicleNumber === undefined) {
+			predicate = req['ordVehicleNumber'];
+		} else {
+			predicate = req.body.vehicleNumber;
+		}
 
 		const directory = `store/documents/ordinaries/vehicle/${predicate}`;
 
@@ -78,7 +82,11 @@ const multerStorageVehicle = multer.diskStorage({
 	filename: (req: Request, file: Express.Multer.File, callback) => {
 		let predicate;
 
-		predicate = req.body.vehicleNumber;
+		if (req.body.vehicleNumber === undefined) {
+			predicate = req['ordVehicleNumber'];
+		} else {
+			predicate = req.body.vehicleNumber;
+		}
 
 		// Extracting the extension.
 		const extension = file.mimetype.split('/')[1];
