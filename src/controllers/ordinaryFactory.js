@@ -50,66 +50,23 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.uploadPerson = exports.updateOrdinary = exports.createOrdinary = exports.getOrdById = exports.getAllOrds = exports.checkCompanyID = exports.getOrdinaryCitizenship = void 0;
-var multer_1 = __importDefault(require("multer"));
-var fs_1 = __importDefault(require("fs"));
+exports.uploadVehicle = exports.uploadPerson = exports.updateOrdinary = exports.createOrdinary = exports.getOrdById = exports.getAllOrds = exports.checkCompanyID = exports.getOrdinaryCitizenship = void 0;
 // Importing our utils to this controller
 var catchAsync_1 = __importDefault(require("../utils/catchAsync"));
 var httpException_1 = __importDefault(require("../utils/httpException"));
 var apiFeatures_1 = __importDefault(require("../utils/apiFeatures"));
+// Utils here
 var ordinariesEnum_1 = require("../interfaces/ordinaries/ordinariesEnum");
 var trdImportAll_1 = require("../models/trd/trdImportAll");
+var multerConfig_1 = require("../utils/multerConfig");
+// Models here
 var userModel_1 = __importDefault(require("../models/users/userModel"));
 var workflowModel_1 = __importDefault(require("../models/workflows/workflowModel"));
 var trdOrdinary_1 = __importDefault(require("../models/trd/trdOrdinary"));
-// ================================== MULTER CONFIGURATION TO HANDLE THE DOCUMENTS ===========================================
-// Configuring first the type of the storage
-var multerStorageOrdinary = multer_1.default.diskStorage({
-    // Define the destination
-    destination: function (req, file, callback) {
-        var predicate;
-        if (req.body.citizenship === undefined) {
-            predicate = req['ordCitizenship'];
-        }
-        else {
-            predicate = req.body.citizenship;
-        }
-        var directory = "store/documents/ordinaries/person/" + predicate;
-        if (!fs_1.default.existsSync(directory)) {
-            fs_1.default.mkdirSync(directory, { recursive: true });
-        }
-        callback(null, directory);
-    },
-    filename: function (req, file, callback) {
-        var predicate;
-        if (req.body.citizenship === undefined) {
-            predicate = req['ordCitizenship'];
-        }
-        else {
-            predicate = req.body.citizenship;
-        }
-        // Extracting the extension.
-        var extension = file.mimetype.split('/')[1];
-        callback(null, "ordinary-" + predicate + "-" + Date.now() + "." + extension);
-    },
-});
-// Filtering for only PDF files
-var multerFilterOrdinary = function (req, file, callback) {
-    if (file.mimetype.split('/')[1] === 'pdf') {
-        callback(null, true);
-    }
-    else {
-        callback(new httpException_1.default('No es un pdf, por favor, solo suba archivos PDF', 404), false);
-    }
-};
-var uploadOrdinaryPerson = (0, multer_1.default)({
-    storage: multerStorageOrdinary,
-    fileFilter: multerFilterOrdinary,
-});
 // ================================================ Endpoints starts here =========================================
 // UPLOADS MIDDLEWARES
 // const uploadAttached = uploadOrdinaryPerson.single()
-var uploadPerson = uploadOrdinaryPerson.fields([
+var uploadPerson = multerConfig_1.uploadOrdinaryPerson.fields([
     { name: 'docHealth', maxCount: 1 },
     { name: 'docPension', maxCount: 1 },
     { name: 'docARL', maxCount: 1 },
@@ -126,6 +83,10 @@ var uploadPerson = uploadOrdinaryPerson.fields([
     { name: 'docRigger', maxCount: 1 },
 ]);
 exports.uploadPerson = uploadPerson;
+var uploadVehicle = multerConfig_1.uploadOrdinaryVehicle.fields([
+    { name: 'docSoat', maxCount: 1 },
+]);
+exports.uploadVehicle = uploadVehicle;
 // AQUI TERMINA LOS UPLOADS MIDDLEWARES
 var getOrdinaryCitizenship = function (Model) {
     return (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {

@@ -7,6 +7,7 @@ import permanentPersonRouter from '../ordinaries/persons/permanentPersonRoutes';
 import punctualworkPersonRouter from '../ordinaries/persons/punctualworkPersonRoutes';
 import specialworkPersonRouter from '../ordinaries/persons/specialworkPersonRoutes';
 import visitorPersonRouter from '../ordinaries/persons/visitorPersonRoutes';
+import visitorVehicleRouter from '../ordinaries/vehicles/light/visitorlightVehicleRoutes';
 import workflowRouter from '../ordinaries/workflowRoutes';
 import ordinariesRouter from '../ordinaries/ordinariesRoutes';
 
@@ -32,6 +33,11 @@ router.use(
 	specialworkPersonRouter
 );
 router.use('/:idCompany/ordinaries-person/visitor-person', visitorPersonRouter);
+
+router.use(
+	'/:idCompany/ordinaries-vehicle/visitor-vehicle',
+	visitorVehicleRouter
+);
 
 // Custom routes
 router

@@ -22,25 +22,21 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateSpecialWorkPerson = exports.getCitizenship = exports.uploadSpecialWorkPersons = exports.createSpecialWorkPerson = void 0;
+exports.updateVisitorVehicle = exports.uploadVisitorVehicles = exports.createVisitorVehicle = void 0;
 // Importing own models
-var specialWorkPersonModel_1 = __importDefault(require("../../../models/ordinaries/persons/specialWorkPersonModel"));
-var userModel_1 = require("../../../models/users/userModel");
+var visitorlightVehicleModel_1 = __importDefault(require("../../../../models/ordinaries/vehicles/light/visitorlightVehicleModel"));
+var userModel_1 = require("../../../../models/users/userModel");
 // Importing the factory
-var ordinaryFactory = __importStar(require("../../ordinaryFactory"));
-var uploadSpecialWorkPersons = ordinaryFactory.uploadPerson;
-exports.uploadSpecialWorkPersons = uploadSpecialWorkPersons;
-var getCitizenship = ordinaryFactory.getOrdinaryCitizenship(specialWorkPersonModel_1.default);
-exports.getCitizenship = getCitizenship;
-var createSpecialWorkPerson = ordinaryFactory.createOrdinary(specialWorkPersonModel_1.default, [userModel_1.UserRoles.AccessControl, userModel_1.UserRoles.SISO, userModel_1.UserRoles.Auditing], {
+var ordinaryFactory = __importStar(require("../../../ordinaryFactory"));
+var uploadVisitorVehicles = ordinaryFactory.uploadVehicle;
+exports.uploadVisitorVehicles = uploadVisitorVehicles;
+// const getCitizenship =
+// 	ordinaryFactory.getOrdinaryCitizenship(VisitorVehicleModel);
+var createVisitorVehicle = ordinaryFactory.createOrdinary(visitorlightVehicleModel_1.default, [userModel_1.UserRoles.AccessControl], {
     checkAccessControl: false,
-    checkSISO: false,
-    checkAuditing: false,
 }, {
     correctAccessControl: false,
-    correctSISO: false,
-    correctAuditing: false,
 });
-exports.createSpecialWorkPerson = createSpecialWorkPerson;
-var updateSpecialWorkPerson = ordinaryFactory.updateOrdinary(specialWorkPersonModel_1.default);
-exports.updateSpecialWorkPerson = updateSpecialWorkPerson;
+exports.createVisitorVehicle = createVisitorVehicle;
+var updateVisitorVehicle = ordinaryFactory.updateOrdinary(visitorlightVehicleModel_1.default);
+exports.updateVisitorVehicle = updateVisitorVehicle;

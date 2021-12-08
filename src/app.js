@@ -19,6 +19,7 @@ var permanentPersonRoutes_1 = __importDefault(require("./routes/ordinaries/perso
 var punctualworkPersonRoutes_1 = __importDefault(require("./routes/ordinaries/persons/punctualworkPersonRoutes"));
 var visitorPersonRoutes_1 = __importDefault(require("./routes/ordinaries/persons/visitorPersonRoutes"));
 var specialworkPersonRoutes_1 = __importDefault(require("./routes/ordinaries/persons/specialworkPersonRoutes"));
+var visitorlightVehicleRoutes_1 = __importDefault(require("./routes/ordinaries/vehicles/light/visitorlightVehicleRoutes"));
 var app = (0, express_1.default)();
 // To handle the CORS
 app.use((0, cors_1.default)());
@@ -45,6 +46,8 @@ app.use('/api/v1/ordinaries-person/permanent-person', permanentPersonRoutes_1.de
 app.use('/api/v1/ordinaries-person/punctual-work-person', punctualworkPersonRoutes_1.default);
 app.use('/api/v1/ordinaries-person/visitor-person', visitorPersonRoutes_1.default);
 app.use('/api/v1/ordinaries-person/special-work-person', specialworkPersonRoutes_1.default);
+// Vehicle starts here
+app.use('/api/v1/ordinaries-vehicle/visitor-vehicle', visitorlightVehicleRoutes_1.default);
 // Define the global error handler to pass next errors
 function globalErrorHandler(err, req, res, next) {
     var status = err.status || 500;

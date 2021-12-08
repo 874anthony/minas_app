@@ -69,7 +69,7 @@ var SpecialWorkPersonSchema = new mongoose_1.Schema({
     observations: [String],
     medicalConceptDate: Date,
     inductionDate: Date,
-    inductionValidity: Boolean,
+    inductionVigency: Date,
     companyID: {
         type: mongoose_1.Schema.Types.ObjectId,
         ref: 'company',
@@ -95,7 +95,7 @@ var SpecialWorkPersonSchema = new mongoose_1.Schema({
         type: String,
         default: 'specialworkPerson',
     },
-    licenseValidity: Boolean,
+    licenseVigency: Date,
     updatedAt: {
         type: Date,
     },

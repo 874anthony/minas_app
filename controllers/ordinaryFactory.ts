@@ -1,76 +1,23 @@
 // Import 3rd-party packages
 import { NextFunction, Request, Response } from 'express';
-import multer from 'multer';
-import fs from 'fs';
 
 // Importing our utils to this controller
 import catchAsync from '../utils/catchAsync';
 import HttpException from '../utils/httpException';
 import APIFeatures from '../utils/apiFeatures';
 
+// Utils here
 import { ModelsOrdinary } from '../interfaces/ordinaries/ordinariesEnum';
 import { TRDDependency } from '../models/trd/trdImportAll';
+import {
+	uploadOrdinaryPerson,
+	uploadOrdinaryVehicle,
+} from '../utils/multerConfig';
 
+// Models here
 import User from '../models/users/userModel';
 import Workflow from '../models/workflows/workflowModel';
 import TRDOrdinary from '../models/trd/trdOrdinary';
-
-// ================================== MULTER CONFIGURATION TO HANDLE THE DOCUMENTS ===========================================
-// Configuring first the type of the storage
-const multerStorageOrdinary = multer.diskStorage({
-	// Define the destination
-	destination: (req: Request, file: Express.Multer.File, callback) => {
-		let predicate;
-
-		if (req.body.citizenship === undefined) {
-			predicate = req['ordCitizenship'];
-		} else {
-			predicate = req.body.citizenship;
-		}
-
-		const directory = `store/documents/ordinaries/person/${predicate}`;
-
-		if (!fs.existsSync(directory)) {
-			fs.mkdirSync(directory, { recursive: true });
-		}
-
-		callback(null, directory);
-	},
-	filename: (req: Request, file: Express.Multer.File, callback) => {
-		let predicate;
-
-		if (req.body.citizenship === undefined) {
-			predicate = req['ordCitizenship'];
-		} else {
-			predicate = req.body.citizenship;
-		}
-
-		// Extracting the extension.
-		const extension = file.mimetype.split('/')[1];
-		callback(null, `ordinary-${predicate}-${Date.now()}.${extension}`);
-	},
-});
-
-// Filtering for only PDF files
-const multerFilterOrdinary = (
-	req: Request,
-	file: Express.Multer.File,
-	callback: any
-) => {
-	if (file.mimetype.split('/')[1] === 'pdf') {
-		callback(null, true);
-	} else {
-		callback(
-			new HttpException('No es un pdf, por favor, solo suba archivos PDF', 404),
-			false
-		);
-	}
-};
-
-const uploadOrdinaryPerson = multer({
-	storage: multerStorageOrdinary,
-	fileFilter: multerFilterOrdinary,
-});
 
 // ================================================ Endpoints starts here =========================================
 
@@ -92,6 +39,10 @@ const uploadPerson = uploadOrdinaryPerson.fields([
 	{ name: 'docCraneOperator', maxCount: 1 },
 	{ name: 'docSafeworkHeights', maxCount: 1 },
 	{ name: 'docRigger', maxCount: 1 },
+]);
+
+const uploadVehicle = uploadOrdinaryVehicle.fields([
+	{ name: 'docSoat', maxCount: 1 },
 ]);
 
 // AQUI TERMINA LOS UPLOADS MIDDLEWARES
@@ -363,4 +314,5 @@ export {
 	createOrdinary,
 	updateOrdinary,
 	uploadPerson,
+	uploadVehicle,
 };

@@ -18,6 +18,7 @@ import permanentPersonRouter from './routes/ordinaries/persons/permanentPersonRo
 import punctualworkPersonRouter from './routes/ordinaries/persons/punctualworkPersonRoutes';
 import visitorPersonRouter from './routes/ordinaries/persons/visitorPersonRoutes';
 import specialworkPersonRouter from './routes/ordinaries/persons/specialworkPersonRoutes';
+import visitorVehicleRouter from './routes/ordinaries/vehicles/light/visitorlightVehicleRoutes';
 
 const app = express();
 
@@ -62,6 +63,8 @@ app.use(
 	'/api/v1/ordinaries-person/special-work-person',
 	specialworkPersonRouter
 );
+// Vehicle starts here
+app.use('/api/v1/ordinaries-vehicle/visitor-vehicle', visitorVehicleRouter);
 
 // Define the global error handler to pass next errors
 function globalErrorHandler(

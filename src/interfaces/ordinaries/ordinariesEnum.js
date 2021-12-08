@@ -43,4 +43,5 @@ exports.ModelsOrdinary = {
     punctualworkPerson: ordinariesModels.PunctualWorkPerson,
     specialworkPerson: ordinariesModels.SpecialWorkPerson,
     visitorPerson: ordinariesModels.VisitorPerson,
+    visitorVehicle: ordinariesModels.VisitorVehicle,
 };

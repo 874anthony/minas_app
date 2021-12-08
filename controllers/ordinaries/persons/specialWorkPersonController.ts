@@ -1,5 +1,5 @@
 // Importing own models
-import SpecialWorkPersonModel from '../../../models/ordinaries/persons/specialworkPersonModel';
+import SpecialWorkPersonModel from '../../../models/ordinaries/persons/specialWorkPersonModel';
 
 import { UserRoles } from '../../../models/users/userModel';
 

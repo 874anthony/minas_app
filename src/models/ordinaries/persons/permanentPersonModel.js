@@ -61,7 +61,7 @@ var PermanentPersonSchema = new mongoose_1.Schema({
     observations: [String],
     medicalConceptDate: Date,
     inductionDate: Date,
-    inductionValidity: Boolean,
+    inductionVigency: Date,
     companyID: {
         type: mongoose_1.Schema.Types.ObjectId,
         ref: 'company',
@@ -87,7 +87,7 @@ var PermanentPersonSchema = new mongoose_1.Schema({
         type: String,
         default: 'permanentPerson',
     },
-    licenseValidity: Boolean,
+    licenseVigency: Date,
     updatedAt: {
         type: Date,
     },

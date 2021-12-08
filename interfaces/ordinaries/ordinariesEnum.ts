@@ -22,6 +22,7 @@ export const ModelsOrdinary = {
 	punctualworkPerson: ordinariesModels.PunctualWorkPerson,
 	specialworkPerson: ordinariesModels.SpecialWorkPerson,
 	visitorPerson: ordinariesModels.VisitorPerson,
+	visitorVehicle: ordinariesModels.VisitorVehicle,
 };
 export interface StatusBody {
 	id: string;

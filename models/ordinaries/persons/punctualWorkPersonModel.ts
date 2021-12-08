@@ -61,7 +61,7 @@ const PunctualWorkPersonSchema = new Schema({
 	medicalConceptDate: Date,
 
 	inductionDate: Date,
-	inductionValidity: Boolean,
+	inductionVigency: Date,
 	companyID: {
 		type: Schema.Types.ObjectId,
 		ref: 'company',
@@ -87,7 +87,7 @@ const PunctualWorkPersonSchema = new Schema({
 		type: String,
 		default: 'punctualworkPerson',
 	},
-	licenseValidity: Boolean,
+	licenseVigency: Date,
 	updatedAt: {
 		type: Date,
 	},
