@@ -124,6 +124,7 @@ var CompanySchema = new mongoose_1.Schema({
         type: Date,
     },
     docSocialSecurity: [String],
+    finishDates: [Date],
     observations: [
         {
             type: String,

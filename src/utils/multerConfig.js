@@ -54,7 +54,7 @@ var multerStorageVehicle = multer_1.default.diskStorage({
     destination: function (req, file, callback) {
         var predicate;
         predicate = req.body.vehicleNumber;
-        var directory = "store/documents/ordinaries/person/" + predicate;
+        var directory = "store/documents/ordinaries/vehicle/" + predicate;
         if (!fs_1.default.existsSync(directory)) {
             fs_1.default.mkdirSync(directory, { recursive: true });
         }

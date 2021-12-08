@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var mongoose_1 = require("mongoose");
 // Definying the schema
-var VisitorlightVehicleSchema = new mongoose_1.Schema({
+var PunctualHeavyVehicleSchema = new mongoose_1.Schema({
     radicado: {
         type: String,
         default: 'Sin radicado',
@@ -37,7 +37,7 @@ var VisitorlightVehicleSchema = new mongoose_1.Schema({
     },
     ordinaryType: {
         type: String,
-        default: 'visitorVehicle',
+        default: 'punctualHeavyVehicle',
     },
     serviceType: {
         type: String,
@@ -45,9 +45,18 @@ var VisitorlightVehicleSchema = new mongoose_1.Schema({
     },
     soatVigency: Date,
     docSoat: String,
+    docPropertyCard: String,
+    docTechno: String,
+    docInspectionVehicle: String,
+    docMachineCard: String,
+    docBill: String,
+    docAduana: String,
+    docOperationCard: String,
     docSISCONMP: String,
     docVehicleListCheck: String,
+    docTeamCert: String,
+    docQualityCert: String,
     technoVigency: Date,
     operationCardVigency: Date,
 });
-exports.default = (0, mongoose_1.model)('visitor_vehicle', VisitorlightVehicleSchema);
+exports.default = (0, mongoose_1.model)('punctualheavy_vehicle', PunctualHeavyVehicleSchema);

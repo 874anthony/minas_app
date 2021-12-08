@@ -20,6 +20,11 @@ var punctualworkPersonRoutes_1 = __importDefault(require("./routes/ordinaries/pe
 var visitorPersonRoutes_1 = __importDefault(require("./routes/ordinaries/persons/visitorPersonRoutes"));
 var specialworkPersonRoutes_1 = __importDefault(require("./routes/ordinaries/persons/specialworkPersonRoutes"));
 var visitorlightVehicleRoutes_1 = __importDefault(require("./routes/ordinaries/vehicles/light/visitorlightVehicleRoutes"));
+var permanentlightVehicleRoutes_1 = __importDefault(require("./routes/ordinaries/vehicles/light/permanentlightVehicleRoutes"));
+var permanentheavyVehicleRoutes_1 = __importDefault(require("./routes/ordinaries/vehicles/heavy/permanentheavyVehicleRoutes"));
+var punctuallightVehicleRoutes_1 = __importDefault(require("./routes/ordinaries/vehicles/light/punctuallightVehicleRoutes"));
+var punctualheavyVehicleRoutes_1 = __importDefault(require("./routes/ordinaries/vehicles/heavy/punctualheavyVehicleRoutes"));
+var specialpunctualheavyVehicleRoutes_1 = __importDefault(require("./routes/ordinaries/vehicles/heavy/specialpunctualheavyVehicleRoutes"));
 var app = (0, express_1.default)();
 // To handle the CORS
 app.use((0, cors_1.default)());
@@ -34,6 +39,7 @@ if (process.env.NODE_ENV === 'development') {
 // Defining the static files
 app.use('/pdf-companies', express_1.default.static(path_1.default.join(__dirname, '../store/documents/company')));
 app.use('/pdf-contractors', express_1.default.static(path_1.default.join(__dirname, '../store/documents/contractors')));
+app.use('/pdf-ordinaries', express_1.default.static(path_1.default.join(__dirname, '../store/documents/ordinaries')));
 // Importing routes
 app.use('/api/v1/companies', companyRoutes_1.default);
 app.use('/api/v1/contractors', contractorRoutes_1.default);
@@ -48,6 +54,11 @@ app.use('/api/v1/ordinaries-person/visitor-person', visitorPersonRoutes_1.defaul
 app.use('/api/v1/ordinaries-person/special-work-person', specialworkPersonRoutes_1.default);
 // Vehicle starts here
 app.use('/api/v1/ordinaries-vehicle/visitor-vehicle', visitorlightVehicleRoutes_1.default);
+app.use('/api/v1/ordinaries-vehicle/permanent-light-vehicle', permanentlightVehicleRoutes_1.default);
+app.use('/api/v1/ordinaries-vehicle/permanent-heavy-vehicle', permanentheavyVehicleRoutes_1.default);
+app.use('/api/v1/ordinaries-vehicle/punctual-light-vehicle', punctuallightVehicleRoutes_1.default);
+app.use('/api/v1/ordinaries-vehicle/punctual-heavy-vehicle', punctualheavyVehicleRoutes_1.default);
+app.use('/api/v1/ordinaries-vehicle/special-punctual-heavy-vehicle', specialpunctualheavyVehicleRoutes_1.default);
 // Define the global error handler to pass next errors
 function globalErrorHandler(err, req, res, next) {
     var status = err.status || 500;

@@ -1,7 +1,7 @@
 import { Schema, model } from 'mongoose';
 
 // Definying the schema
-const VisitorlightVehicleSchema = new Schema({
+const PermanentLightVehicleSchema = new Schema({
 	radicado: {
 		type: String,
 		default: 'Sin radicado',
@@ -36,7 +36,7 @@ const VisitorlightVehicleSchema = new Schema({
 	},
 	ordinaryType: {
 		type: String,
-		default: 'visitorVehicle',
+		default: 'permanentLightVehicle',
 	},
 	serviceType: {
 		type: String,
@@ -44,10 +44,18 @@ const VisitorlightVehicleSchema = new Schema({
 	},
 	soatVigency: Date,
 	docSoat: String,
+	docPropertyCard: String,
+	docTechno: String,
+	docInspectionVehicle: String,
+	docMachineCard: String,
+	docBill: String,
+	docAduana: String,
 	docSISCONMP: String,
 	docVehicleListCheck: String,
+	docTeamCert: String,
+	docQualityCert: String,
 	technoVigency: Date,
 	operationCardVigency: Date,
 });
 
-export default model('visitor_vehicle', VisitorlightVehicleSchema);
+export default model('permanentlight_vehicle', PermanentLightVehicleSchema);

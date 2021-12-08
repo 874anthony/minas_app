@@ -8,6 +8,11 @@ import punctualworkPersonRouter from '../ordinaries/persons/punctualworkPersonRo
 import specialworkPersonRouter from '../ordinaries/persons/specialworkPersonRoutes';
 import visitorPersonRouter from '../ordinaries/persons/visitorPersonRoutes';
 import visitorVehicleRouter from '../ordinaries/vehicles/light/visitorlightVehicleRoutes';
+import permanentLightVehicleRouter from '../ordinaries/vehicles/light/permanentlightVehicleRoutes';
+import permanentHeavyVehicleRouter from '../ordinaries/vehicles/heavy/permanentheavyVehicleRoutes';
+import punctualLightVehicleRouter from '../ordinaries/vehicles/light/punctuallightVehicleRoutes';
+import punctualHeavyVehicleRouter from '../ordinaries/vehicles/heavy/punctualheavyVehicleRoutes';
+import specialpunctualHeavyVehicleRouter from '../ordinaries/vehicles/heavy/specialpunctualheavyVehicleRoutes';
 import workflowRouter from '../ordinaries/workflowRoutes';
 import ordinariesRouter from '../ordinaries/ordinariesRoutes';
 
@@ -37,6 +42,26 @@ router.use('/:idCompany/ordinaries-person/visitor-person', visitorPersonRouter);
 router.use(
 	'/:idCompany/ordinaries-vehicle/visitor-vehicle',
 	visitorVehicleRouter
+);
+router.use(
+	'/:idCompany/ordinaries-vehicle/permanent-light-vehicle',
+	permanentLightVehicleRouter
+);
+router.use(
+	'/:idCompany/ordinaries-vehicle/permanent-heavy-vehicle',
+	permanentHeavyVehicleRouter
+);
+router.use(
+	'/:idCompany/ordinaries-vehicle/punctual-light-vehicle',
+	punctualLightVehicleRouter
+);
+router.use(
+	'/:idCompany/ordinaries-vehicle/punctual-heavy-vehicle',
+	punctualHeavyVehicleRouter
+);
+router.use(
+	'/:idCompany/ordinaries-vehicle/special-punctual-heavy-vehicle',
+	specialpunctualHeavyVehicleRouter
 );
 
 // Custom routes

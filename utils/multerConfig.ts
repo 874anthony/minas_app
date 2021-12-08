@@ -67,7 +67,7 @@ const multerStorageVehicle = multer.diskStorage({
 
 		predicate = req.body.vehicleNumber;
 
-		const directory = `store/documents/ordinaries/person/${predicate}`;
+		const directory = `store/documents/ordinaries/vehicle/${predicate}`;
 
 		if (!fs.existsSync(directory)) {
 			fs.mkdirSync(directory, { recursive: true });

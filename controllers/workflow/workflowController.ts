@@ -33,6 +33,11 @@ const ModelsPerRole = {
 		'visitorPerson',
 		'specialworkPerson',
 		'visitorVehicle',
+		'permanentLightVehicle',
+		'permanentHeavyVehicle',
+		'punctualLightVehicle',
+		'punctualHeavyVehicle',
+		'specialpunctualHeavyVehicle',
 	],
 };
 // Helpers methods Ends HERE

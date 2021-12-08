@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.VisitorVehicle = exports.SpecialWorkPerson = exports.VisitorPerson = exports.PunctualWorkPerson = exports.PermanentPersonModel = void 0;
+exports.SpecialPunctualHeavyVehicle = exports.PunctualHeavyVehicle = exports.PermanentHeavyVehicle = exports.PunctualLightVehicle = exports.PermanentLightVehicle = exports.VisitorVehicle = exports.SpecialWorkPerson = exports.VisitorPerson = exports.PunctualWorkPerson = exports.PermanentPersonModel = void 0;
 var permanentPersonModel_1 = __importDefault(require("./persons/permanentPersonModel"));
 exports.PermanentPersonModel = permanentPersonModel_1.default;
 var punctualWorkPersonModel_1 = __importDefault(require("./persons/punctualWorkPersonModel"));
@@ -14,3 +14,13 @@ var specialWorkPersonModel_1 = __importDefault(require("./persons/specialWorkPer
 exports.SpecialWorkPerson = specialWorkPersonModel_1.default;
 var visitorlightVehicleModel_1 = __importDefault(require("./vehicles/light/visitorlightVehicleModel"));
 exports.VisitorVehicle = visitorlightVehicleModel_1.default;
+var permanentlightVehicleModel_1 = __importDefault(require("./vehicles/light/permanentlightVehicleModel"));
+exports.PermanentLightVehicle = permanentlightVehicleModel_1.default;
+var permanentheavyVehicleModel_1 = __importDefault(require("./vehicles/heavy/permanentheavyVehicleModel"));
+exports.PermanentHeavyVehicle = permanentheavyVehicleModel_1.default;
+var punctuallightVehicleModel_1 = __importDefault(require("./vehicles/light/punctuallightVehicleModel"));
+exports.PunctualLightVehicle = punctuallightVehicleModel_1.default;
+var punctualheavyVehicleModel_1 = __importDefault(require("./vehicles/heavy/punctualheavyVehicleModel"));
+exports.PunctualHeavyVehicle = punctualheavyVehicleModel_1.default;
+var specialpunctualheavyVehicleModel_1 = __importDefault(require("./vehicles/heavy/specialpunctualheavyVehicleModel"));
+exports.SpecialPunctualHeavyVehicle = specialpunctualheavyVehicleModel_1.default;
