@@ -17,6 +17,19 @@ export enum StatusOrdinary {
 	Visa = 'POR VISAR',
 }
 
+export const getModelByType = {
+	permanentPerson: 'Persona Permanente',
+	punctualworkPerson: 'Persona Trabajo Puntual',
+	specialworkPerson: 'Persona Especial',
+	visitorPerson: 'Persona Visitante',
+	visitorVehicle: 'Vehiculo Visitante',
+	permanentLightVehicle: 'Vehiculo Liviano Permanente',
+	punctualLightVehicle: 'Vehiculo Liviano Puntual',
+	permanentHeavyVehicle: 'Vehiculo Pesado Permanente',
+	punctualHeavyVehicle: 'Vehiculo Pesado Puntual',
+	specialpunctualHeavyVehicle: ' Vehiculo Especial Pesado',
+};
+
 export const ModelsOrdinary = {
 	permanentPerson: ordinariesModels.PermanentPersonModel,
 	punctualworkPerson: ordinariesModels.PunctualWorkPerson,

@@ -57,5 +57,7 @@ var PermanentLightVehicleSchema = new mongoose_1.Schema({
     docQualityCert: String,
     technoVigency: Date,
     operationCardVigency: Date,
+    qrCodeDate: Date,
+    observations: [String],
 });
 exports.default = (0, mongoose_1.model)('permanentlight_vehicle', PermanentLightVehicleSchema);

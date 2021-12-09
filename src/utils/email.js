@@ -88,6 +88,14 @@ var Email = /** @class */ (function () {
                             subject: subject,
                             html: html,
                             text: (0, html_to_text_1.htmlToText)(html),
+                            // TODO: make this dynamic
+                            attachments: [
+                                {
+                                    filename: 'image-2.png',
+                                    path: __dirname + "/../views/imag\tes/image-2.png",
+                                    cid: 'unique@gecelca-logo',
+                                },
+                            ],
                         };
                         // 3) Create the transport to send the email
                         return [4 /*yield*/, this.newTransport().sendMail(mailOptions)];

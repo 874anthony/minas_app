@@ -57,6 +57,8 @@ const PunctualLightVehicleSchema = new Schema({
 	docQualityCert: String,
 	technoVigency: Date,
 	operationCardVigency: Date,
+	qrCodeDate: Date,
+	observations: [String],
 });
 
 export default model('punctuallight_vehicle', PunctualLightVehicleSchema);

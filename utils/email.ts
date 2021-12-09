@@ -45,6 +45,14 @@ export default class Email {
 			subject,
 			html,
 			text: htmlToText(html),
+			// TODO: make this dynamic
+			attachments: [
+				{
+					filename: 'image-2.png',
+					path: `${__dirname}/../views/imag	es/image-2.png`,
+					cid: 'unique@gecelca-logo',
+				},
+			],
 		};
 
 		// 3) Create the transport to send the email

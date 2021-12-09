@@ -83,6 +83,7 @@ const VisitorPersonSchema = new Schema({
 		default: Date.now(),
 	},
 	maxAuthorizationDate: Date,
+	qrCodeDate: Date,
 	ordinaryType: {
 		type: String,
 		default: 'visitorPerson',

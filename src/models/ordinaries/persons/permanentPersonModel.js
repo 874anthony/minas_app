@@ -83,6 +83,7 @@ var PermanentPersonSchema = new mongoose_1.Schema({
         default: Date.now(),
     },
     maxAuthorizationDate: Date,
+    qrCodeDate: Date,
     ordinaryType: {
         type: String,
         default: 'permanentPerson',
@@ -96,6 +97,13 @@ PermanentPersonSchema.pre('save', function (next) {
     if (this.isNew) {
         var days = 3;
         this.maxAuthorizationDate = (0, date_1.addDate)(this.recepcionDate, days);
+    }
+    next();
+});
+PermanentPersonSchema.pre('save', function (next) {
+    if (this.isModified('status') && this.status === 'ACTIVO') {
+        var qrCodeDays = 3;
+        this.qrCodeDate = (0, date_1.addDate)(Date.now(), qrCodeDays);
     }
     next();
 });

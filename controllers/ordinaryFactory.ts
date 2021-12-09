@@ -274,6 +274,8 @@ const updateOrdinary = (Model) =>
 				}
 			});
 
+			workflowDoc['healingTimes'] += 1;
+
 			await workflowDoc.save({ validateBeforeSave: false });
 		}
 

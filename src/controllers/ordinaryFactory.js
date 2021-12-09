@@ -289,6 +289,7 @@ var updateOrdinary = function (Model) {
                             workflowDoc_1[el] = false;
                         }
                     });
+                    workflowDoc_1['healingTimes'] += 1;
                     return [4 /*yield*/, workflowDoc_1.save({ validateBeforeSave: false })];
                 case 4:
                     _a.sent();
