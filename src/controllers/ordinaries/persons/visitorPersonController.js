@@ -25,6 +25,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.updateVisitorPerson = exports.uploadVisitorPersons = exports.getCitizenship = exports.createVisitorPerson = void 0;
 // Importing own models
 var visitorPersonModel_1 = __importDefault(require("../../../models/ordinaries/persons/visitorPersonModel"));
+var cronJob_1 = __importDefault(require("../../../utils/cronJob"));
 var userModel_1 = require("../../../models/users/userModel");
 // Importing the factory
 var ordinaryFactory = __importStar(require("../../ordinaryFactory"));
@@ -40,3 +41,6 @@ var createVisitorPerson = ordinaryFactory.createOrdinary(visitorPersonModel_1.de
 exports.createVisitorPerson = createVisitorPerson;
 var updateVisitorPerson = ordinaryFactory.updateOrdinary(visitorPersonModel_1.default);
 exports.updateVisitorPerson = updateVisitorPerson;
+// Cron Job to verify if Date.now() > qrCodeDate
+var job = (0, cronJob_1.default)(visitorPersonModel_1.default);
+job.start();

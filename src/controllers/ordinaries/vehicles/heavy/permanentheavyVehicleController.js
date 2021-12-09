@@ -25,6 +25,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.uploadPermanentHeavyVehicles = exports.getVehicleNumber = exports.updatePermanentHeavyVehicle = exports.createPermanentHeavyVehicle = void 0;
 // Importing own models
 var permanentheavyVehicleModel_1 = __importDefault(require("../../../../models/ordinaries/vehicles/heavy/permanentheavyVehicleModel"));
+var cronJob_1 = __importDefault(require("../../../../utils/cronJob"));
 var userModel_1 = require("../../../../models/users/userModel");
 // Importing the factory
 var ordinaryFactory = __importStar(require("../../../ordinaryFactory"));
@@ -44,3 +45,6 @@ var createPermanentHeavyVehicle = ordinaryFactory.createOrdinary(permanentheavyV
 exports.createPermanentHeavyVehicle = createPermanentHeavyVehicle;
 var updatePermanentHeavyVehicle = ordinaryFactory.updateOrdinary(permanentheavyVehicleModel_1.default);
 exports.updatePermanentHeavyVehicle = updatePermanentHeavyVehicle;
+// Cron Job to verify if Date.now() > qrCodeDate
+var job = (0, cronJob_1.default)(permanentheavyVehicleModel_1.default);
+job.start();

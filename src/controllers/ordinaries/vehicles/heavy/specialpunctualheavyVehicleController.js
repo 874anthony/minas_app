@@ -25,6 +25,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.uploadSpecialPunctualHeavyVehicles = exports.getVehicleNumber = exports.updateSpecialPunctualHeavyVehicle = exports.createSpecialPunctualHeavyVehicle = void 0;
 // Importing own models
 var specialpunctualheavyVehicleModel_1 = __importDefault(require("../../../../models/ordinaries/vehicles/heavy/specialpunctualheavyVehicleModel"));
+var cronJob_1 = __importDefault(require("../../../../utils/cronJob"));
 var userModel_1 = require("../../../../models/users/userModel");
 // Importing the factory
 var ordinaryFactory = __importStar(require("../../../ordinaryFactory"));
@@ -44,3 +45,6 @@ var createSpecialPunctualHeavyVehicle = ordinaryFactory.createOrdinary(specialpu
 exports.createSpecialPunctualHeavyVehicle = createSpecialPunctualHeavyVehicle;
 var updateSpecialPunctualHeavyVehicle = ordinaryFactory.updateOrdinary(specialpunctualheavyVehicleModel_1.default);
 exports.updateSpecialPunctualHeavyVehicle = updateSpecialPunctualHeavyVehicle;
+// Cron Job to verify if Date.now() > qrCodeDate
+var job = (0, cronJob_1.default)(specialpunctualheavyVehicleModel_1.default);
+job.start();

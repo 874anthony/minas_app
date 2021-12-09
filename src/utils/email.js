@@ -92,7 +92,7 @@ var Email = /** @class */ (function () {
                             attachments: [
                                 {
                                     filename: 'image-2.png',
-                                    path: __dirname + "/../views/imag\tes/image-2.png",
+                                    path: __dirname + "/../views/images/image-2.png",
                                     cid: 'unique@gecelca-logo',
                                 },
                             ],

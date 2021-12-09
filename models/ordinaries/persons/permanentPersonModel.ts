@@ -1,5 +1,4 @@
 import { Schema, model } from 'mongoose';
-import { StatusOrdinary } from '../../../interfaces/ordinaries/ordinariesEnum';
 import { addDate } from '../../../utils/date';
 
 // Definying the schema
