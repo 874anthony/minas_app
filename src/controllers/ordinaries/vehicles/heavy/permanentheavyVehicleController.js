@@ -22,7 +22,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.uploadPermanentHeavyVehicles = exports.updatePermanentHeavyVehicle = exports.createPermanentHeavyVehicle = void 0;
+exports.uploadPermanentHeavyVehicles = exports.getVehicleNumber = exports.updatePermanentHeavyVehicle = exports.createPermanentHeavyVehicle = void 0;
 // Importing own models
 var permanentheavyVehicleModel_1 = __importDefault(require("../../../../models/ordinaries/vehicles/heavy/permanentheavyVehicleModel"));
 var userModel_1 = require("../../../../models/users/userModel");
@@ -30,8 +30,8 @@ var userModel_1 = require("../../../../models/users/userModel");
 var ordinaryFactory = __importStar(require("../../../ordinaryFactory"));
 var uploadPermanentHeavyVehicles = ordinaryFactory.uploadVehicle;
 exports.uploadPermanentHeavyVehicles = uploadPermanentHeavyVehicles;
-// const getCitizenship =
-// 	ordinaryFactory.getOrdinaryCitizenship(PermanentHeavyVehicleModel);
+var getVehicleNumber = ordinaryFactory.getVehicleNumber(permanentheavyVehicleModel_1.default);
+exports.getVehicleNumber = getVehicleNumber;
 var createPermanentHeavyVehicle = ordinaryFactory.createOrdinary(permanentheavyVehicleModel_1.default, [userModel_1.UserRoles.AccessControl, userModel_1.UserRoles.SISO, userModel_1.UserRoles.Auditing], {
     checkAccessControl: false,
     checkSISO: false,

@@ -15,6 +15,10 @@ router
 
 router
 	.route('/:id')
-	.put(punctualLightVehicleController.updatePunctualLightVehicle);
+	.put(
+		punctualLightVehicleController.getVehicleNumber,
+		punctualLightVehicleController.uploadPunctualLightVehicles,
+		punctualLightVehicleController.updatePunctualLightVehicle
+	);
 
 export default router;

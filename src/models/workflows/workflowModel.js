@@ -102,6 +102,10 @@ var WorkflowSchema = new mongoose_1.Schema({
         type: String,
         required: true,
     },
+    healingTimes: {
+        type: Number,
+        default: 0,
+    },
     createdAt: {
         type: Date,
         default: Date.now(),

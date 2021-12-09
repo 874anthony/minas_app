@@ -57,6 +57,8 @@ const SpecialPunctualHeavyVehicleSchema = new Schema({
 	docQualityCert: String,
 	technoVigency: Date,
 	operationCardVigency: Date,
+	qrCodeDate: Date,
+	observations: [String],
 });
 
 export default model(

@@ -55,6 +55,9 @@ app.use(
 	express.static(path.join(__dirname, '../store/documents/ordinaries'))
 );
 
+app.set('view engine', 'ejs');
+app.set('views', `${__dirname}/views`);
+
 // Importing routes
 app.use('/api/v1/companies', companyRouter);
 app.use('/api/v1/contractors', contractorRouter);

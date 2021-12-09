@@ -27,6 +27,7 @@ var express_1 = __importDefault(require("express"));
 // Importing the controllers
 var authController = __importStar(require("../../controllers/auth/authController"));
 var router = express_1.default.Router();
+router.route('/is-allowed/:id').get(authController.isAllowedOrdinary);
 router.route('/create-user').post(authController.createUserRole);
 router.route('/login').post(authController.loginUsers);
 exports.default = router;

@@ -48,6 +48,8 @@ const VisitorlightVehicleSchema = new Schema({
 	docVehicleListCheck: String,
 	technoVigency: Date,
 	operationCardVigency: Date,
+	qrCodeDate: Date,
+	observations: [String],
 });
 
 export default model('visitor_vehicle', VisitorlightVehicleSchema);

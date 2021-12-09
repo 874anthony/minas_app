@@ -22,7 +22,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.uploadSpecialPunctualHeavyVehicles = exports.updateSpecialPunctualHeavyVehicle = exports.createSpecialPunctualHeavyVehicle = void 0;
+exports.uploadSpecialPunctualHeavyVehicles = exports.getVehicleNumber = exports.updateSpecialPunctualHeavyVehicle = exports.createSpecialPunctualHeavyVehicle = void 0;
 // Importing own models
 var specialpunctualheavyVehicleModel_1 = __importDefault(require("../../../../models/ordinaries/vehicles/heavy/specialpunctualheavyVehicleModel"));
 var userModel_1 = require("../../../../models/users/userModel");
@@ -30,8 +30,8 @@ var userModel_1 = require("../../../../models/users/userModel");
 var ordinaryFactory = __importStar(require("../../../ordinaryFactory"));
 var uploadSpecialPunctualHeavyVehicles = ordinaryFactory.uploadVehicle;
 exports.uploadSpecialPunctualHeavyVehicles = uploadSpecialPunctualHeavyVehicles;
-// const getCitizenship =
-// 	ordinaryFactory.getOrdinaryCitizenship(SpecialPunctualHeavyVehicleModel);
+var getVehicleNumber = ordinaryFactory.getVehicleNumber(specialpunctualheavyVehicleModel_1.default);
+exports.getVehicleNumber = getVehicleNumber;
 var createSpecialPunctualHeavyVehicle = ordinaryFactory.createOrdinary(specialpunctualheavyVehicleModel_1.default, [userModel_1.UserRoles.AccessControl, userModel_1.UserRoles.SISO, userModel_1.UserRoles.Auditing], {
     checkAccessControl: false,
     checkSISO: false,

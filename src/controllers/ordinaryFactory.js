@@ -50,7 +50,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.uploadVehicle = exports.uploadPerson = exports.updateOrdinary = exports.createOrdinary = exports.getOrdById = exports.getAllOrds = exports.checkCompanyID = exports.getOrdinaryCitizenship = void 0;
+exports.getVehicleNumber = exports.uploadVehicle = exports.uploadPerson = exports.updateOrdinary = exports.createOrdinary = exports.getOrdById = exports.getAllOrds = exports.checkCompanyID = exports.getOrdinaryCitizenship = void 0;
 // Importing our utils to this controller
 var catchAsync_1 = __importDefault(require("../utils/catchAsync"));
 var httpException_1 = __importDefault(require("../utils/httpException"));
@@ -120,6 +120,27 @@ var getOrdinaryCitizenship = function (Model) {
     }); });
 };
 exports.getOrdinaryCitizenship = getOrdinaryCitizenship;
+var getVehicleNumber = function (Model) {
+    return (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+        var id, currentOrdinary;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    id = req.params.id;
+                    return [4 /*yield*/, Model.findById(id)];
+                case 1:
+                    currentOrdinary = _a.sent();
+                    if (!currentOrdinary) {
+                        return [2 /*return*/, next(new httpException_1.default('No hay ningún ordinario con ese ID, intente nuevamente', 404))];
+                    }
+                    req['ordVehicleNumber'] = currentOrdinary.vehicleNumber;
+                    next();
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+};
+exports.getVehicleNumber = getVehicleNumber;
 var checkCompanyID = function (req, res, next) {
     var companyID = req.params.idCompany;
     req.query.companyID = companyID;
@@ -268,6 +289,7 @@ var updateOrdinary = function (Model) {
                             workflowDoc_1[el] = false;
                         }
                     });
+                    workflowDoc_1['healingTimes'] += 1;
                     return [4 /*yield*/, workflowDoc_1.save({ validateBeforeSave: false })];
                 case 4:
                     _a.sent();

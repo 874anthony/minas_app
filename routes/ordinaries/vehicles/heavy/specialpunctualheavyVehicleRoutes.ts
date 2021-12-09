@@ -15,6 +15,10 @@ router
 
 router
 	.route('/:id')
-	.put(specialpunctualHeavyVehicleController.updateSpecialPunctualHeavyVehicle);
+	.put(
+		specialpunctualHeavyVehicleController.getVehicleNumber,
+		specialpunctualHeavyVehicleController.uploadSpecialPunctualHeavyVehicles,
+		specialpunctualHeavyVehicleController.updateSpecialPunctualHeavyVehicle
+	);
 
 export default router;

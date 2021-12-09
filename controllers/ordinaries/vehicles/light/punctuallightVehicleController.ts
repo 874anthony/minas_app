@@ -8,8 +8,9 @@ import * as ordinaryFactory from '../../../ordinaryFactory';
 
 const uploadPunctualLightVehicles = ordinaryFactory.uploadVehicle;
 
-// const getCitizenship =
-// 	ordinaryFactory.getOrdinaryCitizenship(PunctualLightVehicleModel);
+const getVehicleNumber = ordinaryFactory.getVehicleNumber(
+	PunctualLightVehicleModel
+);
 
 const createPunctualLightVehicle = ordinaryFactory.createOrdinary(
 	PunctualLightVehicleModel,
@@ -29,6 +30,6 @@ const updatePunctualLightVehicle = ordinaryFactory.updateOrdinary(
 export {
 	createPunctualLightVehicle,
 	updatePunctualLightVehicle,
-	// getCitizenship,
+	getVehicleNumber,
 	uploadPunctualLightVehicles,
 };

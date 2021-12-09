@@ -1,4 +1,5 @@
 import { Schema, model } from 'mongoose';
+import { StatusOrdinary } from '../../../interfaces/ordinaries/ordinariesEnum';
 import { addDate } from '../../../utils/date';
 
 // Definying the schema
@@ -84,6 +85,7 @@ const PermanentPersonSchema = new Schema({
 		default: Date.now(),
 	},
 	maxAuthorizationDate: Date,
+	qrCodeDate: Date,
 	ordinaryType: {
 		type: String,
 		default: 'permanentPerson',
@@ -98,6 +100,14 @@ PermanentPersonSchema.pre('save', function (next) {
 	if (this.isNew) {
 		const days = 3;
 		this.maxAuthorizationDate = addDate(this.recepcionDate, days);
+	}
+	next();
+});
+
+PermanentPersonSchema.pre('save', function (next) {
+	if (this.isModified('status') && this.status === 'ACTIVO') {
+		const qrCodeDays = 3;
+		this.qrCodeDate = addDate(Date.now(), qrCodeDays);
 	}
 	next();
 });

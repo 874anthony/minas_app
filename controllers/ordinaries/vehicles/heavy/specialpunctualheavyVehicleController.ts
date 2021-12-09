@@ -8,8 +8,9 @@ import * as ordinaryFactory from '../../../ordinaryFactory';
 
 const uploadSpecialPunctualHeavyVehicles = ordinaryFactory.uploadVehicle;
 
-// const getCitizenship =
-// 	ordinaryFactory.getOrdinaryCitizenship(SpecialPunctualHeavyVehicleModel);
+const getVehicleNumber = ordinaryFactory.getVehicleNumber(
+	SpecialPunctualHeavyVehicleModel
+);
 
 const createSpecialPunctualHeavyVehicle = ordinaryFactory.createOrdinary(
 	SpecialPunctualHeavyVehicleModel,
@@ -33,6 +34,6 @@ const updateSpecialPunctualHeavyVehicle = ordinaryFactory.updateOrdinary(
 export {
 	createSpecialPunctualHeavyVehicle,
 	updateSpecialPunctualHeavyVehicle,
-	// getCitizenship,
+	getVehicleNumber,
 	uploadSpecialPunctualHeavyVehicles,
 };

@@ -6,7 +6,7 @@ import fs from 'fs';
 // Importing our utils to this controller
 import HttpException from '../utils/httpException';
 import catchAsync from '../utils/catchAsync';
-import sendEmail from '../utils/email';
+import Email from '../utils/email';
 import APIFeatures from '../utils/apiFeatures';
 
 // Importing own models to the controller
@@ -268,20 +268,20 @@ const rejectOne = (Model) =>
 			);
 		}
 
-		try {
-			await sendEmail({
-				email: companyMatched.email,
-				subject: 'Ha sido denegado su acceso a la Mina San Jorge!',
-				message: emailMessage,
-			});
-		} catch (error) {
-			return next(
-				new HttpException(
-					'Hubo un error al enviar el correo, por favor intente más tarde',
-					500
-				)
-			);
-		}
+		// try {
+		// 	await Email({
+		// 		email: companyMatched.email,
+		// 		subject: 'Ha sido denegado su acceso a la Mina San Jorge!',
+		// 		message: emailMessage,
+		// 	});
+		// } catch (error) {
+		// 	return next(
+		// 		new HttpException(
+		// 			'Hubo un error al enviar el correo, por favor intente más tarde',
+		// 			500
+		// 		)
+		// 	);
+		// }
 
 		await companyMatched.remove();
 
@@ -368,16 +368,24 @@ const acceptOne = (Model) =>
 
 		await companyMatched.save({ validateBeforeSave: false });
 
-		const emailMessage = `Ha sido aprobado su solicitud de acceso para la mina, la generación de su empresa se ha generado con el radicado: ${radicado}. Sus credenciales de accesos son las siguientes:
-		\nEl correo: el mismo con el que se registró\nSu contraseña: ${genPassword}\n\nSi tiene alguna duda, no dude en contactar con nosotros!`;
+		// const emailMessage = `Ha sido aprobado su solicitud de acceso para la mina, la generación de su empresa se ha generado con el radicado: ${radicado}. Sus credenciales de accesos son las siguientes:
+		// \nEl correo: el mismo con el que se registró\nSu contraseña: ${genPassword}\n\nSi tiene alguna duda, no dude en contactar con nosotros!`;
+
+		const companyCredentials = {
+			genPassword,
+			radicado,
+		};
 
 		try {
-			await sendEmail({
-				email: companyMatched.email,
-				subject: 'Ha sido aprobado su acceso a la Mina San Jorge!',
-				message: emailMessage,
-			});
+			await new Email(companyMatched).sendWelcomeCompany(companyCredentials);
+
+			// {
+			// email: companyMatched.email,
+			// subject: 'Ha sido aprobado su acceso a la Mina San Jorge!',
+			// message: emailMessage,
+			// }
 		} catch (error) {
+			console.log(error);
 			return next(
 				new HttpException(
 					'Hubo un error al enviar el correo, por favor intente más tarde',

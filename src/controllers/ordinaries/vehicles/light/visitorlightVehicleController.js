@@ -22,7 +22,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateVisitorVehicle = exports.uploadVisitorVehicles = exports.createVisitorVehicle = void 0;
+exports.updateVisitorVehicle = exports.uploadVisitorVehicles = exports.getVehicleNumber = exports.createVisitorVehicle = void 0;
 // Importing own models
 var visitorlightVehicleModel_1 = __importDefault(require("../../../../models/ordinaries/vehicles/light/visitorlightVehicleModel"));
 var userModel_1 = require("../../../../models/users/userModel");
@@ -30,8 +30,8 @@ var userModel_1 = require("../../../../models/users/userModel");
 var ordinaryFactory = __importStar(require("../../../ordinaryFactory"));
 var uploadVisitorVehicles = ordinaryFactory.uploadVehicle;
 exports.uploadVisitorVehicles = uploadVisitorVehicles;
-// const getCitizenship =
-// 	ordinaryFactory.getOrdinaryCitizenship(VisitorVehicleModel);
+var getVehicleNumber = ordinaryFactory.getVehicleNumber(visitorlightVehicleModel_1.default);
+exports.getVehicleNumber = getVehicleNumber;
 var createVisitorVehicle = ordinaryFactory.createOrdinary(visitorlightVehicleModel_1.default, [userModel_1.UserRoles.AccessControl], {
     checkAccessControl: false,
 }, {

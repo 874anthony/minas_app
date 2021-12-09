@@ -69,18 +69,45 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.guardLogin = exports.loginUsers = exports.login = exports.createUserRole = void 0;
+exports.isAllowedOrdinary = exports.guardLogin = exports.loginUsers = exports.login = exports.createUserRole = void 0;
 var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 // Importing our utils to this controller
 var httpException_1 = __importDefault(require("../../utils/httpException"));
 var catchAsync_1 = __importDefault(require("../../utils/catchAsync"));
 // Importing own models
 var userModel_1 = __importStar(require("../../models/users/userModel"));
+var ordinariesEnum_1 = require("../../interfaces/ordinaries/ordinariesEnum");
 var signToken = function (id) {
     return jsonwebtoken_1.default.sign({ id: id }, process.env.JWT_PRIVATE_KEY, {
         expiresIn: process.env.JWT_EXPIRES_IN,
     });
 };
+var isAllowedOrdinary = (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var id, ordinaryType, currentOrdinary, ejsOpts;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                if (!req.headers.ordinarytype)
+                    return [2 /*return*/, next(new httpException_1.default('No ha proporcinado el tipo de ordinario, intente nuevamente', 404))];
+                id = req.params.id;
+                ordinaryType = req.headers.ordinarytype;
+                return [4 /*yield*/, ordinariesEnum_1.ModelsOrdinary[ordinaryType].findById(id)];
+            case 1:
+                currentOrdinary = _a.sent();
+                ejsOpts = {
+                    status: "<li style=\"color: " + (currentOrdinary.status === 'INACTIVO' ? 'red' : 'green') + ";\"> " + currentOrdinary.status + " </li>",
+                    name: "" + (currentOrdinary.name !== undefined
+                        ? currentOrdinary.name
+                        : currentOrdinary.vehicleNumber),
+                    ordType: "" + ordinariesEnum_1.getModelByType[ordinaryType],
+                    observations: currentOrdinary.observations,
+                };
+                res.render(__dirname + "/../../views/pages/qrcode.ejs", ejsOpts);
+                return [2 /*return*/];
+        }
+    });
+}); });
+exports.isAllowedOrdinary = isAllowedOrdinary;
 var createUserRole = (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     var body, excludedField, newUser, token;
     return __generator(this, function (_a) {

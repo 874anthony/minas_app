@@ -11,12 +11,48 @@ import DtoCreateUser from '../../interfaces/auth/post-createUser';
 
 // Importing own models
 import User, { UserRoles } from '../../models/users/userModel';
+import {
+	getModelByType,
+	ModelsOrdinary,
+} from '../../interfaces/ordinaries/ordinariesEnum';
 
 const signToken = (id) => {
 	return jwt.sign({ id }, process.env.JWT_PRIVATE_KEY as string, {
 		expiresIn: process.env.JWT_EXPIRES_IN,
 	});
 };
+
+const isAllowedOrdinary = catchAsync(
+	async (req: Request, res: Response, next: NextFunction) => {
+		if (!req.headers.ordinarytype)
+			return next(
+				new HttpException(
+					'No ha proporcinado el tipo de ordinario, intente nuevamente',
+					404
+				)
+			);
+
+		const id = req.params.id;
+		const ordinaryType = <string>req.headers.ordinarytype;
+
+		const currentOrdinary = await ModelsOrdinary[ordinaryType].findById(id);
+
+		let ejsOpts: Object = {
+			status: `<li style="color: ${
+				currentOrdinary.status === 'INACTIVO' ? 'red' : 'green'
+			};"> ${currentOrdinary.status} </li>`,
+			name: `${
+				currentOrdinary.name !== undefined
+					? currentOrdinary.name
+					: currentOrdinary.vehicleNumber
+			}`,
+			ordType: `${getModelByType[ordinaryType]}`,
+			observations: currentOrdinary.observations,
+		};
+
+		res.render(`${__dirname}/../../views/pages/qrcode.ejs`, ejsOpts);
+	}
+);
 
 const createUserRole = catchAsync(
 	async (req: Request, res: Response, next: NextFunction) => {
@@ -118,4 +154,4 @@ const guardLogin = catchAsync(
 
 const loginUsers = login(User);
 
-export { createUserRole, login, loginUsers, guardLogin };
+export { createUserRole, login, loginUsers, guardLogin, isAllowedOrdinary };
