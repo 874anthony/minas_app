@@ -30,7 +30,7 @@ var Gender;
 var StatusOrdinary;
 (function (StatusOrdinary) {
     StatusOrdinary["Active"] = "ACTIVO";
-    StatusOrdinary["InProcess"] = "EN PROCESO";
+    StatusOrdinary["Finished"] = "FINALIZADO";
     StatusOrdinary["Pending"] = "PENDIENTE";
     StatusOrdinary["Inactive"] = "INACTIVO";
     StatusOrdinary["Rejected"] = "RECHAZADO";

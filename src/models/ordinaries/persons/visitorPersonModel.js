@@ -99,4 +99,11 @@ VisitorPersonSchema.pre('save', function (next) {
     }
     next();
 });
+VisitorPersonSchema.pre('save', function (next) {
+    if (this.isModified('status') && this.status === 'ACTIVO') {
+        var qrCodeDays = 2;
+        this.qrCodeDate = (0, date_1.addDate)(Date.now(), qrCodeDays);
+    }
+    next();
+});
 exports.default = (0, mongoose_1.model)('visitor_person', VisitorPersonSchema);

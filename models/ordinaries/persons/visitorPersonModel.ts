@@ -102,4 +102,12 @@ VisitorPersonSchema.pre('save', function (next) {
 	next();
 });
 
+VisitorPersonSchema.pre('save', function (next) {
+	if (this.isModified('status') && this.status === 'ACTIVO') {
+		const qrCodeDays = 2;
+		this.qrCodeDate = addDate(Date.now(), qrCodeDays);
+	}
+	next();
+});
+
 export default model('visitor_person', VisitorPersonSchema);

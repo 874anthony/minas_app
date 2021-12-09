@@ -50,7 +50,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getVehicleNumber = exports.uploadVehicle = exports.uploadPerson = exports.updateOrdinary = exports.createOrdinary = exports.getOrdById = exports.getAllOrds = exports.checkCompanyID = exports.getOrdinaryCitizenship = void 0;
+exports.getVehicleNumber = exports.uploadVehicle = exports.uploadPerson = exports.inactiveOrdsByCompany = exports.updateOrdinary = exports.createOrdinary = exports.getOrdById = exports.getAllOrds = exports.checkCompanyID = exports.getOrdinaryCitizenship = void 0;
 // Importing our utils to this controller
 var catchAsync_1 = __importDefault(require("../utils/catchAsync"));
 var httpException_1 = __importDefault(require("../utils/httpException"));
@@ -362,3 +362,31 @@ var getOrdById = (0, catchAsync_1.default)(function (req, res, next) { return __
     });
 }); });
 exports.getOrdById = getOrdById;
+var inactiveOrdsByCompany = (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var idCompany;
+    return __generator(this, function (_a) {
+        idCompany = req.params.id;
+        Object.values(ordinariesEnum_1.ModelsOrdinary).forEach(function (Model) { return __awaiter(void 0, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        console.log(Model);
+                        return [4 /*yield*/, Model.updateMany({
+                                $match: { $and: { companyID: idCompany, status: 'ACTIVO' } },
+                            }, {
+                                $set: { status: 'INACTIVO', qrCodeDate: null },
+                            })];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+        res.status(200).json({
+            status: true,
+            message: 'Se ha inactivado a todos los ordinarios con éxito',
+        });
+        return [2 /*return*/];
+    });
+}); });
+exports.inactiveOrdsByCompany = inactiveOrdsByCompany;
