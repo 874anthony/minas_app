@@ -368,12 +368,10 @@ const acceptOne = (Model) =>
 
 		await companyMatched.save({ validateBeforeSave: false });
 
-		// const emailMessage = `Ha sido aprobado su solicitud de acceso para la mina, la generación de su empresa se ha generado con el radicado: ${radicado}. Sus credenciales de accesos son las siguientes:
-		// \nEl correo: el mismo con el que se registró\nSu contraseña: ${genPassword}\n\nSi tiene alguna duda, no dude en contactar con nosotros!`;
-
 		const companyCredentials = {
 			genPassword,
 			radicado,
+			email: companyMatched.email,
 		};
 
 		try {

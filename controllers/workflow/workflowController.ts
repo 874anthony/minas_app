@@ -39,6 +39,23 @@ const ModelsPerRole = {
 		'punctualHeavyVehicle',
 		'specialpunctualHeavyVehicle',
 	],
+	'Responsabilidad Social Empresarial': ['permanentPerson'],
+	'Seguridad y Salud en el Trabajo': [
+		'permanentPerson',
+		'specialworkPerson',
+		'permanentLightVehicle',
+		'permanentHeavyVehicle',
+		'specialpunctualHeavyVehicle',
+	],
+	'Seguridad Física': ['permanentPerson'],
+	Interventoría: [
+		'permanentPerson',
+		'specialworkPerson',
+		'permanentLightVehicle',
+		'permanentHeavyVehicle',
+		'specialpunctualHeavyVehicle',
+	],
+	'Gerencia Servicios Mineros': ['permanentPerson'],
 };
 // Helpers methods Ends HERE
 

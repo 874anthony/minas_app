@@ -59,12 +59,11 @@ export default class Email {
 		await this.newTransport().sendMail(mailOptions);
 	}
 
-	async sendWelcomeCompany(companyCredentials) {
-		const { genPassword, radicado } = companyCredentials;
-
-		await this.send('welcomeCompany', 'Su acceso a la mina ha sido aprobado!', {
-			genPassword,
-			radicado,
-		});
+	async sendWelcomeCompany(companyCredentials: Object) {
+		await this.send(
+			'welcomeCompany',
+			'Su acceso a la mina ha sido aprobado!',
+			companyCredentials
+		);
 	}
 }
