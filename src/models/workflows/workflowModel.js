@@ -44,7 +44,7 @@ var StatusWorkflow;
     StatusWorkflow["Blocked"] = "BLOQUEADO";
     StatusWorkflow["Sanitation"] = "SUBSANACION";
     StatusWorkflow["Pending"] = "PENDIENTE";
-    StatusWorkflow["InProcess"] = "EN PROCESO";
+    StatusWorkflow["Finished"] = "FINALIZADO";
 })(StatusWorkflow = exports.StatusWorkflow || (exports.StatusWorkflow = {}));
 var WorkflowSchema = new mongoose_1.Schema({
     radicado: {

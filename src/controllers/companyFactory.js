@@ -414,6 +414,7 @@ var acceptOne = function (Model) {
                     companyCredentials = {
                         genPassword: genPassword,
                         radicado: radicado,
+                        email: companyMatched.email,
                     };
                     _a.label = 12;
                 case 12:

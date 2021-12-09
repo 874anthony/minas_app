@@ -1,6 +1,6 @@
 // Importing own models
 import PunctualLightVehicleModel from '../../../../models/ordinaries/vehicles/light/punctuallightVehicleModel';
-
+import CronJob from '../../../../utils/cronJob';
 import { UserRoles } from '../../../../models/users/userModel';
 
 // Importing the factory
@@ -26,6 +26,10 @@ const createPunctualLightVehicle = ordinaryFactory.createOrdinary(
 const updatePunctualLightVehicle = ordinaryFactory.updateOrdinary(
 	PunctualLightVehicleModel
 );
+
+// Cron Job to verify if Date.now() > qrCodeDate
+const job = CronJob(PunctualLightVehicleModel);
+job.start();
 
 export {
 	createPunctualLightVehicle,

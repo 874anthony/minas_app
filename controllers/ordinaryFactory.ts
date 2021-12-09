@@ -337,6 +337,30 @@ const getOrdById = catchAsync(
 	}
 );
 
+const inactiveOrdsByCompany = catchAsync(
+	async (req: Request, res: Response, next: NextFunction) => {
+		const idCompany = req.params.id;
+
+		Object.values(ModelsOrdinary).forEach(async (Model) => {
+			console.log(Model);
+
+			await Model.updateMany(
+				{
+					$match: { $and: { companyID: idCompany, status: 'ACTIVO' } },
+				},
+				{
+					$set: { status: 'INACTIVO', qrCodeDate: null },
+				}
+			);
+		});
+
+		res.status(200).json({
+			status: true,
+			message: 'Se ha inactivado a todos los ordinarios con éxito',
+		});
+	}
+);
+
 export {
 	getOrdinaryCitizenship,
 	checkCompanyID,
@@ -344,6 +368,7 @@ export {
 	getOrdById,
 	createOrdinary,
 	updateOrdinary,
+	inactiveOrdsByCompany,
 	uploadPerson,
 	uploadVehicle,
 	getVehicleNumber,

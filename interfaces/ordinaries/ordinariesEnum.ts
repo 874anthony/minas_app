@@ -8,7 +8,7 @@ export enum Gender {
 
 export enum StatusOrdinary {
 	Active = 'ACTIVO',
-	InProcess = 'EN PROCESO',
+	Finished = 'FINALIZADO',
 	Pending = 'PENDIENTE',
 	Inactive = 'INACTIVO',
 	Rejected = 'RECHAZADO',

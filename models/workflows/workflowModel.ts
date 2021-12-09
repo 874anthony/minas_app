@@ -8,7 +8,7 @@ export enum StatusWorkflow {
 	Blocked = 'BLOQUEADO',
 	Sanitation = 'SUBSANACION',
 	Pending = 'PENDIENTE',
-	InProcess = 'EN PROCESO',
+	Finished = 'FINALIZADO',
 }
 
 const WorkflowSchema: Schema = new Schema({

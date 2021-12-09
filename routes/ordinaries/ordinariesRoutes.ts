@@ -9,6 +9,8 @@ router
 	.route('/ordinaries-by-company')
 	.get(ordinaryFactory.checkCompanyID, ordinaryFactory.getAllOrds);
 
+router.route('/inactivate-all').put(ordinaryFactory.inactiveOrdsByCompany);
+
 router.route('/').get(ordinaryFactory.getAllOrds);
 
 router.route('/:id').get(ordinaryFactory.getOrdById);
