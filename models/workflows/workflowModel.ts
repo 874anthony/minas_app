@@ -124,23 +124,6 @@ WorkflowSchema.pre('save', async function (next) {
 
 // POST SAVE
 WorkflowSchema.post('save', async function (doc, next) {
-	if (!this.isModified('checkSSFF') || this.isNew) return next();
-
-	if (this.checkSSFF === false) {
-		const Model = getModel(this.ordinaryType);
-
-		const docMatched = await Model.findById(this.radicado);
-
-		docMatched.status = StatusOrdinary.Forbidden;
-		await docMatched.save({ validateBeforeSave: false });
-
-		await this.remove();
-	}
-
-	next();
-});
-
-WorkflowSchema.post('save', async function (doc, next) {
 	// HERE IS TO CHECK IF AT LEAST ONE CORRECT FIELD IS TRUE
 
 	const checkArray = getArray(this['_doc'], 'check');

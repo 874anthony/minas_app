@@ -174,7 +174,7 @@ var getAllOrdinariesType = (0, catchAsync_1.default)(function (req, res, next) {
 }); });
 exports.getAllOrdinariesType = getAllOrdinariesType;
 var changeStatusOrdinary = (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var id, body, userID, user, workflowDoc, checkKey, correctKey, Model, docMatched;
+    var id, body, userID, user, workflowDoc, checkKey, correctKey, Model, docMatched, Model, docMatched;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -195,21 +195,38 @@ var changeStatusOrdinary = (0, catchAsync_1.default)(function (req, res, next) {
                 }
                 checkKey = getKey('check', user);
                 correctKey = getKey('correct', user);
-                // Modify the status.
-                workflowDoc[checkKey] = body.check;
-                workflowDoc[correctKey] = body.correct;
-                if (!req.body.observations) return [3 /*break*/, 5];
+                if (!(checkKey === 'checkSSFF' && body.check === false)) return [3 /*break*/, 6];
                 Model = getModel(workflowDoc.ordinaryType);
                 return [4 /*yield*/, Model.findById(workflowDoc.radicado)];
             case 3:
                 docMatched = _a.sent();
-                docMatched.observations.push(req.body.observations);
+                docMatched.status = ordinariesEnum_1.StatusOrdinary.Forbidden;
                 return [4 /*yield*/, docMatched.save({ validateBeforeSave: false })];
             case 4:
                 _a.sent();
-                _a.label = 5;
-            case 5: return [4 /*yield*/, workflowDoc.save({ validateBeforeSave: false })];
+                return [4 /*yield*/, workflowDoc.remove()];
+            case 5:
+                _a.sent();
+                return [2 /*return*/, res.status(204).json({
+                        status: true,
+                        message: 'El proceso ha sido actualizado con éxito',
+                    })];
             case 6:
+                // Modify the status.
+                workflowDoc[checkKey] = body.check;
+                workflowDoc[correctKey] = body.correct;
+                if (!req.body.observations) return [3 /*break*/, 9];
+                Model = getModel(workflowDoc.ordinaryType);
+                return [4 /*yield*/, Model.findById(workflowDoc.radicado)];
+            case 7:
+                docMatched = _a.sent();
+                docMatched.observations.push(req.body.observations);
+                return [4 /*yield*/, docMatched.save({ validateBeforeSave: false })];
+            case 8:
+                _a.sent();
+                _a.label = 9;
+            case 9: return [4 /*yield*/, workflowDoc.save({ validateBeforeSave: false })];
+            case 10:
                 _a.sent();
                 res
                     .status(200)
