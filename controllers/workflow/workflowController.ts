@@ -98,6 +98,10 @@ const getAllOrdinariesType = catchAsync(
 					path: 'radicado',
 					select: '-__v',
 					model: Model,
+					populate: {
+						path: 'companyID',
+						select: 'businessName',
+					},
 				});
 
 				return ordinaryResult;
@@ -155,12 +159,11 @@ const changeStatusOrdinary = catchAsync(
 			await docMatched.save({ validateBeforeSave: false });
 
 			await workflowDoc.remove();
-			
+
 			return res.status(204).json({
 				status: true,
 				message: 'El proceso ha sido actualizado con éxito',
 			});
-			
 		}
 
 		// Modify the status.

@@ -44,10 +44,24 @@ const isAllowedOrdinary = catchAsync(
 			name: `${
 				currentOrdinary.name !== undefined
 					? currentOrdinary.name
-					: currentOrdinary.vehicleNumber
+					: currentOrdinary.vehicleType
 			}`,
 			ordType: `${getModelByType[ordinaryType]}`,
-			observations: currentOrdinary.observations,
+			number: `${
+				currentOrdinary.citizenship !== undefined
+					? currentOrdinary.citizenship
+					: currentOrdinary.vehicleNumber
+			}`,
+			type: `${
+				currentOrdinary.gender !== undefined
+					? currentOrdinary.gender
+					: currentOrdinary.type
+			}`,
+			occupation: `${
+				currentOrdinary.appointment !== undefined
+					? currentOrdinary.appointment
+					: currentOrdinary.serviceType
+			}`,
 		};
 
 		res.render(`${__dirname}/../../views/pages/qrcode.ejs`, ejsOpts);

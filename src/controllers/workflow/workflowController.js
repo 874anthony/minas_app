@@ -154,6 +154,10 @@ var getAllOrdinariesType = (0, catchAsync_1.default)(function (req, res, next) {
                                         path: 'radicado',
                                         select: '-__v',
                                         model: Model,
+                                        populate: {
+                                            path: 'companyID',
+                                            select: 'businessName',
+                                        },
                                     })];
                             case 1:
                                 ordinaryResult = _a.sent();
