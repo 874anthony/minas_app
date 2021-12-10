@@ -83,17 +83,16 @@ var signToken = function (id) {
     });
 };
 var isAllowedOrdinary = (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var id, ordinaryType, currentOrdinary, ejsOpts;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
+    var _a, id, ordinaryType, currentOrdinary, ejsOpts;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
             case 0:
-                if (!req.headers.ordinarytype)
+                _a = req.params, id = _a.id, ordinaryType = _a.ordinaryType;
+                if (!id || !ordinaryType)
                     return [2 /*return*/, next(new httpException_1.default('No ha proporcinado el tipo de ordinario, intente nuevamente', 404))];
-                id = req.params.id;
-                ordinaryType = req.headers.ordinarytype;
                 return [4 /*yield*/, ordinariesEnum_1.ModelsOrdinary[ordinaryType].findById(id)];
             case 1:
-                currentOrdinary = _a.sent();
+                currentOrdinary = _b.sent();
                 ejsOpts = {
                     status: "<li style=\"color: " + (currentOrdinary.status === 'INACTIVO' ? 'red' : 'green') + ";\"> " + currentOrdinary.status + " </li>",
                     name: "" + (currentOrdinary.name !== undefined

@@ -24,16 +24,15 @@ const signToken = (id) => {
 
 const isAllowedOrdinary = catchAsync(
 	async (req: Request, res: Response, next: NextFunction) => {
-		if (!req.headers.ordinarytype)
+		const { id, ordinaryType } = req.params;
+
+		if (!id || !ordinaryType)
 			return next(
 				new HttpException(
 					'No ha proporcinado el tipo de ordinario, intente nuevamente',
 					404
 				)
 			);
-
-		const id = req.params.id;
-		const ordinaryType = <string>req.headers.ordinarytype;
 
 		const currentOrdinary = await ModelsOrdinary[ordinaryType].findById(id);
 
