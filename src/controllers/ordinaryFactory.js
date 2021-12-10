@@ -277,12 +277,10 @@ var updateOrdinary = function (Model) {
                             ordinaryUpdated[key] = body[key];
                         }
                     });
-                    return [4 /*yield*/, ordinaryUpdated.save({ validateBeforeSave: false })];
-                case 2:
-                    _a.sent();
-                    if (!req.body.isHealing) return [3 /*break*/, 5];
+                    if (!req.body.isHealing) return [3 /*break*/, 4];
+                    ordinaryUpdated.status = ordinariesEnum_1.StatusOrdinary.Pending;
                     return [4 /*yield*/, workflowModel_1.default.findOne({ radicado: id })];
-                case 3:
+                case 2:
                     workflowDoc_1 = _a.sent();
                     Object.keys(workflowDoc_1._doc).forEach(function (el) {
                         if (el.startsWith('correct')) {
@@ -291,10 +289,12 @@ var updateOrdinary = function (Model) {
                     });
                     workflowDoc_1['healingTimes'] += 1;
                     return [4 /*yield*/, workflowDoc_1.save({ validateBeforeSave: false })];
-                case 4:
+                case 3:
                     _a.sent();
-                    _a.label = 5;
+                    _a.label = 4;
+                case 4: return [4 /*yield*/, ordinaryUpdated.save({ validateBeforeSave: false })];
                 case 5:
+                    _a.sent();
                     res.status(200).json({
                         status: true,
                         message: 'Se ha actualizado el registro con éxito',
