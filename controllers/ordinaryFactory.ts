@@ -8,6 +8,7 @@ import APIFeatures from '../utils/apiFeatures';
 
 // Utils here
 import {
+	getModelByType,
 	ModelsOrdinary,
 	StatusOrdinary,
 } from '../interfaces/ordinaries/ordinariesEnum';
@@ -16,6 +17,7 @@ import {
 	uploadOrdinaryPerson,
 	uploadOrdinaryVehicle,
 } from '../utils/multerConfig';
+import Email from '../utils/email';
 
 // Models here
 import User from '../models/users/userModel';
@@ -177,11 +179,13 @@ const createOrdinary = (
 			);
 		}
 
+		// TODO: Mover esta lógica a un trigger middleware
+
 		const usersPromises = Roles.map(async (role) => {
 			const rolesQuery = new APIFeatures(User.find(), {
 				role,
 				status: 'true',
-				fields: '_id,status',
+				fields: '_id,status,email',
 			})
 				.filter()
 				.limitFields();
@@ -189,13 +193,27 @@ const createOrdinary = (
 			return await rolesQuery.query;
 		});
 
-		const usersID: any = [];
-
 		const usersArray = await Promise.all(usersPromises);
+		const usersID: any = [];
+		const ordinaryOpts = {
+			radicado,
+			ordinaryType: getModelByType[newOrdinaryPerson.ordinaryType],
+		};
 
 		usersArray.forEach((ArrayPerRole: Array<any>) => {
-			ArrayPerRole.forEach((element) => {
+			ArrayPerRole.forEach(async (element) => {
 				usersID.push(element._id);
+
+				try {
+					await new Email(element).sendOrdNotification(ordinaryOpts);
+				} catch (error) {
+					return next(
+						new HttpException(
+							'Hubo un error al enviar el correo, por favor intente más tarde',
+							500
+						)
+					);
+				}
 			});
 		});
 
@@ -218,6 +236,8 @@ const createOrdinary = (
 				)
 			);
 		}
+
+		// Hasta aquí
 
 		res.status(200).json({
 			status: true,

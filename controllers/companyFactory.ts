@@ -163,8 +163,7 @@ const createOne = (Model) =>
 			!req.files ||
 			!req.files['docComCam'] ||
 			!req.files['docRUT'] ||
-			!req.files['docLegalRepresentativeID'] ||
-			!req.files['docSocialSecurity']
+			!req.files['docLegalRepresentativeID']
 		) {
 			return next(
 				new HttpException(
@@ -195,14 +194,6 @@ const createOne = (Model) =>
 		body.docRUT = req.files['docRUT'][0].filename;
 		body.docLegalRepresentativeID =
 			req.files['docLegalRepresentativeID'][0].filename;
-
-		if (body['docSocialSecurity']) {
-			body['docSocialSecurity'] = {
-				year: new Date().getFullYear().toString(),
-				month: months[new Date().getMonth()],
-				filename: req.files['docSocialSecurity'][0].filename,
-			};
-		}
 
 		const companyCreated = await Model.create(body);
 
@@ -286,20 +277,16 @@ const rejectOne = (Model) =>
 			);
 		}
 
-		// try {
-		// 	await Email({
-		// 		email: companyMatched.email,
-		// 		subject: 'Ha sido denegado su acceso a la Mina San Jorge!',
-		// 		message: emailMessage,
-		// 	});
-		// } catch (error) {
-		// 	return next(
-		// 		new HttpException(
-		// 			'Hubo un error al enviar el correo, por favor intente más tarde',
-		// 			500
-		// 		)
-		// 	);
-		// }
+		try {
+			await new Email(companyMatched).sendRejectCompany(emailMessage);
+		} catch (error) {
+			return next(
+				new HttpException(
+					'Hubo un error al enviar el correo, por favor intente más tarde',
+					500
+				)
+			);
+		}
 
 		await companyMatched.remove();
 
