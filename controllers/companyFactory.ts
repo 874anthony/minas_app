@@ -20,6 +20,7 @@ import TRD, { TrdInterface } from '../models/trd/trdModel';
 import { StatusCompany } from '../models/companies/companyModel';
 
 // Importing own interfaces
+import { months } from '../utils/date';
 import DtoCreateCompany from '../interfaces/company/post-createCompany';
 
 // ================================== MULTER CONFIGURATION TO HANDLE THE DOCUMENTS ===========================================
@@ -162,7 +163,8 @@ const createOne = (Model) =>
 			!req.files ||
 			!req.files['docComCam'] ||
 			!req.files['docRUT'] ||
-			!req.files['docLegalRepresentativeID']
+			!req.files['docLegalRepresentativeID'] ||
+			!req.files['docSocialSecurity']
 		) {
 			return next(
 				new HttpException(
@@ -193,6 +195,14 @@ const createOne = (Model) =>
 		body.docRUT = req.files['docRUT'][0].filename;
 		body.docLegalRepresentativeID =
 			req.files['docLegalRepresentativeID'][0].filename;
+
+		if (body['docSocialSecurity']) {
+			body['docSocialSecurity'] = {
+				year: new Date().getFullYear().toString(),
+				month: months[new Date().getMonth()],
+				filename: req.files['docSocialSecurity'][0].filename,
+			};
+		}
 
 		const companyCreated = await Model.create(body);
 
@@ -230,11 +240,19 @@ const updateOne = (Model) =>
 
 		body['updatedAt'] = Date.now();
 
+		if (body['docSocialSecurity']) {
+			body['docSocialSecurity'] = {
+				year: new Date().getFullYear().toString(),
+				month: months[new Date().getMonth()],
+				filename: req.files!['docSocialSecurity'][0].filename,
+			};
+		}
+
 		Object.keys(body).forEach((key) => {
 			if (
 				key === 'observations' ||
-				key === 'docSocialSecurity' ||
-				key === 'finishDates'
+				key === 'finishDates' ||
+				key === 'docSocialSecurity'
 			) {
 				companyUpdated[key].push(body[key]);
 			} else {

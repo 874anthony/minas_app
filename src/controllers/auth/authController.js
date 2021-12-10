@@ -98,9 +98,17 @@ var isAllowedOrdinary = (0, catchAsync_1.default)(function (req, res, next) { re
                     status: "<li style=\"color: " + (currentOrdinary.status === 'INACTIVO' ? 'red' : 'green') + ";\"> " + currentOrdinary.status + " </li>",
                     name: "" + (currentOrdinary.name !== undefined
                         ? currentOrdinary.name
-                        : currentOrdinary.vehicleNumber),
+                        : currentOrdinary.vehicleType),
                     ordType: "" + ordinariesEnum_1.getModelByType[ordinaryType],
-                    observations: currentOrdinary.observations,
+                    number: "" + (currentOrdinary.citizenship !== undefined
+                        ? currentOrdinary.citizenship
+                        : currentOrdinary.vehicleNumber),
+                    type: "" + (currentOrdinary.gender !== undefined
+                        ? currentOrdinary.gender
+                        : currentOrdinary.type),
+                    occupation: "" + (currentOrdinary.appointment !== undefined
+                        ? currentOrdinary.appointment
+                        : currentOrdinary.serviceType),
                 };
                 res.render(__dirname + "/../../views/pages/qrcode.ejs", ejsOpts);
                 return [2 /*return*/];

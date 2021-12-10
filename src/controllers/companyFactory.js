@@ -62,6 +62,8 @@ var apiFeatures_1 = __importDefault(require("../utils/apiFeatures"));
 var trdImportAll_1 = require("../models/trd/trdImportAll");
 var trdModel_1 = __importDefault(require("../models/trd/trdModel"));
 var companyModel_1 = require("../models/companies/companyModel");
+// Importing own interfaces
+var date_1 = require("../utils/date");
 // ================================== MULTER CONFIGURATION TO HANDLE THE DOCUMENTS ===========================================
 // Configuring first the type of the storage
 var multerStorage = multer_1.default.diskStorage({
@@ -205,7 +207,8 @@ var createOne = function (Model) {
                     if (!req.files ||
                         !req.files['docComCam'] ||
                         !req.files['docRUT'] ||
-                        !req.files['docLegalRepresentativeID']) {
+                        !req.files['docLegalRepresentativeID'] ||
+                        !req.files['docSocialSecurity']) {
                         return [2 /*return*/, next(new httpException_1.default('No se han cargado todos los archivos, por favor inténtelo nuevamente', 404))];
                     }
                     if (!req.body.company) return [3 /*break*/, 4];
@@ -226,6 +229,13 @@ var createOne = function (Model) {
                     body.docRUT = req.files['docRUT'][0].filename;
                     body.docLegalRepresentativeID =
                         req.files['docLegalRepresentativeID'][0].filename;
+                    if (body['docSocialSecurity']) {
+                        body['docSocialSecurity'] = {
+                            year: new Date().getFullYear().toString(),
+                            month: date_1.months[new Date().getMonth()],
+                            filename: req.files['docSocialSecurity'][0].filename,
+                        };
+                    }
                     return [4 /*yield*/, Model.create(body)];
                 case 5:
                     companyCreated = _a.sent();
@@ -258,10 +268,17 @@ var updateOne = function (Model) {
                         Object.keys(req.files).forEach(function (el) { return (body[el] = req.files[el][0].filename); });
                     }
                     body['updatedAt'] = Date.now();
+                    if (body['docSocialSecurity']) {
+                        body['docSocialSecurity'] = {
+                            year: new Date().getFullYear().toString(),
+                            month: date_1.months[new Date().getMonth()],
+                            filename: req.files['docSocialSecurity'][0].filename,
+                        };
+                    }
                     Object.keys(body).forEach(function (key) {
                         if (key === 'observations' ||
-                            key === 'docSocialSecurity' ||
-                            key === 'finishDates') {
+                            key === 'finishDates' ||
+                            key === 'docSocialSecurity') {
                             companyUpdated[key].push(body[key]);
                         }
                         else {

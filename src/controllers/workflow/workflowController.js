@@ -154,6 +154,10 @@ var getAllOrdinariesType = (0, catchAsync_1.default)(function (req, res, next) {
                                         path: 'radicado',
                                         select: '-__v',
                                         model: Model,
+                                        populate: {
+                                            path: 'companyID',
+                                            select: 'businessName',
+                                        },
                                     })];
                             case 1:
                                 ordinaryResult = _a.sent();
@@ -195,7 +199,7 @@ var changeStatusOrdinary = (0, catchAsync_1.default)(function (req, res, next) {
                 }
                 checkKey = getKey('check', user);
                 correctKey = getKey('correct', user);
-                if (!(checkKey === 'checkSSFF' && body.chek === false)) return [3 /*break*/, 6];
+                if (!(checkKey === 'checkSSFF' && body.check === false)) return [3 /*break*/, 6];
                 Model = getModel(workflowDoc.ordinaryType);
                 return [4 /*yield*/, Model.findById(workflowDoc.radicado)];
             case 3:
@@ -207,7 +211,10 @@ var changeStatusOrdinary = (0, catchAsync_1.default)(function (req, res, next) {
                 return [4 /*yield*/, workflowDoc.remove()];
             case 5:
                 _a.sent();
-                _a.label = 6;
+                return [2 /*return*/, res.status(204).json({
+                        status: true,
+                        message: 'El proceso ha sido actualizado con éxito',
+                    })];
             case 6:
                 // Modify the status.
                 workflowDoc[checkKey] = body.check;
