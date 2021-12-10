@@ -163,34 +163,6 @@ WorkflowSchema.pre('save', function (next) {
 // POST SAVE
 WorkflowSchema.post('save', function (doc, next) {
     return __awaiter(this, void 0, void 0, function () {
-        var Model, docMatched;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    if (!this.isModified('checkSSFF') || this.isNew)
-                        return [2 /*return*/, next()];
-                    if (!(this.checkSSFF === false)) return [3 /*break*/, 4];
-                    Model = getModel(this.ordinaryType);
-                    return [4 /*yield*/, Model.findById(this.radicado)];
-                case 1:
-                    docMatched = _a.sent();
-                    docMatched.status = ordinariesEnum_1.StatusOrdinary.Forbidden;
-                    return [4 /*yield*/, docMatched.save({ validateBeforeSave: false })];
-                case 2:
-                    _a.sent();
-                    return [4 /*yield*/, this.remove()];
-                case 3:
-                    _a.sent();
-                    _a.label = 4;
-                case 4:
-                    next();
-                    return [2 /*return*/];
-            }
-        });
-    });
-});
-WorkflowSchema.post('save', function (doc, next) {
-    return __awaiter(this, void 0, void 0, function () {
         var checkArray, allTrues, Model, docMatched;
         var _this = this;
         return __generator(this, function (_a) {

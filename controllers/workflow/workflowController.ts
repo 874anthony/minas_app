@@ -146,6 +146,17 @@ const changeStatusOrdinary = catchAsync(
 		const checkKey = getKey('check', user);
 		const correctKey = getKey('correct', user);
 
+		if (checkKey === 'checkSSFF' && body.chek === false) {
+			const Model = getModel(workflowDoc.ordinaryType);
+
+			const docMatched = await Model.findById(workflowDoc.radicado);
+
+			docMatched.status = StatusOrdinary.Forbidden;
+			await docMatched.save({ validateBeforeSave: false });
+
+			await workflowDoc.remove();
+		}
+
 		// Modify the status.
 		workflowDoc[checkKey] = body.check;
 		workflowDoc[correctKey] = body.correct;

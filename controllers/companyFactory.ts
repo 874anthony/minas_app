@@ -376,12 +376,6 @@ const acceptOne = (Model) =>
 
 		try {
 			await new Email(companyMatched).sendWelcomeCompany(companyCredentials);
-
-			// {
-			// email: companyMatched.email,
-			// subject: 'Ha sido aprobado su acceso a la Mina San Jorge!',
-			// message: emailMessage,
-			// }
 		} catch (error) {
 			return next(
 				new HttpException(
