@@ -7,7 +7,10 @@ import HttpException from '../utils/httpException';
 import APIFeatures from '../utils/apiFeatures';
 
 // Utils here
-import { ModelsOrdinary } from '../interfaces/ordinaries/ordinariesEnum';
+import {
+	ModelsOrdinary,
+	StatusOrdinary,
+} from '../interfaces/ordinaries/ordinariesEnum';
 import { TRDDependency } from '../models/trd/trdImportAll';
 import {
 	uploadOrdinaryPerson,
@@ -263,9 +266,8 @@ const updateOrdinary = (Model) =>
 			}
 		});
 
-		await ordinaryUpdated.save({ validateBeforeSave: false });
-
 		if (req.body.isHealing) {
+			ordinaryUpdated.status = StatusOrdinary.Pending;
 			const workflowDoc = await Workflow.findOne({ radicado: id });
 
 			Object.keys(workflowDoc._doc).forEach((el) => {
@@ -278,6 +280,8 @@ const updateOrdinary = (Model) =>
 
 			await workflowDoc.save({ validateBeforeSave: false });
 		}
+
+		await ordinaryUpdated.save({ validateBeforeSave: false });
 
 		res.status(200).json({
 			status: true,

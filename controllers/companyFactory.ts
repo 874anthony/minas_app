@@ -163,8 +163,7 @@ const createOne = (Model) =>
 			!req.files ||
 			!req.files['docComCam'] ||
 			!req.files['docRUT'] ||
-			!req.files['docLegalRepresentativeID'] ||
-			!req.files['docSocialSecurity']
+			!req.files['docLegalRepresentativeID']
 		) {
 			return next(
 				new HttpException(
@@ -195,14 +194,6 @@ const createOne = (Model) =>
 		body.docRUT = req.files['docRUT'][0].filename;
 		body.docLegalRepresentativeID =
 			req.files['docLegalRepresentativeID'][0].filename;
-
-		if (body['docSocialSecurity']) {
-			body['docSocialSecurity'] = {
-				year: new Date().getFullYear().toString(),
-				month: months[new Date().getMonth()],
-				filename: req.files['docSocialSecurity'][0].filename,
-			};
-		}
 
 		const companyCreated = await Model.create(body);
 
