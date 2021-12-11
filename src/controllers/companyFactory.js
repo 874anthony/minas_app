@@ -207,8 +207,7 @@ var createOne = function (Model) {
                     if (!req.files ||
                         !req.files['docComCam'] ||
                         !req.files['docRUT'] ||
-                        !req.files['docLegalRepresentativeID'] ||
-                        !req.files['docSocialSecurity']) {
+                        !req.files['docLegalRepresentativeID']) {
                         return [2 /*return*/, next(new httpException_1.default('No se han cargado todos los archivos, por favor inténtelo nuevamente', 404))];
                     }
                     if (!req.body.company) return [3 /*break*/, 4];
@@ -229,13 +228,6 @@ var createOne = function (Model) {
                     body.docRUT = req.files['docRUT'][0].filename;
                     body.docLegalRepresentativeID =
                         req.files['docLegalRepresentativeID'][0].filename;
-                    if (body['docSocialSecurity']) {
-                        body['docSocialSecurity'] = {
-                            year: new Date().getFullYear().toString(),
-                            month: date_1.months[new Date().getMonth()],
-                            filename: req.files['docSocialSecurity'][0].filename,
-                        };
-                    }
                     return [4 /*yield*/, Model.create(body)];
                 case 5:
                     companyCreated = _a.sent();
@@ -301,7 +293,7 @@ var updateOne = function (Model) {
 exports.updateOne = updateOne;
 var rejectOne = function (Model) {
     return (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-        var id, emailMessage, companyMatched;
+        var id, emailMessage, companyMatched, error_2;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -314,36 +306,18 @@ var rejectOne = function (Model) {
                     if (!companyMatched) {
                         return [2 /*return*/, next(new httpException_1.default('No existe una compañía con ese ID, inténtelo nuevamente', 404))];
                     }
-                    // try {
-                    // 	await Email({
-                    // 		email: companyMatched.email,
-                    // 		subject: 'Ha sido denegado su acceso a la Mina San Jorge!',
-                    // 		message: emailMessage,
-                    // 	});
-                    // } catch (error) {
-                    // 	return next(
-                    // 		new HttpException(
-                    // 			'Hubo un error al enviar el correo, por favor intente más tarde',
-                    // 			500
-                    // 		)
-                    // 	);
-                    // }
-                    return [4 /*yield*/, companyMatched.remove()];
+                    _a.label = 2;
                 case 2:
-                    // try {
-                    // 	await Email({
-                    // 		email: companyMatched.email,
-                    // 		subject: 'Ha sido denegado su acceso a la Mina San Jorge!',
-                    // 		message: emailMessage,
-                    // 	});
-                    // } catch (error) {
-                    // 	return next(
-                    // 		new HttpException(
-                    // 			'Hubo un error al enviar el correo, por favor intente más tarde',
-                    // 			500
-                    // 		)
-                    // 	);
-                    // }
+                    _a.trys.push([2, 4, , 5]);
+                    return [4 /*yield*/, new email_1.default(companyMatched).sendRejectCompany(emailMessage)];
+                case 3:
+                    _a.sent();
+                    return [3 /*break*/, 5];
+                case 4:
+                    error_2 = _a.sent();
+                    return [2 /*return*/, next(new httpException_1.default('Hubo un error al enviar el correo, por favor intente más tarde', 500))];
+                case 5: return [4 /*yield*/, companyMatched.remove()];
+                case 6:
                     _a.sent();
                     // SENDING THE FINAL RESPONSE TO THE CLIENT
                     return [2 /*return*/, res.status(204).json({
@@ -357,7 +331,7 @@ var rejectOne = function (Model) {
 exports.rejectOne = rejectOne;
 var acceptOne = function (Model) {
     return (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-        var id, body, companyMatched, dependency, serie, subserie, trd, year, dependencyCode, serieCode, subserieCode, consecutive, radicado, genPassword, hashedPassword, companyCredentials, error_2;
+        var id, body, companyMatched, dependency, serie, subserie, trd, year, dependencyCode, serieCode, subserieCode, consecutive, radicado, genPassword, hashedPassword, companyCredentials, error_3;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -441,8 +415,7 @@ var acceptOne = function (Model) {
                     _a.sent();
                     return [3 /*break*/, 15];
                 case 14:
-                    error_2 = _a.sent();
-                    console.log(error_2);
+                    error_3 = _a.sent();
                     return [2 /*return*/, next(new httpException_1.default('Hubo un error al enviar el correo, por favor intente más tarde', 500))];
                 case 15: 
                 // SENDING THE FINAL RESPONSE TO THE CLIENT

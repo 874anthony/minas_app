@@ -277,20 +277,16 @@ const rejectOne = (Model) =>
 			);
 		}
 
-		// try {
-		// 	await Email({
-		// 		email: companyMatched.email,
-		// 		subject: 'Ha sido denegado su acceso a la Mina San Jorge!',
-		// 		message: emailMessage,
-		// 	});
-		// } catch (error) {
-		// 	return next(
-		// 		new HttpException(
-		// 			'Hubo un error al enviar el correo, por favor intente más tarde',
-		// 			500
-		// 		)
-		// 	);
-		// }
+		try {
+			await new Email(companyMatched).sendRejectCompany(emailMessage);
+		} catch (error) {
+			return next(
+				new HttpException(
+					'Hubo un error al enviar el correo, por favor intente más tarde',
+					500
+				)
+			);
+		}
 
 		await companyMatched.remove();
 

@@ -119,6 +119,32 @@ var Email = /** @class */ (function () {
             });
         });
     };
+    Email.prototype.sendRejectCompany = function (emailMessage) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.send('rejectedCompany', 'Su acceso a la mina ha sido denegado', {
+                            emailMessage: emailMessage,
+                        })];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    Email.prototype.sendOrdNotification = function (ordinaryOpts) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.send('ordNotification', 'Se ha generado un nuevo ordinario!', ordinaryOpts)];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
     return Email;
 }());
 exports.default = Email;

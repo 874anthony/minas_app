@@ -66,4 +66,18 @@ export default class Email {
 			companyCredentials
 		);
 	}
+
+	async sendRejectCompany(emailMessage: String) {
+		await this.send('rejectedCompany', 'Su acceso a la mina ha sido denegado', {
+			emailMessage,
+		});
+	}
+
+	async sendOrdNotification(ordinaryOpts: Object) {
+		await this.send(
+			'ordNotification',
+			'Se ha generado un nuevo ordinario!',
+			ordinaryOpts
+		);
+	}
 }

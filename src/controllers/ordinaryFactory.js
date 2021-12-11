@@ -59,6 +59,7 @@ var apiFeatures_1 = __importDefault(require("../utils/apiFeatures"));
 var ordinariesEnum_1 = require("../interfaces/ordinaries/ordinariesEnum");
 var trdImportAll_1 = require("../models/trd/trdImportAll");
 var multerConfig_1 = require("../utils/multerConfig");
+var email_1 = __importDefault(require("../utils/email"));
 // Models here
 var userModel_1 = __importDefault(require("../models/users/userModel"));
 var workflowModel_1 = __importDefault(require("../models/workflows/workflowModel"));
@@ -150,7 +151,7 @@ exports.checkCompanyID = checkCompanyID;
 // AQUI TERMINA LOS MIDDLEWARES
 var createOrdinary = function (Model, Roles, checkRoles, subsanarRoles) {
     return (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-        var body, dependency, trdOrdinary, year, dependencyCode, consecutive, radicado, newOrdinaryPerson, usersPromises, usersID, usersArray, bodyWorkflow, error_1;
+        var body, dependency, trdOrdinary, year, dependencyCode, consecutive, radicado, newOrdinaryPerson, usersPromises, usersArray, usersID, ordinaryOpts, bodyWorkflow, error_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -206,7 +207,7 @@ var createOrdinary = function (Model, Roles, checkRoles, subsanarRoles) {
                                     rolesQuery = new apiFeatures_1.default(userModel_1.default.find(), {
                                         role: role,
                                         status: 'true',
-                                        fields: '_id,status',
+                                        fields: '_id,status,email',
                                     })
                                         .filter()
                                         .limitFields();
@@ -215,14 +216,35 @@ var createOrdinary = function (Model, Roles, checkRoles, subsanarRoles) {
                             }
                         });
                     }); });
-                    usersID = [];
                     return [4 /*yield*/, Promise.all(usersPromises)];
                 case 7:
                     usersArray = _a.sent();
+                    usersID = [];
+                    ordinaryOpts = {
+                        radicado: radicado,
+                        ordinaryType: ordinariesEnum_1.getModelByType[newOrdinaryPerson.ordinaryType],
+                    };
                     usersArray.forEach(function (ArrayPerRole) {
-                        ArrayPerRole.forEach(function (element) {
-                            usersID.push(element._id);
-                        });
+                        ArrayPerRole.forEach(function (element) { return __awaiter(void 0, void 0, void 0, function () {
+                            var error_2;
+                            return __generator(this, function (_a) {
+                                switch (_a.label) {
+                                    case 0:
+                                        usersID.push(element._id);
+                                        _a.label = 1;
+                                    case 1:
+                                        _a.trys.push([1, 3, , 4]);
+                                        return [4 /*yield*/, new email_1.default(element).sendOrdNotification(ordinaryOpts)];
+                                    case 2:
+                                        _a.sent();
+                                        return [3 /*break*/, 4];
+                                    case 3:
+                                        error_2 = _a.sent();
+                                        return [2 /*return*/, next(new httpException_1.default('Hubo un error al enviar el correo, por favor intente más tarde', 500))];
+                                    case 4: return [2 /*return*/];
+                                }
+                            });
+                        }); });
                     });
                     bodyWorkflow = __assign(__assign({ radicado: newOrdinaryPerson._id, ordinaryType: newOrdinaryPerson.ordinaryType, roles: usersID, observations: req.body.observations }, checkRoles), subsanarRoles);
                     _a.label = 8;
@@ -236,6 +258,7 @@ var createOrdinary = function (Model, Roles, checkRoles, subsanarRoles) {
                     error_1 = _a.sent();
                     return [2 /*return*/, next(new httpException_1.default('No se ha asignado correctamente el workflow, por favor vuelva a intentar', 500))];
                 case 11:
+                    // Hasta aquí
                     res.status(200).json({
                         status: true,
                         message: 'Se ha creado el ordinario con éxito',
