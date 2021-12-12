@@ -69,7 +69,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.changeStatusOrdinary = exports.getAllOrdinariesType = exports.checkRole = void 0;
+exports.getOneWorkflow = exports.changeStatusOrdinary = exports.getAllOrdinariesType = exports.checkRole = void 0;
 // // Importing our utils to this controller
 var httpException_1 = __importDefault(require("../../utils/httpException"));
 var catchAsync_1 = __importDefault(require("../../utils/catchAsync"));
@@ -240,3 +240,23 @@ var changeStatusOrdinary = (0, catchAsync_1.default)(function (req, res, next) {
     });
 }); });
 exports.changeStatusOrdinary = changeStatusOrdinary;
+var getOneWorkflow = (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var id, workflowDoc;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                id = req.params.id;
+                return [4 /*yield*/, workflowModel_1.default.findOne({ radicado: id })];
+            case 1:
+                workflowDoc = _a.sent();
+                if (!workflowDoc)
+                    return [2 /*return*/, next(new httpException_1.default('No se ha encontrado un workflow con ese ID!', 404))];
+                res.status(200).json({
+                    status: true,
+                    workflow: workflowDoc,
+                });
+                return [2 /*return*/];
+        }
+    });
+}); });
+exports.getOneWorkflow = getOneWorkflow;

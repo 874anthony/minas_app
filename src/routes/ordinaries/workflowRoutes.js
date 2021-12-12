@@ -32,5 +32,6 @@ router
     .get(authController.guardLogin, workflowController.checkRole, workflowController.getAllOrdinariesType);
 router
     .route('/:id')
+    .get(workflowController.getOneWorkflow)
     .patch(authController.guardLogin, workflowController.changeStatusOrdinary);
 exports.default = router;

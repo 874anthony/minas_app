@@ -187,4 +187,27 @@ const changeStatusOrdinary = catchAsync(
 	}
 );
 
-export { checkRole, getAllOrdinariesType, changeStatusOrdinary };
+const getOneWorkflow = catchAsync(
+	async (req: Request, res: Response, next: NextFunction) => {
+		const id = req.params.id;
+
+		const workflowDoc = await Workflow.findOne({ radicado: id });
+
+		if (!workflowDoc)
+			return next(
+				new HttpException('No se ha encontrado un workflow con ese ID!', 404)
+			);
+
+		res.status(200).json({
+			status: true,
+			workflow: workflowDoc,
+		});
+	}
+);
+
+export {
+	checkRole,
+	getAllOrdinariesType,
+	changeStatusOrdinary,
+	getOneWorkflow,
+};
