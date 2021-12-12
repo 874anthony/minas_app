@@ -16,6 +16,7 @@ router
 
 router
 	.route('/:id')
+	.get(workflowController.getOneWorkflow)
 	.patch(authController.guardLogin, workflowController.changeStatusOrdinary);
 
 export default router;
