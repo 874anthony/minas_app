@@ -1,4 +1,6 @@
 import { Schema, model } from 'mongoose';
+import { addDate } from '../../../../utils/date';
+import Event from '../../../events/eventsModel';
 
 // Definying the schema
 const VisitorlightVehicleSchema = new Schema({
@@ -50,6 +52,22 @@ const VisitorlightVehicleSchema = new Schema({
 	operationCardVigency: Date,
 	qrCodeDate: Date,
 	observations: [String],
+});
+
+VisitorlightVehicleSchema.pre('save', async function (next) {
+	if (this.isModified('status') && this.status === 'ACTIVO') {
+		const bodyEvent = {
+			radicado: this._id,
+			action: 'Actualización Registro',
+			description: 'Se aprobó el ingreso y se ha generado un código QR',
+		};
+
+		await Event.create(bodyEvent);
+
+		const qrCodeDays = 2;
+		this.qrCodeDate = addDate(Date.now(), qrCodeDays);
+	}
+	next();
 });
 
 export default model('visitor_vehicle', VisitorlightVehicleSchema);

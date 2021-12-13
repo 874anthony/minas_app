@@ -14,6 +14,7 @@ import {
 // Importing own models
 import User, { UserRoles } from '../../models/users/userModel';
 import Workflow, { StatusWorkflow } from '../../models/workflows/workflowModel';
+import Event from '../../models/events/eventsModel';
 
 // Helpers methods
 const getKey = (field: string, user) => {
@@ -146,6 +147,9 @@ const changeStatusOrdinary = catchAsync(
 			);
 		}
 
+		// To handle events
+		let action, description;
+
 		// Extracting the key given the value of the enum.
 		const checkKey = getKey('check', user);
 		const correctKey = getKey('correct', user);
@@ -154,6 +158,9 @@ const changeStatusOrdinary = catchAsync(
 			const Model = getModel(workflowDoc.ordinaryType);
 
 			const docMatched = await Model.findById(workflowDoc.radicado);
+
+			action = 'Actualización Tramitador - Rechazado';
+			description = `El registro ha sido anulado por ${user.role}`;
 
 			docMatched.status = StatusOrdinary.Forbidden;
 			await docMatched.save({ validateBeforeSave: false });
@@ -178,6 +185,22 @@ const changeStatusOrdinary = catchAsync(
 
 			await docMatched.save({ validateBeforeSave: false });
 		}
+
+		if (body.check === false && body.correct === true) {
+			action = 'Actualización Tramitador - Subsanar';
+			description = `Se mandado a subsanar por ${user.role}`;
+		} else if (body.check === true && body.correct === false) {
+			action = 'Actualización Tramitador - Aprobado';
+			description = `El registro ha pasado la aprobación de ${user.role}`;
+		}
+
+		const bodyEvent = {
+			radicado: workflowDoc.radicado,
+			action,
+			description,
+		};
+
+		await Event.create(bodyEvent);
 
 		await workflowDoc.save({ validateBeforeSave: false });
 

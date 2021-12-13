@@ -8,7 +8,7 @@ import { StatusCompany } from '../companies/companyModel';
 import { CompanyInterface } from '../companies/companyModel';
 
 export interface ContractorInterface extends Schema, CompanyInterface {
-	company: Schema.Types.ObjectId;
+	companyID: Schema.Types.ObjectId;
 }
 
 // Definying the schema
@@ -89,7 +89,7 @@ const ContractorSchema: Schema<ContractorInterface> = new Schema({
 			minlength: [5, 'Las observaciones deben tener al menos 5 letras'],
 		},
 	],
-	company: {
+	companyID: {
 		type: Schema.Types.ObjectId,
 		ref: 'company',
 		required: true,

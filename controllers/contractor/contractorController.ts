@@ -5,9 +5,9 @@ import { NextFunction, Request, Response } from 'express';
 import Contractor from '../../models/contractors/contractorModel';
 
 // Own Factory
-import * as factory from '../companyFactory';
+import * as companyFactory from '../companyFactory';
 // // ================================================ Middlewares starts here =========================================
-const uploadContractorDocs = factory.uploadCompanyDocs;
+const uploadContractorDocs = companyFactory.uploadCompanyDocs;
 
 const addContractor = (req: Request, res: Response, next: NextFunction) => {
 	if (!req.body.company) req.body.company = req.params.idCompany;
@@ -16,13 +16,13 @@ const addContractor = (req: Request, res: Response, next: NextFunction) => {
 
 // // ================================================ Endpoints starts here =========================================
 
-const getAllContractors = factory.findAll(Contractor);
-const getContractor = factory.findOne(Contractor);
-const createContractor = factory.createOne(Contractor);
-const updateContractor = factory.updateOne(Contractor);
-const acceptContractor = factory.acceptOne(Contractor);
-const rejectContractor = factory.rejectOne(Contractor);
-const getContractorNIT = factory.getCompanyNIT(Contractor);
+const getAllContractors = companyFactory.findAll(Contractor);
+const getContractor = companyFactory.findOne(Contractor);
+const createContractor = companyFactory.createOne(Contractor);
+const updateContractor = companyFactory.updateOne(Contractor);
+const acceptContractor = companyFactory.acceptOne(Contractor);
+const rejectContractor = companyFactory.rejectOne(Contractor);
+const getContractorNIT = companyFactory.getCompanyNIT(Contractor);
 
 export {
 	getAllContractors,

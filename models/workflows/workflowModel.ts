@@ -3,6 +3,7 @@ import {
 	ModelsOrdinary,
 	StatusOrdinary,
 } from '../../interfaces/ordinaries/ordinariesEnum';
+import Event from '../events/eventsModel';
 
 export enum StatusWorkflow {
 	Blocked = 'BLOQUEADO',
@@ -14,15 +15,12 @@ export enum StatusWorkflow {
 const WorkflowSchema: Schema = new Schema({
 	radicado: {
 		type: Schema.Types.ObjectId,
-		required: [true, 'Especifique el documento al que va a estar asociado'],
+		required: [true, 'Specify the document to be associated with'],
 		unique: true,
 	},
 	roles: {
 		type: [Schema.Types.ObjectId],
-		required: [
-			true,
-			'Especifique los usuarios que van a tener acceso a el documento',
-		],
+		required: [true, 'Specify users that are related to the document'],
 	},
 	checkAccessControl: {
 		type: Boolean,
@@ -131,6 +129,14 @@ WorkflowSchema.post('save', async function (doc, next) {
 
 	if (allTrues) {
 		const Model = getModel(this.ordinaryType);
+
+		const bodyEvent = {
+			radicado: this.radicado,
+			action: 'Actualización Trámite',
+			description: 'Se aprobó el registro por parte de los trámitadores',
+		};
+
+		await Event.create(bodyEvent);
 
 		const docMatched = await Model.findById(this.radicado);
 

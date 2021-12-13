@@ -174,9 +174,9 @@ const createOne = (Model) =>
 		}
 
 		// Primero verificar si hay una compañia top
-		if (req.body.company) {
+		if (req.body.companyID) {
 			try {
-				await Model.findById(req.body.company);
+				await Model.findById(req.body.companyID);
 			} catch (error) {
 				return next(
 					new HttpException(

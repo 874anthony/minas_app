@@ -5,7 +5,7 @@ export default (Model) =>
 		'0 1 * * *',
 		async function () {
 			await Model.updateMany(
-				{ qrCodeDate: { $lte: new Date(Date.now()) } },
+				{ qrCodeDate: { $lt: new Date(Date.now()) } },
 				{ $set: { status: 'INACTIVO', qrCodeDate: null } }
 			);
 		},

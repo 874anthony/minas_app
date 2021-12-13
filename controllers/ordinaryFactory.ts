@@ -22,7 +22,9 @@ import Email from '../utils/email';
 // Models here
 import User from '../models/users/userModel';
 import Workflow from '../models/workflows/workflowModel';
+import Event from '../models/events/eventsModel';
 import TRDOrdinary from '../models/trd/trdOrdinary';
+import Company from '../models/companies/companyModel';
 
 // ================================================ Endpoints starts here =========================================
 
@@ -112,6 +114,15 @@ const createOrdinary = (
 	subsanarRoles?: Object
 ) =>
 	catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+		if (!req.params.idCompany) {
+			return next(
+				new HttpException(
+					'No ha asociado ningun ID de la compañía, intente nuevamente',
+					404
+				)
+			);
+		}
+
 		if (!req.files) {
 			return next(
 				new HttpException(
@@ -165,8 +176,7 @@ const createOrdinary = (
 		await trdOrdinary.save({ validateBeforeSave: false });
 
 		body.radicado = radicado;
-
-		if (req.params.idCompany) body.companyID = req.params.idCompany;
+		body.companyID = req.params.idCompany;
 
 		const newOrdinaryPerson = await Model.create(body);
 
@@ -179,7 +189,13 @@ const createOrdinary = (
 			);
 		}
 
-		// TODO: Mover esta lógica a un trigger middleware
+		const bodyEvent = {
+			radicado: newOrdinaryPerson._id,
+			action: 'Envío de formulario',
+			description: 'Se generó el nuevo tipo de ingreso',
+		};
+
+		await Event.create(bodyEvent);
 
 		const usersPromises = Roles.map(async (role) => {
 			const rolesQuery = new APIFeatures(User.find(), {
@@ -301,6 +317,16 @@ const updateOrdinary = (Model) =>
 			await workflowDoc.save({ validateBeforeSave: false });
 		}
 
+		const bodyEvent = {
+			radicado: id,
+			action: 'Actualización de formulario',
+			description: req.body.isHealing
+				? 'Subida de documentos por corregir'
+				: 'Se actualizó el registro',
+		};
+
+		await Event.create(bodyEvent);
+
 		await ordinaryUpdated.save({ validateBeforeSave: false });
 
 		res.status(200).json({
@@ -366,8 +392,6 @@ const inactiveOrdsByCompany = catchAsync(
 		const idCompany = req.params.id;
 
 		Object.values(ModelsOrdinary).forEach(async (Model) => {
-			console.log(Model);
-
 			await Model.updateMany(
 				{
 					$match: { $and: { companyID: idCompany, status: 'ACTIVO' } },

@@ -78,6 +78,7 @@ var ordinariesEnum_1 = require("../../interfaces/ordinaries/ordinariesEnum");
 // Importing own models
 var userModel_1 = __importStar(require("../../models/users/userModel"));
 var workflowModel_1 = __importDefault(require("../../models/workflows/workflowModel"));
+var eventsModel_1 = __importDefault(require("../../models/events/eventsModel"));
 // Helpers methods
 var getKey = function (field, user) {
     return "" + field + Object.keys(userModel_1.UserRoles)[Object.values(userModel_1.UserRoles).indexOf(user.role)];
@@ -178,7 +179,7 @@ var getAllOrdinariesType = (0, catchAsync_1.default)(function (req, res, next) {
 }); });
 exports.getAllOrdinariesType = getAllOrdinariesType;
 var changeStatusOrdinary = (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var id, body, userID, user, workflowDoc, checkKey, correctKey, Model, docMatched, Model, docMatched;
+    var id, body, userID, user, workflowDoc, action, description, checkKey, correctKey, Model, docMatched, Model, docMatched, bodyEvent;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -204,6 +205,8 @@ var changeStatusOrdinary = (0, catchAsync_1.default)(function (req, res, next) {
                 return [4 /*yield*/, Model.findById(workflowDoc.radicado)];
             case 3:
                 docMatched = _a.sent();
+                action = 'Actualización Tramitador - Rechazado';
+                description = "El registro ha sido anulado por " + user.role;
                 docMatched.status = ordinariesEnum_1.StatusOrdinary.Forbidden;
                 return [4 /*yield*/, docMatched.save({ validateBeforeSave: false })];
             case 4:
@@ -229,8 +232,25 @@ var changeStatusOrdinary = (0, catchAsync_1.default)(function (req, res, next) {
             case 8:
                 _a.sent();
                 _a.label = 9;
-            case 9: return [4 /*yield*/, workflowDoc.save({ validateBeforeSave: false })];
+            case 9:
+                if (body.check === false && body.correct === true) {
+                    action = 'Actualización Tramitador - Subsanar';
+                    description = "Se mandado a subsanar por " + user.role;
+                }
+                else if (body.check === true && body.correct === false) {
+                    action = 'Actualización Tramitador - Aprobado';
+                    description = "El registro ha pasado la aprobaci\u00F3n de " + user.role;
+                }
+                bodyEvent = {
+                    radicado: workflowDoc.radicado,
+                    action: action,
+                    description: description,
+                };
+                return [4 /*yield*/, eventsModel_1.default.create(bodyEvent)];
             case 10:
+                _a.sent();
+                return [4 /*yield*/, workflowDoc.save({ validateBeforeSave: false })];
+            case 11:
                 _a.sent();
                 res
                     .status(200)
