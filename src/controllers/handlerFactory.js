@@ -89,9 +89,7 @@ var findAll = function (Model) {
                     }
                     return [2 /*return*/, res.status(200).json({
                             status: true,
-                            data: {
-                                documents: documents,
-                            },
+                            documents: documents,
                         })];
             }
         });

@@ -122,7 +122,7 @@ var ContractorSchema = new mongoose_1.Schema({
             minlength: [5, 'Las observaciones deben tener al menos 5 letras'],
         },
     ],
-    company: {
+    companyID: {
         type: mongoose_1.Schema.Types.ObjectId,
         ref: 'company',
         required: true,

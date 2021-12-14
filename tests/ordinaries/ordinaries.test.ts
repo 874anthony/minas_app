@@ -106,8 +106,4 @@ describe('QR code tests', () => {
 
 		expect(currentOrdinary['qrCodeDate']).not.toBeUndefined();
 	});
-
-	// xtest("Check if when QR Code expires, ordinary status back to INACTIVE", async () => {
-	// await ordinaryHelper.createPermanentPerson();
-	// });
 });

@@ -210,11 +210,11 @@ var createOne = function (Model) {
                         !req.files['docLegalRepresentativeID']) {
                         return [2 /*return*/, next(new httpException_1.default('No se han cargado todos los archivos, por favor inténtelo nuevamente', 404))];
                     }
-                    if (!req.body.company) return [3 /*break*/, 4];
+                    if (!req.body.companyID) return [3 /*break*/, 4];
                     _a.label = 1;
                 case 1:
                     _a.trys.push([1, 3, , 4]);
-                    return [4 /*yield*/, Model.findById(req.body.company)];
+                    return [4 /*yield*/, Model.findById(req.body.companyID)];
                 case 2:
                     _a.sent();
                     return [3 /*break*/, 4];

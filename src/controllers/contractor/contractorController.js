@@ -26,9 +26,9 @@ exports.getContractorNIT = exports.uploadContractorDocs = exports.rejectContract
 // Own models
 var contractorModel_1 = __importDefault(require("../../models/contractors/contractorModel"));
 // Own Factory
-var factory = __importStar(require("../companyFactory"));
+var companyFactory = __importStar(require("../companyFactory"));
 // // ================================================ Middlewares starts here =========================================
-var uploadContractorDocs = factory.uploadCompanyDocs;
+var uploadContractorDocs = companyFactory.uploadCompanyDocs;
 exports.uploadContractorDocs = uploadContractorDocs;
 var addContractor = function (req, res, next) {
     if (!req.body.company)
@@ -37,17 +37,17 @@ var addContractor = function (req, res, next) {
 };
 exports.addContractor = addContractor;
 // // ================================================ Endpoints starts here =========================================
-var getAllContractors = factory.findAll(contractorModel_1.default);
+var getAllContractors = companyFactory.findAll(contractorModel_1.default);
 exports.getAllContractors = getAllContractors;
-var getContractor = factory.findOne(contractorModel_1.default);
+var getContractor = companyFactory.findOne(contractorModel_1.default);
 exports.getContractor = getContractor;
-var createContractor = factory.createOne(contractorModel_1.default);
+var createContractor = companyFactory.createOne(contractorModel_1.default);
 exports.createContractor = createContractor;
-var updateContractor = factory.updateOne(contractorModel_1.default);
+var updateContractor = companyFactory.updateOne(contractorModel_1.default);
 exports.updateContractor = updateContractor;
-var acceptContractor = factory.acceptOne(contractorModel_1.default);
+var acceptContractor = companyFactory.acceptOne(contractorModel_1.default);
 exports.acceptContractor = acceptContractor;
-var rejectContractor = factory.rejectOne(contractorModel_1.default);
+var rejectContractor = companyFactory.rejectOne(contractorModel_1.default);
 exports.rejectContractor = rejectContractor;
-var getContractorNIT = factory.getCompanyNIT(contractorModel_1.default);
+var getContractorNIT = companyFactory.getCompanyNIT(contractorModel_1.default);
 exports.getContractorNIT = getContractorNIT;

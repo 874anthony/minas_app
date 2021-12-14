@@ -13,6 +13,7 @@ import trdRouter from './routes/trd/trdRoutes';
 import authRouter from './routes/auth/authRoutes';
 import userRouter from './routes/users/userRoutes';
 import workflowRouter from './routes/ordinaries/workflowRoutes';
+import eventRouter from './routes/events/eventsRoutes';
 import ordinaryRouter from './routes/ordinaries/ordinariesRoutes';
 import permanentPersonRouter from './routes/ordinaries/persons/permanentPersonRoutes';
 import punctualworkPersonRouter from './routes/ordinaries/persons/punctualworkPersonRoutes';
@@ -65,6 +66,7 @@ app.use('/api/v1/trd-management', trdRouter);
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/user', userRouter);
 app.use('/api/v1/workflow', workflowRouter);
+app.use('/api/v1/events', eventRouter);
 app.use('/api/v1/ordinaries', ordinaryRouter);
 app.use('/api/v1/ordinaries-person/permanent-person', permanentPersonRouter);
 app.use(

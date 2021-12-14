@@ -63,6 +63,7 @@ var email_1 = __importDefault(require("../utils/email"));
 // Models here
 var userModel_1 = __importDefault(require("../models/users/userModel"));
 var workflowModel_1 = __importDefault(require("../models/workflows/workflowModel"));
+var eventsModel_1 = __importDefault(require("../models/events/eventsModel"));
 var trdOrdinary_1 = __importDefault(require("../models/trd/trdOrdinary"));
 // ================================================ Endpoints starts here =========================================
 // UPLOADS MIDDLEWARES
@@ -151,10 +152,13 @@ exports.checkCompanyID = checkCompanyID;
 // AQUI TERMINA LOS MIDDLEWARES
 var createOrdinary = function (Model, Roles, checkRoles, subsanarRoles) {
     return (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-        var body, dependency, trdOrdinary, year, dependencyCode, consecutive, radicado, newOrdinaryPerson, usersPromises, usersArray, usersID, ordinaryOpts, bodyWorkflow, error_1;
+        var body, dependency, trdOrdinary, year, dependencyCode, consecutive, radicado, newOrdinaryPerson, bodyEvent, usersPromises, usersArray, usersID, ordinaryOpts, bodyWorkflow, error_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
+                    if (!req.params.idCompany) {
+                        return [2 /*return*/, next(new httpException_1.default('No ha asociado ningun ID de la compañía, intente nuevamente', 404))];
+                    }
                     if (!req.files) {
                         return [2 /*return*/, next(new httpException_1.default('No ha subido ningún archivo, intente nuevamente', 404))];
                     }
@@ -191,14 +195,21 @@ var createOrdinary = function (Model, Roles, checkRoles, subsanarRoles) {
                 case 5:
                     _a.sent();
                     body.radicado = radicado;
-                    if (req.params.idCompany)
-                        body.companyID = req.params.idCompany;
+                    body.companyID = req.params.idCompany;
                     return [4 /*yield*/, Model.create(body)];
                 case 6:
                     newOrdinaryPerson = _a.sent();
                     if (!newOrdinaryPerson) {
                         return [2 /*return*/, next(new httpException_1.default('No se ha podido crear el ordinario, intente nuevamente', 404))];
                     }
+                    bodyEvent = {
+                        radicado: newOrdinaryPerson._id,
+                        action: 'Envío de formulario',
+                        description: 'Se generó el nuevo tipo de ingreso',
+                    };
+                    return [4 /*yield*/, eventsModel_1.default.create(bodyEvent)];
+                case 7:
+                    _a.sent();
                     usersPromises = Roles.map(function (role) { return __awaiter(void 0, void 0, void 0, function () {
                         var rolesQuery;
                         return __generator(this, function (_a) {
@@ -217,7 +228,7 @@ var createOrdinary = function (Model, Roles, checkRoles, subsanarRoles) {
                         });
                     }); });
                     return [4 /*yield*/, Promise.all(usersPromises)];
-                case 7:
+                case 8:
                     usersArray = _a.sent();
                     usersID = [];
                     ordinaryOpts = {
@@ -247,17 +258,17 @@ var createOrdinary = function (Model, Roles, checkRoles, subsanarRoles) {
                         }); });
                     });
                     bodyWorkflow = __assign(__assign({ radicado: newOrdinaryPerson._id, ordinaryType: newOrdinaryPerson.ordinaryType, roles: usersID, observations: req.body.observations }, checkRoles), subsanarRoles);
-                    _a.label = 8;
-                case 8:
-                    _a.trys.push([8, 10, , 11]);
-                    return [4 /*yield*/, workflowModel_1.default.create(bodyWorkflow)];
+                    _a.label = 9;
                 case 9:
-                    _a.sent();
-                    return [3 /*break*/, 11];
+                    _a.trys.push([9, 11, , 12]);
+                    return [4 /*yield*/, workflowModel_1.default.create(bodyWorkflow)];
                 case 10:
+                    _a.sent();
+                    return [3 /*break*/, 12];
+                case 11:
                     error_1 = _a.sent();
                     return [2 /*return*/, next(new httpException_1.default('No se ha asignado correctamente el workflow, por favor vuelva a intentar', 500))];
-                case 11:
+                case 12:
                     // Hasta aquí
                     res.status(200).json({
                         status: true,
@@ -272,7 +283,7 @@ var createOrdinary = function (Model, Roles, checkRoles, subsanarRoles) {
 exports.createOrdinary = createOrdinary;
 var updateOrdinary = function (Model) {
     return (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-        var id, ordinaryUpdated, body, workflowDoc_1;
+        var id, ordinaryUpdated, body, workflowDoc_1, bodyEvent;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -315,8 +326,19 @@ var updateOrdinary = function (Model) {
                 case 3:
                     _a.sent();
                     _a.label = 4;
-                case 4: return [4 /*yield*/, ordinaryUpdated.save({ validateBeforeSave: false })];
+                case 4:
+                    bodyEvent = {
+                        radicado: id,
+                        action: 'Actualización de formulario',
+                        description: req.body.isHealing
+                            ? 'Subida de documentos por corregir'
+                            : 'Se actualizó el registro',
+                    };
+                    return [4 /*yield*/, eventsModel_1.default.create(bodyEvent)];
                 case 5:
+                    _a.sent();
+                    return [4 /*yield*/, ordinaryUpdated.save({ validateBeforeSave: false })];
+                case 6:
                     _a.sent();
                     res.status(200).json({
                         status: true,
@@ -392,13 +414,11 @@ var inactiveOrdsByCompany = (0, catchAsync_1.default)(function (req, res, next) 
         Object.values(ordinariesEnum_1.ModelsOrdinary).forEach(function (Model) { return __awaiter(void 0, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        console.log(Model);
-                        return [4 /*yield*/, Model.updateMany({
-                                $match: { $and: { companyID: idCompany, status: 'ACTIVO' } },
-                            }, {
-                                $set: { status: 'INACTIVO', qrCodeDate: null },
-                            })];
+                    case 0: return [4 /*yield*/, Model.updateMany({
+                            $match: { $and: { companyID: idCompany, status: 'ACTIVO' } },
+                        }, {
+                            $set: { status: 'INACTIVO', qrCodeDate: null },
+                        })];
                     case 1:
                         _a.sent();
                         return [2 /*return*/];
