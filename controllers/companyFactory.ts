@@ -241,7 +241,7 @@ const updateOne = (Model) =>
 			body['docSocialSecurityAt'] = Date.now();
 		}
 
-		Object.keys(body).forEach((key) => {
+		Object.keys(body).forEach(async (key) => {
 			if (
 				key === 'observations' ||
 				key === 'finishDates' ||
@@ -252,6 +252,15 @@ const updateOne = (Model) =>
 				companyUpdated[key] = body[key];
 			}
 		});
+
+		if (body['password']) {
+			const hashedPassword = await companyUpdated.hashPassword(
+				body['password']
+			);
+
+			// NOW SAVE THE PASSWORD
+			companyUpdated.password = hashedPassword;
+		}
 
 		await companyUpdated.save({ validateBeforeSave: false });
 

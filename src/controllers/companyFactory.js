@@ -243,7 +243,7 @@ var createOne = function (Model) {
 exports.createOne = createOne;
 var updateOne = function (Model) {
     return (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-        var id, companyUpdated, body;
+        var id, companyUpdated, body, hashedPassword;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -268,18 +268,28 @@ var updateOne = function (Model) {
                         };
                         body['docSocialSecurityAt'] = Date.now();
                     }
-                    Object.keys(body).forEach(function (key) {
-                        if (key === 'observations' ||
-                            key === 'finishDates' ||
-                            key === 'docSocialSecurity') {
-                            companyUpdated[key].push(body[key]);
-                        }
-                        else {
-                            companyUpdated[key] = body[key];
-                        }
-                    });
-                    return [4 /*yield*/, companyUpdated.save({ validateBeforeSave: false })];
+                    Object.keys(body).forEach(function (key) { return __awaiter(void 0, void 0, void 0, function () {
+                        return __generator(this, function (_a) {
+                            if (key === 'observations' ||
+                                key === 'finishDates' ||
+                                key === 'docSocialSecurity') {
+                                companyUpdated[key].push(body[key]);
+                            }
+                            else {
+                                companyUpdated[key] = body[key];
+                            }
+                            return [2 /*return*/];
+                        });
+                    }); });
+                    if (!body['password']) return [3 /*break*/, 3];
+                    return [4 /*yield*/, companyUpdated.hashPassword(body['password'])];
                 case 2:
+                    hashedPassword = _a.sent();
+                    // NOW SAVE THE PASSWORD
+                    companyUpdated.password = hashedPassword;
+                    _a.label = 3;
+                case 3: return [4 /*yield*/, companyUpdated.save({ validateBeforeSave: false })];
+                case 4:
                     _a.sent();
                     res.status(200).json({
                         status: true,

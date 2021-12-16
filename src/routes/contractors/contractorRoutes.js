@@ -24,8 +24,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = __importDefault(require("express"));
 // Importing own controllers
-var permanentPersonRoutes_1 = __importDefault(require("../ordinaries/persons/permanentPersonRoutes"));
 var contractorController = __importStar(require("../../controllers/contractor/contractorController"));
+var permanentPersonRoutes_1 = __importDefault(require("../ordinaries/persons/permanentPersonRoutes"));
+var punctualworkPersonRoutes_1 = __importDefault(require("../ordinaries/persons/punctualworkPersonRoutes"));
+var specialworkPersonRoutes_1 = __importDefault(require("../ordinaries/persons/specialworkPersonRoutes"));
+var visitorPersonRoutes_1 = __importDefault(require("../ordinaries/persons/visitorPersonRoutes"));
+var visitorlightVehicleRoutes_1 = __importDefault(require("../ordinaries/vehicles/light/visitorlightVehicleRoutes"));
+var permanentlightVehicleRoutes_1 = __importDefault(require("../ordinaries/vehicles/light/permanentlightVehicleRoutes"));
+var permanentheavyVehicleRoutes_1 = __importDefault(require("../ordinaries/vehicles/heavy/permanentheavyVehicleRoutes"));
+var punctuallightVehicleRoutes_1 = __importDefault(require("../ordinaries/vehicles/light/punctuallightVehicleRoutes"));
+var punctualheavyVehicleRoutes_1 = __importDefault(require("../ordinaries/vehicles/heavy/punctualheavyVehicleRoutes"));
+var specialpunctualheavyVehicleRoutes_1 = __importDefault(require("../ordinaries/vehicles/heavy/specialpunctualheavyVehicleRoutes"));
 // Enabling the mergeParams to get access to the idCompany
 var router = express_1.default.Router({ mergeParams: true });
 router
@@ -33,11 +42,24 @@ router
     .get(contractorController.getAllContractors)
     .post(contractorController.uploadContractorDocs, contractorController.addContractor, contractorController.createContractor);
 router.use('/:idContractor/ordinaries-person/permanent-person', permanentPersonRoutes_1.default);
+router.use('/:idContractor/ordinaries-person/punctual-work-person', punctualworkPersonRoutes_1.default);
+router.use('/:idContractor/ordinaries-person/special-work-person', specialworkPersonRoutes_1.default);
+router.use('/:idContractor/ordinaries-person/visitor-person', visitorPersonRoutes_1.default);
+router.use('/:idContractor/ordinaries-vehicle/visitor-vehicle', visitorlightVehicleRoutes_1.default);
+router.use('/:idContractor/ordinaries-vehicle/permanent-light-vehicle', permanentlightVehicleRoutes_1.default);
+router.use('/:idContractor/ordinaries-vehicle/permanent-heavy-vehicle', permanentheavyVehicleRoutes_1.default);
+router.use('/:idContractor/ordinaries-vehicle/punctual-light-vehicle', punctuallightVehicleRoutes_1.default);
+router.use('/:idContractor/ordinaries-vehicle/punctual-heavy-vehicle', punctualheavyVehicleRoutes_1.default);
+router.use('/:idContractor/ordinaries-vehicle/special-punctual-heavy-vehicle', specialpunctualheavyVehicleRoutes_1.default);
 // Routes with the id
 router
     .route('/:id')
     .get(contractorController.getContractor)
     .put(contractorController.getContractorNIT, contractorController.uploadContractorDocs, contractorController.updateContractor);
+// Custom routes
+router
+    .route('/pending-contractors')
+    .get(contractorController.getPendingContractors, contractorController.getAllContractors);
 router
     .route('/accept-pending-contractor/:id')
     .patch(contractorController.acceptContractor);

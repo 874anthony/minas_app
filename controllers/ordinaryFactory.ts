@@ -24,7 +24,6 @@ import User from '../models/users/userModel';
 import Workflow from '../models/workflows/workflowModel';
 import Event from '../models/events/eventsModel';
 import TRDOrdinary from '../models/trd/trdOrdinary';
-import Company from '../models/companies/companyModel';
 
 // ================================================ Endpoints starts here =========================================
 
@@ -103,6 +102,12 @@ const getVehicleNumber = (Model) =>
 const checkCompanyID = (req: Request, res: Response, next: NextFunction) => {
 	const companyID = req.params.idCompany;
 	req.query.companyID = companyID;
+	next();
+};
+
+const checkContractorID = (req: Request, res: Response, next: NextFunction) => {
+	const contractorID = req.params.idContractor;
+	req.query.contractorID = contractorID;
 	next();
 };
 
@@ -354,7 +359,18 @@ const getAllOrds = catchAsync(
 					.paginate()
 					.sort();
 
-				return await featuresQuery.query;
+				let ordinaryResult = await featuresQuery.query.populate([
+					{
+						path: 'companyID',
+						select: 'businessName',
+					},
+					{
+						path: 'contractorID',
+						select: 'businessName',
+					},
+				]);
+
+				return ordinaryResult;
 			}
 		);
 
@@ -420,6 +436,7 @@ const inactiveOrdsByCompany = catchAsync(
 export {
 	getOrdinaryCitizenship,
 	checkCompanyID,
+	checkContractorID,
 	getAllOrds,
 	getOrdById,
 	createOrdinary,

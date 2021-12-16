@@ -94,7 +94,7 @@ var getCompanyNIT = factory.getCompanyNIT(companyModel_1.default);
 exports.getCompanyNIT = getCompanyNIT;
 var loginCompany = (0, authController_1.login)(companyModel_1.default);
 exports.loginCompany = loginCompany;
-var job = new cron_1.CronJob('* * * * * *', function () { return __awaiter(void 0, void 0, void 0, function () {
+var job = new cron_1.CronJob('0 0 1 * *', function () { return __awaiter(void 0, void 0, void 0, function () {
     var date;
     return __generator(this, function (_a) {
         switch (_a.label) {
