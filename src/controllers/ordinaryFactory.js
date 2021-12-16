@@ -156,7 +156,9 @@ var createOrdinary = function (Model, Roles, checkRoles, subsanarRoles) {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    if (!req.params.idCompany) {
+                    console.log(req.params.idCompany);
+                    console.log(req.params.idContractor);
+                    if (!req.params.idCompany && !req.params.idContractor) {
                         return [2 /*return*/, next(new httpException_1.default('No ha asociado ningun ID de la compañía, intente nuevamente', 404))];
                     }
                     if (!req.files) {
@@ -195,7 +197,12 @@ var createOrdinary = function (Model, Roles, checkRoles, subsanarRoles) {
                 case 5:
                     _a.sent();
                     body.radicado = radicado;
-                    body.companyID = req.params.idCompany;
+                    if (req.params.idCompany) {
+                        body.companyID = req.params.idCompany;
+                    }
+                    else if (req.params.idContractor) {
+                        body.contractorID = req.params.idContractor;
+                    }
                     return [4 /*yield*/, Model.create(body)];
                 case 6:
                     newOrdinaryPerson = _a.sent();
@@ -415,7 +422,7 @@ var inactiveOrdsByCompany = (0, catchAsync_1.default)(function (req, res, next) 
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, Model.updateMany({
-                            $match: { $and: { companyID: idCompany, status: 'ACTIVO' } },
+                            $match: { $and: [{ companyID: idCompany }, { status: 'ACTIVO' }] },
                         }, {
                             $set: { status: 'INACTIVO', qrCodeDate: null },
                         })];

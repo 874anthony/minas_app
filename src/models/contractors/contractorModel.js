@@ -113,8 +113,12 @@ var ContractorSchema = new mongoose_1.Schema({
     updatedAt: {
         type: Date,
     },
-    docSocialSecurity: [String],
+    docSocialSecurity: {
+        type: [Map],
+        of: String,
+    },
     finishDates: [Date],
+    docSocialSecurityAt: Date,
     observations: [
         {
             type: String,
@@ -142,6 +146,27 @@ var ContractorSchema = new mongoose_1.Schema({
 // return obj
 // }
 // ================================================== STATIC METHODS STARTS HERE ==================================================
+ContractorSchema.pre('save', function (next) {
+    return __awaiter(this, void 0, void 0, function () {
+        var _a;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0:
+                    // Only run this function if password was actually modified
+                    if (!this.isModified('password'))
+                        return [2 /*return*/, next()];
+                    // Hash the password with cost of 12
+                    _a = this;
+                    return [4 /*yield*/, crypto_js_1.default.AES.encrypt(this.password, process.env.PASSWORD_PHARAPRHASE).toString()];
+                case 1:
+                    // Hash the password with cost of 12
+                    _a.password = _b.sent();
+                    next();
+                    return [2 /*return*/];
+            }
+        });
+    });
+});
 /**
  *
  * @param genPassword

@@ -114,7 +114,10 @@ const createOrdinary = (
 	subsanarRoles?: Object
 ) =>
 	catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-		if (!req.params.idCompany) {
+		console.log(req.params.idCompany);
+		console.log(req.params.idContractor);
+
+		if (!req.params.idCompany && !req.params.idContractor) {
 			return next(
 				new HttpException(
 					'No ha asociado ningun ID de la compañía, intente nuevamente',
@@ -176,7 +179,12 @@ const createOrdinary = (
 		await trdOrdinary.save({ validateBeforeSave: false });
 
 		body.radicado = radicado;
-		body.companyID = req.params.idCompany;
+
+		if (req.params.idCompany) {
+			body.companyID = req.params.idCompany;
+		} else if (req.params.idContractor) {
+			body.contractorID = req.params.idContractor;
+		}
 
 		const newOrdinaryPerson = await Model.create(body);
 
@@ -394,7 +402,7 @@ const inactiveOrdsByCompany = catchAsync(
 		Object.values(ModelsOrdinary).forEach(async (Model) => {
 			await Model.updateMany(
 				{
-					$match: { $and: { companyID: idCompany, status: 'ACTIVO' } },
+					$match: { $and: [{ companyID: idCompany }, { status: 'ACTIVO' }] },
 				},
 				{
 					$set: { status: 'INACTIVO', qrCodeDate: null },

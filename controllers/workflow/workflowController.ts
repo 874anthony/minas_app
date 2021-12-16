@@ -99,10 +99,16 @@ const getAllOrdinariesType = catchAsync(
 					path: 'radicado',
 					select: '-__v',
 					model: Model,
-					populate: {
-						path: 'companyID',
-						select: 'businessName',
-					},
+					populate: [
+						{
+							path: 'companyID',
+							select: 'businessName',
+						},
+						{
+							path: 'contractorID',
+							select: 'businessName',
+						},
+					],
 				});
 
 				return ordinaryResult;

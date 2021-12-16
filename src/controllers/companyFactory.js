@@ -266,6 +266,7 @@ var updateOne = function (Model) {
                             month: date_1.months[new Date().getMonth()],
                             filename: req.files['docSocialSecurity'][0].filename,
                         };
+                        body['docSocialSecurityAt'] = Date.now();
                     }
                     Object.keys(body).forEach(function (key) {
                         if (key === 'observations' ||

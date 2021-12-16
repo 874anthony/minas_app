@@ -1,16 +1,20 @@
 // Import 3rd-party packages
 import { NextFunction, Request, Response } from 'express';
+import { CronJob } from 'cron';
 
 // Own models
 import Contractor from '../../models/contractors/contractorModel';
 
 // Own Factory
 import * as companyFactory from '../companyFactory';
+import catchAsync from '../../utils/catchAsync';
+import { ModelsOrdinary } from '../../interfaces/ordinaries/ordinariesEnum';
+
 // // ================================================ Middlewares starts here =========================================
 const uploadContractorDocs = companyFactory.uploadCompanyDocs;
 
 const addContractor = (req: Request, res: Response, next: NextFunction) => {
-	if (!req.body.company) req.body.company = req.params.idCompany;
+	if (!req.body.companyID) req.body.companyID = req.params.idCompany;
 	next();
 };
 
@@ -24,6 +28,50 @@ const acceptContractor = companyFactory.acceptOne(Contractor);
 const rejectContractor = companyFactory.rejectOne(Contractor);
 const getContractorNIT = companyFactory.getCompanyNIT(Contractor);
 
+const inactiveOrdsByContractor = catchAsync(
+	async (req: Request, res: Response, next: NextFunction) => {
+		const idContractor = req.params.id;
+
+		Object.values(ModelsOrdinary).forEach(async (Model) => {
+			await Model.updateMany(
+				{
+					$match: {
+						$and: [{ contractorID: idContractor }, { status: 'ACTIVO' }],
+					},
+				},
+				{
+					$set: { status: 'INACTIVO', qrCodeDate: null },
+				}
+			);
+		});
+
+		res.status(200).json({
+			status: true,
+			message: 'Se ha inactivado a todos los ordinarios con éxito',
+		});
+	}
+);
+
+const job = new CronJob(
+	'* * * * * *',
+	async () => {
+		const date = new Date();
+		date.setMonth(date.getMonth() - 1); //1 month ago
+
+		await Contractor.updateMany(
+			{
+				docSocialSecurityAt: { $lte: date },
+			},
+			{
+				$set: { status: 'REVISION', docSocialSecurityAt: null },
+			}
+		);
+	},
+	null
+);
+
+job.start();
+
 export {
 	getAllContractors,
 	getContractor,
@@ -34,4 +82,5 @@ export {
 	rejectContractor,
 	uploadContractorDocs,
 	getContractorNIT,
+	inactiveOrdsByContractor,
 };

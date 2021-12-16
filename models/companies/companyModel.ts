@@ -6,7 +6,7 @@ import crypto from 'crypto';
 
 export enum StatusCompany {
 	Active = 'ACTIVO',
-	InProcess = 'EN PROCESO',
+	Revision = 'REVISION',
 	Pending = 'PENDIENTE',
 	Inactive = 'INACTIVO',
 	Rejected = 'RECHAZADO',
@@ -29,6 +29,7 @@ export interface CompanyInterface extends Schema {
 	observations: Array<string>;
 	createdAt: any;
 	updatedAt: any;
+	docSocialSecurityAt: any;
 	generatePassword: () => Promise<string>;
 	hashPassword: (genPassword: string) => Promise<string>;
 	decryptPassword: (hashedPassword: string) => Promise<string>;
@@ -110,6 +111,7 @@ const CompanySchema: Schema<CompanyInterface> = new Schema(
 			type: [Map],
 			of: String,
 		},
+		docSocialSecurityAt: Date,
 		finishDates: [Date],
 		observations: [
 			{
@@ -134,11 +136,18 @@ CompanySchema.virtual('contratistas', {
 	localField: '_id',
 });
 
-// UserSchema.methods.toJSON = function() {
-// var obj = this.toObject()
-// delete obj.passwordHash
-// return obj
-// }
+CompanySchema.pre('save', async function (next) {
+	// Only run this function if password was actually modified
+	if (!this.isModified('password')) return next();
+
+	// Hash the password with cost of 12
+	this.password = await CryptoJS.AES.encrypt(
+		this.password,
+		process.env.PASSWORD_PHARAPRHASE!
+	).toString();
+
+	next();
+});
 
 // ================================================== STATIC METHODS STARTS HERE ==================================================
 /**
