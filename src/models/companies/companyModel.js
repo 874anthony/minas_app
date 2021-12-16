@@ -47,7 +47,7 @@ var crypto_1 = __importDefault(require("crypto"));
 var StatusCompany;
 (function (StatusCompany) {
     StatusCompany["Active"] = "ACTIVO";
-    StatusCompany["InProcess"] = "EN PROCESO";
+    StatusCompany["Revision"] = "REVISION";
     StatusCompany["Pending"] = "PENDIENTE";
     StatusCompany["Inactive"] = "INACTIVO";
     StatusCompany["Rejected"] = "RECHAZADO";
@@ -127,6 +127,7 @@ var CompanySchema = new mongoose_1.Schema({
         type: [Map],
         of: String,
     },
+    docSocialSecurityAt: Date,
     finishDates: [Date],
     observations: [
         {
@@ -147,11 +148,27 @@ CompanySchema.virtual('contratistas', {
     foreignField: 'company',
     localField: '_id',
 });
-// UserSchema.methods.toJSON = function() {
-// var obj = this.toObject()
-// delete obj.passwordHash
-// return obj
-// }
+CompanySchema.pre('save', function (next) {
+    return __awaiter(this, void 0, void 0, function () {
+        var _a;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0:
+                    // Only run this function if password was actually modified
+                    if (!this.isModified('password'))
+                        return [2 /*return*/, next()];
+                    // Hash the password with cost of 12
+                    _a = this;
+                    return [4 /*yield*/, crypto_js_1.default.AES.encrypt(this.password, process.env.PASSWORD_PHARAPRHASE).toString()];
+                case 1:
+                    // Hash the password with cost of 12
+                    _a.password = _b.sent();
+                    next();
+                    return [2 /*return*/];
+            }
+        });
+    });
+});
 // ================================================== STATIC METHODS STARTS HERE ==================================================
 /**
  *

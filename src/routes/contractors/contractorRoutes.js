@@ -24,6 +24,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = __importDefault(require("express"));
 // Importing own controllers
+var permanentPersonRoutes_1 = __importDefault(require("../ordinaries/persons/permanentPersonRoutes"));
 var contractorController = __importStar(require("../../controllers/contractor/contractorController"));
 // Enabling the mergeParams to get access to the idCompany
 var router = express_1.default.Router({ mergeParams: true });
@@ -31,6 +32,7 @@ router
     .route('/')
     .get(contractorController.getAllContractors)
     .post(contractorController.uploadContractorDocs, contractorController.addContractor, contractorController.createContractor);
+router.use('/:idContractor/ordinaries-person/permanent-person', permanentPersonRoutes_1.default);
 // Routes with the id
 router
     .route('/:id')

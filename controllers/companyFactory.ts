@@ -237,6 +237,8 @@ const updateOne = (Model) =>
 				month: months[new Date().getMonth()],
 				filename: req.files!['docSocialSecurity'][0].filename,
 			};
+
+			body['docSocialSecurityAt'] = Date.now();
 		}
 
 		Object.keys(body).forEach((key) => {
