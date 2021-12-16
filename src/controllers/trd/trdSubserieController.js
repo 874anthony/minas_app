@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getSubserie = exports.getAllSubseries = exports.createSubSerie = void 0;
+exports.updateSubserie = exports.getSubserie = exports.getAllSubseries = exports.createSubSerie = void 0;
 // Importing our models
 var trdSubSerie_1 = __importDefault(require("../../models/trd/trdSubSerie"));
 // Importing the factory
@@ -14,3 +14,5 @@ var getAllSubseries = (0, handlerFactory_1.findAll)(trdSubSerie_1.default);
 exports.getAllSubseries = getAllSubseries;
 var getSubserie = (0, handlerFactory_1.findOne)(trdSubSerie_1.default);
 exports.getSubserie = getSubserie;
+var updateSubserie = (0, handlerFactory_1.updateOne)(trdSubSerie_1.default);
+exports.updateSubserie = updateSubserie;

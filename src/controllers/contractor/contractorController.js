@@ -58,7 +58,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.inactiveOrdsByContractor = exports.getContractorNIT = exports.uploadContractorDocs = exports.rejectContractor = exports.updateContractor = exports.acceptContractor = exports.addContractor = exports.createContractor = exports.getContractor = exports.getAllContractors = void 0;
+exports.getPendingContractors = exports.inactiveOrdsByContractor = exports.getContractorNIT = exports.uploadContractorDocs = exports.rejectContractor = exports.updateContractor = exports.acceptContractor = exports.addContractor = exports.createContractor = exports.getContractor = exports.getAllContractors = void 0;
 var cron_1 = require("cron");
 // Own models
 var contractorModel_1 = __importDefault(require("../../models/contractors/contractorModel"));
@@ -75,6 +75,11 @@ var addContractor = function (req, res, next) {
     next();
 };
 exports.addContractor = addContractor;
+var getPendingContractors = function (req, res, next) {
+    req.query.status = 'PENDIENTE';
+    next();
+};
+exports.getPendingContractors = getPendingContractors;
 // // ================================================ Endpoints starts here =========================================
 var getAllContractors = companyFactory.findAll(contractorModel_1.default);
 exports.getAllContractors = getAllContractors;

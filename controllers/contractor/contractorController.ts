@@ -18,6 +18,15 @@ const addContractor = (req: Request, res: Response, next: NextFunction) => {
 	next();
 };
 
+const getPendingContractors = (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
+	req.query.status = 'PENDIENTE';
+	next();
+};
+
 // // ================================================ Endpoints starts here =========================================
 
 const getAllContractors = companyFactory.findAll(Contractor);
@@ -83,4 +92,5 @@ export {
 	uploadContractorDocs,
 	getContractorNIT,
 	inactiveOrdsByContractor,
+	getPendingContractors,
 };

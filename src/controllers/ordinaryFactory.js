@@ -50,7 +50,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getVehicleNumber = exports.uploadVehicle = exports.uploadPerson = exports.inactiveOrdsByCompany = exports.updateOrdinary = exports.createOrdinary = exports.getOrdById = exports.getAllOrds = exports.checkCompanyID = exports.getOrdinaryCitizenship = void 0;
+exports.getVehicleNumber = exports.uploadVehicle = exports.uploadPerson = exports.inactiveOrdsByCompany = exports.updateOrdinary = exports.createOrdinary = exports.getOrdById = exports.getAllOrds = exports.checkContractorID = exports.checkCompanyID = exports.getOrdinaryCitizenship = void 0;
 // Importing our utils to this controller
 var catchAsync_1 = __importDefault(require("../utils/catchAsync"));
 var httpException_1 = __importDefault(require("../utils/httpException"));
@@ -149,6 +149,12 @@ var checkCompanyID = function (req, res, next) {
     next();
 };
 exports.checkCompanyID = checkCompanyID;
+var checkContractorID = function (req, res, next) {
+    var contractorID = req.params.idContractor;
+    req.query.contractorID = contractorID;
+    next();
+};
+exports.checkContractorID = checkContractorID;
 // AQUI TERMINA LOS MIDDLEWARES
 var createOrdinary = function (Model, Roles, checkRoles, subsanarRoles) {
     return (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
@@ -364,7 +370,7 @@ var getAllOrds = (0, catchAsync_1.default)(function (req, res, next) { return __
         switch (_a.label) {
             case 0:
                 ordinariesPromises = Object.values(ordinariesEnum_1.ModelsOrdinary).map(function (Model) { return __awaiter(void 0, void 0, void 0, function () {
-                    var featuresQuery;
+                    var featuresQuery, ordinaryResult;
                     return __generator(this, function (_a) {
                         switch (_a.label) {
                             case 0:
@@ -373,8 +379,19 @@ var getAllOrds = (0, catchAsync_1.default)(function (req, res, next) { return __
                                     .limitFields()
                                     .paginate()
                                     .sort();
-                                return [4 /*yield*/, featuresQuery.query];
-                            case 1: return [2 /*return*/, _a.sent()];
+                                return [4 /*yield*/, featuresQuery.query.populate([
+                                        {
+                                            path: 'companyID',
+                                            select: 'businessName',
+                                        },
+                                        {
+                                            path: 'contractorID',
+                                            select: 'businessName',
+                                        },
+                                    ])];
+                            case 1:
+                                ordinaryResult = _a.sent();
+                                return [2 /*return*/, ordinaryResult];
                         }
                     });
                 }); });

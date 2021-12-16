@@ -85,4 +85,29 @@ const findOne = (Model, populateOptions?) =>
 		});
 	});
 
-export { createOne, findAll, findOne };
+const updateOne = (Model) =>
+	catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+		const id = req.params.id;
+		const body = req.body;
+
+		const documentUpdated = await Model.findByIdAndUpdate(id, body, {
+			new: true,
+			validateBeforeSave: false,
+		});
+
+		if (!documentUpdated)
+			return next(
+				new HttpException(
+					'No se ha podido actualizar el registro, intentelo nuevamente!',
+					404
+				)
+			);
+
+		res.status(200).json({
+			status: true,
+			message: 'El registro fue actualizado con exito',
+			documentUpdated,
+		});
+	});
+
+export { createOne, findAll, findOne, updateOne };

@@ -23,8 +23,11 @@ const router = express.Router();
 
 // Nesting routes to redirect to contractorRouter
 router.use('/:idCompany/contractors', contractorRouter);
+
 router.use('/:idCompany/workflow', workflowRouter);
+
 router.use('/:idCompany/ordinaries', ordinariesRouter);
+
 router.use(
 	'/:idCompany/ordinaries-person/permanent-person',
 	permanentPersonRouter
