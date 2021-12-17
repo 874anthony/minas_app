@@ -69,7 +69,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getOneWorkflow = exports.changeStatusOrdinary = exports.getAllOrdinariesType = exports.checkRole = void 0;
+exports.getWorkflosAdmin = exports.getOneWorkflow = exports.changeStatusOrdinary = exports.getAllOrdinariesType = exports.checkRole = void 0;
 // // Importing our utils to this controller
 var httpException_1 = __importDefault(require("../../utils/httpException"));
 var catchAsync_1 = __importDefault(require("../../utils/catchAsync"));
@@ -286,3 +286,28 @@ var getOneWorkflow = (0, catchAsync_1.default)(function (req, res, next) { retur
     });
 }); });
 exports.getOneWorkflow = getOneWorkflow;
+var getWorkflosAdmin = (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var features, workflows;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                features = new apiFeatures_1.default(workflowModel_1.default.find(), req.query)
+                    .filter()
+                    .paginate()
+                    .sort()
+                    .limitFields();
+                return [4 /*yield*/, features.query];
+            case 1:
+                workflows = _a.sent();
+                if (workflows.length === 0) {
+                    return [2 /*return*/, next(new httpException_1.default('No hay documentos en trámite', 204))];
+                }
+                res.status(200).json({
+                    status: true,
+                    workflows: workflows,
+                });
+                return [2 /*return*/];
+        }
+    });
+}); });
+exports.getWorkflosAdmin = getWorkflosAdmin;

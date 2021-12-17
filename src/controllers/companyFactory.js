@@ -317,6 +317,7 @@ var rejectOne = function (Model) {
                     if (!companyMatched) {
                         return [2 /*return*/, next(new httpException_1.default('No existe una compañía con ese ID, inténtelo nuevamente', 404))];
                     }
+                    if (!!req.body.isContractor) return [3 /*break*/, 5];
                     _a.label = 2;
                 case 2:
                     _a.trys.push([2, 4, , 5]);
@@ -418,6 +419,7 @@ var acceptOne = function (Model) {
                         radicado: radicado,
                         email: companyMatched.email,
                     };
+                    if (!!req.body.isContractor) return [3 /*break*/, 15];
                     _a.label = 12;
                 case 12:
                     _a.trys.push([12, 14, , 15]);

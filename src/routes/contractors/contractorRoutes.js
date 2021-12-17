@@ -39,7 +39,7 @@ var specialpunctualheavyVehicleRoutes_1 = __importDefault(require("../ordinaries
 var router = express_1.default.Router({ mergeParams: true });
 router
     .route('/')
-    .get(contractorController.getAllContractors)
+    .get(contractorController.contractorsByCompany, contractorController.getAllContractors)
     .post(contractorController.uploadContractorDocs, contractorController.addContractor, contractorController.createContractor);
 router.use('/:idContractor/ordinaries-person/permanent-person', permanentPersonRoutes_1.default);
 router.use('/:idContractor/ordinaries-person/punctual-work-person', punctualworkPersonRoutes_1.default);
@@ -51,15 +51,15 @@ router.use('/:idContractor/ordinaries-vehicle/permanent-heavy-vehicle', permanen
 router.use('/:idContractor/ordinaries-vehicle/punctual-light-vehicle', punctuallightVehicleRoutes_1.default);
 router.use('/:idContractor/ordinaries-vehicle/punctual-heavy-vehicle', punctualheavyVehicleRoutes_1.default);
 router.use('/:idContractor/ordinaries-vehicle/special-punctual-heavy-vehicle', specialpunctualheavyVehicleRoutes_1.default);
+// Custom routes
+router
+    .route('/pending-contractors')
+    .get(contractorController.contractorsByCompany, contractorController.getPendingContractors, contractorController.getAllContractors);
 // Routes with the id
 router
     .route('/:id')
     .get(contractorController.getContractor)
     .put(contractorController.getContractorNIT, contractorController.uploadContractorDocs, contractorController.updateContractor);
-// Custom routes
-router
-    .route('/pending-contractors')
-    .get(contractorController.getPendingContractors, contractorController.getAllContractors);
 router
     .route('/accept-pending-contractor/:id')
     .patch(contractorController.acceptContractor);
