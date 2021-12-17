@@ -19,7 +19,10 @@ const router = express.Router({ mergeParams: true });
 
 router
 	.route('/')
-	.get(contractorController.getAllContractors)
+	.get(
+		contractorController.contractorsByCompany,
+		contractorController.getAllContractors
+	)
 	.post(
 		contractorController.uploadContractorDocs,
 		contractorController.addContractor,
@@ -68,6 +71,15 @@ router.use(
 	specialpunctualHeavyVehicleRouter
 );
 
+// Custom routes
+router
+	.route('/pending-contractors')
+	.get(
+		contractorController.contractorsByCompany,
+		contractorController.getPendingContractors,
+		contractorController.getAllContractors
+	);
+
 // Routes with the id
 router
 	.route('/:id')
@@ -76,14 +88,6 @@ router
 		contractorController.getContractorNIT,
 		contractorController.uploadContractorDocs,
 		contractorController.updateContractor
-	);
-
-// Custom routes
-router
-	.route('/pending-contractors')
-	.get(
-		contractorController.getPendingContractors,
-		contractorController.getAllContractors
 	);
 
 router

@@ -3,18 +3,37 @@ import { NextFunction, Request, Response } from 'express';
 import { CronJob } from 'cron';
 
 // Own models
+import HttpException from '../../utils/httpException';
 import Contractor from '../../models/contractors/contractorModel';
+import { ModelsOrdinary } from '../../interfaces/ordinaries/ordinariesEnum';
 
 // Own Factory
 import * as companyFactory from '../companyFactory';
 import catchAsync from '../../utils/catchAsync';
-import { ModelsOrdinary } from '../../interfaces/ordinaries/ordinariesEnum';
 
 // // ================================================ Middlewares starts here =========================================
+// Middlewares
 const uploadContractorDocs = companyFactory.uploadCompanyDocs;
 
 const addContractor = (req: Request, res: Response, next: NextFunction) => {
 	if (!req.body.companyID) req.body.companyID = req.params.idCompany;
+	next();
+};
+
+const contractorsByCompany = (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
+	if (!req.params.idCompany)
+		return next(
+			new HttpException(
+				'No hay ID de la compañia padre, intente nuevamente',
+				404
+			)
+		);
+
+	req.query.companyID = req.params.idCompany;
 	next();
 };
 
@@ -85,12 +104,13 @@ export {
 	getAllContractors,
 	getContractor,
 	createContractor,
-	addContractor,
 	acceptContractor,
 	updateContractor,
 	rejectContractor,
 	uploadContractorDocs,
 	getContractorNIT,
 	inactiveOrdsByContractor,
+	addContractor,
 	getPendingContractors,
+	contractorsByCompany,
 };

@@ -22,10 +22,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getUsers = void 0;
+exports.updateUser = exports.getUser = exports.getAllUsers = void 0;
 // Importing the factory
 var factory = __importStar(require("../handlerFactory"));
 // Importing own models
 var userModel_1 = __importDefault(require("../../models/users/userModel"));
-var getUsers = factory.findAll(userModel_1.default);
-exports.getUsers = getUsers;
+var getAllUsers = factory.findAll(userModel_1.default);
+exports.getAllUsers = getAllUsers;
+var getUser = factory.findOne(userModel_1.default);
+exports.getUser = getUser;
+var updateUser = factory.updateOne(userModel_1.default);
+exports.updateUser = updateUser;

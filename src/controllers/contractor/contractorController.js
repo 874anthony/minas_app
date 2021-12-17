@@ -58,15 +58,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getPendingContractors = exports.inactiveOrdsByContractor = exports.getContractorNIT = exports.uploadContractorDocs = exports.rejectContractor = exports.updateContractor = exports.acceptContractor = exports.addContractor = exports.createContractor = exports.getContractor = exports.getAllContractors = void 0;
+exports.contractorsByCompany = exports.getPendingContractors = exports.addContractor = exports.inactiveOrdsByContractor = exports.getContractorNIT = exports.uploadContractorDocs = exports.rejectContractor = exports.updateContractor = exports.acceptContractor = exports.createContractor = exports.getContractor = exports.getAllContractors = void 0;
 var cron_1 = require("cron");
 // Own models
+var httpException_1 = __importDefault(require("../../utils/httpException"));
 var contractorModel_1 = __importDefault(require("../../models/contractors/contractorModel"));
+var ordinariesEnum_1 = require("../../interfaces/ordinaries/ordinariesEnum");
 // Own Factory
 var companyFactory = __importStar(require("../companyFactory"));
 var catchAsync_1 = __importDefault(require("../../utils/catchAsync"));
-var ordinariesEnum_1 = require("../../interfaces/ordinaries/ordinariesEnum");
 // // ================================================ Middlewares starts here =========================================
+// Middlewares
 var uploadContractorDocs = companyFactory.uploadCompanyDocs;
 exports.uploadContractorDocs = uploadContractorDocs;
 var addContractor = function (req, res, next) {
@@ -75,6 +77,13 @@ var addContractor = function (req, res, next) {
     next();
 };
 exports.addContractor = addContractor;
+var contractorsByCompany = function (req, res, next) {
+    if (!req.params.idCompany)
+        return next(new httpException_1.default('No hay ID de la compañia padre, intente nuevamente', 404));
+    req.query.companyID = req.params.idCompany;
+    next();
+};
+exports.contractorsByCompany = contractorsByCompany;
 var getPendingContractors = function (req, res, next) {
     req.query.status = 'PENDIENTE';
     next();

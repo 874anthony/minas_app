@@ -288,15 +288,17 @@ const rejectOne = (Model) =>
 			);
 		}
 
-		try {
-			await new Email(companyMatched).sendRejectCompany(emailMessage);
-		} catch (error) {
-			return next(
-				new HttpException(
-					'Hubo un error al enviar el correo, por favor intente más tarde',
-					500
-				)
-			);
+		if (!req.body.isContractor) {
+			try {
+				await new Email(companyMatched).sendRejectCompany(emailMessage);
+			} catch (error) {
+				return next(
+					new HttpException(
+						'Hubo un error al enviar el correo, por favor intente más tarde',
+						500
+					)
+				);
+			}
 		}
 
 		await companyMatched.remove();
@@ -390,15 +392,17 @@ const acceptOne = (Model) =>
 			email: companyMatched.email,
 		};
 
-		try {
-			await new Email(companyMatched).sendWelcomeCompany(companyCredentials);
-		} catch (error) {
-			return next(
-				new HttpException(
-					'Hubo un error al enviar el correo, por favor intente más tarde',
-					500
-				)
-			);
+		if (!req.body.isContractor) {
+			try {
+				await new Email(companyMatched).sendWelcomeCompany(companyCredentials);
+			} catch (error) {
+				return next(
+					new HttpException(
+						'Hubo un error al enviar el correo, por favor intente más tarde',
+						500
+					)
+				);
+			}
 		}
 
 		// SENDING THE FINAL RESPONSE TO THE CLIENT

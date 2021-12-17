@@ -7,6 +7,10 @@ import * as workflowController from '../../controllers/workflow/workflowControll
 const router = express.Router({ mergeParams: true });
 
 router
+	.route('/get-all-admin')
+	.get(authController.guardLogin, workflowController.getWorkflosAdmin);
+
+router
 	.route('/')
 	.get(
 		authController.guardLogin,

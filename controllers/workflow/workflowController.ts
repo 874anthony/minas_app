@@ -234,9 +234,31 @@ const getOneWorkflow = catchAsync(
 	}
 );
 
+const getWorkflosAdmin = catchAsync(
+	async (req: Request, res: Response, next: NextFunction) => {
+		const features = new APIFeatures(Workflow.find(), req.query)
+			.filter()
+			.paginate()
+			.sort()
+			.limitFields();
+
+		const workflows = await features.query;
+
+		if (workflows.length === 0) {
+			return next(new HttpException('No hay documentos en trámite', 204));
+		}
+
+		res.status(200).json({
+			status: true,
+			workflows,
+		});
+	}
+);
+
 export {
 	checkRole,
 	getAllOrdinariesType,
 	changeStatusOrdinary,
 	getOneWorkflow,
+	getWorkflosAdmin,
 };
