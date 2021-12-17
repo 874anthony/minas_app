@@ -10,6 +10,8 @@ router
 	.route('/is-allowed/:ordinaryType/:id')
 	.get(authController.isAllowedOrdinary);
 
+router.route('/is-admin').get(authController.adminGuard);
+
 router.route('/create-user').post(authController.createUserRole);
 router.route('/login').post(authController.loginUsers);
 
