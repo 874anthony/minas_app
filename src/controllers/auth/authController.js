@@ -69,7 +69,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.isAllowedOrdinary = exports.guardLogin = exports.loginUsers = exports.login = exports.createUserRole = void 0;
+exports.adminGuard = exports.isAllowedOrdinary = exports.guardLogin = exports.loginUsers = exports.login = exports.createUserRole = void 0;
 var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 // Importing our utils to this controller
 var httpException_1 = __importDefault(require("../../utils/httpException"));
@@ -211,3 +211,32 @@ var guardLogin = (0, catchAsync_1.default)(function (req, res, next) { return __
 exports.guardLogin = guardLogin;
 var loginUsers = login(userModel_1.default);
 exports.loginUsers = loginUsers;
+var adminGuard = (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var token, id, currentUser;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                if (req.headers.authorization &&
+                    req.headers.authorization.startsWith('Bearer')) {
+                    token = req.headers.authorization.split(' ')[1];
+                }
+                if (!token) {
+                    return [2 /*return*/, next(new httpException_1.default('No has iniciado sesión, por favor hazlo e intenta nuevamente', 401))];
+                }
+                jsonwebtoken_1.default.verify(token, process.env.JWT_PRIVATE_KEY, function (err, decoded) {
+                    id = decoded.id;
+                });
+                return [4 /*yield*/, userModel_1.default.findById(id)];
+            case 1:
+                currentUser = _a.sent();
+                if (!currentUser) {
+                    return [2 /*return*/, next(new httpException_1.default('El usuario con este token ya no existe!', 401))];
+                }
+                res.status(200).json({
+                    isAdmin: currentUser.role === userModel_1.UserRoles.Admin,
+                });
+                return [2 /*return*/];
+        }
+    });
+}); });
+exports.adminGuard = adminGuard;
