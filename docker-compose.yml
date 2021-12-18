@@ -1,0 +1,64 @@
+version: '3.9'
+
+services:
+  # Backend config
+  backend-app:
+    build: 
+      context: .
+      dockerfile: node.Dockerfile
+    image: minas-app:1.0.0
+    ports:
+      - 3000:3000
+    networks:
+      - minas
+      - minas-backend
+    links:
+      - mongodb
+
+  # FrontEnd config   
+  frontend-app:
+    build:
+      context: .
+      dockerfile: front.Dockerfile
+    image: front-minas:1.0.0
+    ports:
+      - 8080:80
+    networks:
+      - minas
+  
+  #DB config
+  mongodb:
+    image: mongo:5.0.5-focal
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: mongoadmin
+      MONGO_INITDB_ROOT_PASSWORD: secret
+    networks:
+      - minas-backend
+    volumes:
+      - mongo-data:/data/db
+    
+
+  mongo-interface:
+    image: mongo-express
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: mongoadmin
+      ME_CONFIG_MONGODB_ADMINPASSWORD: secret
+      ME_CONFIG_MONGODB_SERVER: mongodb
+      ME_CONFIG_MONGODB_URL: mongodb://mongodb
+    networks:
+      - minas-backend
+    depends_on:
+      - mongodb
+
+networks:
+  minas:
+    driver: overlay
+    attachable: true
+  minas-backend:
+    driver: overlay
+    attachable: true
+
+volumes:
+  mongo-data:
