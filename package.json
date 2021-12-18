@@ -8,7 +8,7 @@
     "url": "https://github.com/874anthony/minas_app.git"
   },
   "scripts": {
-    "start": "cross-env NODE_ENV=production node ./src/server.js",
+    "start": "cross-env NODE_ENV=production node server.js",
     "dev": "tsc -w",
     "serve": "cross-env NODE_ENV=development npx nodemon ./src/server.js",
     "test": "cross-env NODE_ENV=test jest --forceExit --detectOpenHandles tests/ordinaries/ordinaries.test.ts",
