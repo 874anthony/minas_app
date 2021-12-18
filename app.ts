@@ -40,20 +40,22 @@ if (process.env.NODE_ENV === 'development') {
 	app.use(morgan('dev'));
 }
 
+console.log(__dirname);
+
 // Defining the static files
 app.use(
 	'/pdf-companies',
-	express.static(path.join(__dirname, '../store/documents/company'))
+	express.static(path.join(__dirname, '/store/documents/company'))
 );
 
 app.use(
 	'/pdf-contractors',
-	express.static(path.join(__dirname, '../store/documents/contractors'))
+	express.static(path.join(__dirname, '/store/documents/contractors'))
 );
 
 app.use(
 	'/pdf-ordinaries',
-	express.static(path.join(__dirname, '../store/documents/ordinaries'))
+	express.static(path.join(__dirname, '/store/documents/ordinaries'))
 );
 
 app.set('view engine', 'ejs');
