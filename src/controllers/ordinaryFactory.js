@@ -162,8 +162,6 @@ var createOrdinary = function (Model, Roles, checkRoles, subsanarRoles) {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    console.log(req.params.idCompany);
-                    console.log(req.params.idContractor);
                     if (!req.params.idCompany && !req.params.idContractor) {
                         return [2 /*return*/, next(new httpException_1.default('No ha asociado ningun ID de la compañía, intente nuevamente', 404))];
                     }

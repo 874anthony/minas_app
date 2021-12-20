@@ -6,6 +6,7 @@ import path from 'path';
 
 // TODO: Own Imports LATER BE REMOVED
 import HttpException from './utils/httpException';
+import globalErrorHandler from './controllers/errorController';
 
 // Own routes
 import companyRouter from './routes/company/companyRoutes';
@@ -106,23 +107,9 @@ app.use(
 	specialpunctualHeavyVehicleRouter
 );
 
-// Define the global error handler to pass next errors
-function globalErrorHandler(
-	err: HttpException,
-	req: Request,
-	res: Response,
-	next: NextFunction
-) {
-	const status = err.status || 500;
-	const message = err.message || 'Something went wrong';
-
-	return res.status(status).json({
-		error: err,
-		status,
-		message,
-		stack: err.stack,
-	});
-}
+app.all('*', (req: Request, res: Response, next: NextFunction) => {
+	next(new HttpException(`Can't find ${req.originalUrl} on this server!`, 404));
+});
 
 // Using the the global error handler
 app.use(globalErrorHandler);

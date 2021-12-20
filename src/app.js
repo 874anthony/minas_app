@@ -8,6 +8,9 @@ var cors_1 = __importDefault(require("cors"));
 var helmet_1 = __importDefault(require("helmet"));
 var morgan_1 = __importDefault(require("morgan"));
 var path_1 = __importDefault(require("path"));
+// TODO: Own Imports LATER BE REMOVED
+var httpException_1 = __importDefault(require("./utils/httpException"));
+var errorController_1 = __importDefault(require("./controllers/errorController"));
 // Own routes
 var companyRoutes_1 = __importDefault(require("./routes/company/companyRoutes"));
 var contractorRoutes_1 = __importDefault(require("./routes/contractors/contractorRoutes"));
@@ -67,17 +70,9 @@ app.use('/api/v1/ordinaries-vehicle/permanent-heavy-vehicle', permanentheavyVehi
 app.use('/api/v1/ordinaries-vehicle/punctual-light-vehicle', punctuallightVehicleRoutes_1.default);
 app.use('/api/v1/ordinaries-vehicle/punctual-heavy-vehicle', punctualheavyVehicleRoutes_1.default);
 app.use('/api/v1/ordinaries-vehicle/special-punctual-heavy-vehicle', specialpunctualheavyVehicleRoutes_1.default);
-// Define the global error handler to pass next errors
-function globalErrorHandler(err, req, res, next) {
-    var status = err.status || 500;
-    var message = err.message || 'Something went wrong';
-    return res.status(status).json({
-        error: err,
-        status: status,
-        message: message,
-        stack: err.stack,
-    });
-}
+app.all('*', function (req, res, next) {
+    next(new httpException_1.default("Can't find " + req.originalUrl + " on this server!", 404));
+});
 // Using the the global error handler
-app.use(globalErrorHandler);
+app.use(errorController_1.default);
 exports.default = app;
