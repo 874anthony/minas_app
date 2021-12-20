@@ -1,9 +1,9 @@
 // Importing dependencies
 import mongoose from 'mongoose';
-import dotenv from 'dotenv';
+// import dotenv from 'dotenv';
 
 // Import enviroment variables and parsing into the single process.env
-dotenv.config({ path: './config.env' });
+// dotenv.config({ path: './config.env' });
 
 import app from './app';
 

@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = __importDefault(require("express"));
 var cors_1 = __importDefault(require("cors"));
+var helmet_1 = __importDefault(require("helmet"));
 var morgan_1 = __importDefault(require("morgan"));
 var path_1 = __importDefault(require("path"));
 // Own routes
@@ -29,6 +30,8 @@ var specialpunctualheavyVehicleRoutes_1 = __importDefault(require("./routes/ordi
 var app = (0, express_1.default)();
 // To handle the CORS
 app.use((0, cors_1.default)());
+// To sanitaze HTTP requests
+app.use((0, helmet_1.default)());
 //  To recognize the incoming Request Object as a JSON Object.
 app.use(express_1.default.json({ limit: '50mb' }));
 //  To recognize the incoming Request Object as strings or arrays.

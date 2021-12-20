@@ -1,5 +1,6 @@
 import express, { NextFunction, Request, Response } from 'express';
 import cors from 'cors';
+import helmet from 'helmet';
 import morgan from 'morgan';
 import path from 'path';
 
@@ -30,6 +31,8 @@ const app = express();
 
 // To handle the CORS
 app.use(cors());
+// To sanitaze HTTP requests
+app.use(helmet());
 //  To recognize the incoming Request Object as a JSON Object.
 app.use(express.json({ limit: '50mb' }));
 //  To recognize the incoming Request Object as strings or arrays.
