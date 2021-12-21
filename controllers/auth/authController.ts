@@ -115,6 +115,15 @@ const login = (Model) =>
 			return next(new HttpException('Email o contraseña incorrectos!', 401));
 		}
 
+		if (user.status === false) {
+			return next(
+				new HttpException(
+					'Este usuario está inactivo. Contactar administrador',
+					401
+				)
+			);
+		}
+
 		// 3) If everything ok, send token to client
 		const token = signToken(user._id);
 

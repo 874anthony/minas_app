@@ -167,6 +167,9 @@ var login = function (Model) {
                     if (_b) {
                         return [2 /*return*/, next(new httpException_1.default('Email o contraseña incorrectos!', 401))];
                     }
+                    if (user.status === false) {
+                        return [2 /*return*/, next(new httpException_1.default('Este usuario está inactivo. Contactar administrador', 401))];
+                    }
                     token = signToken(user._id);
                     res.status(200).json({
                         status: true,
