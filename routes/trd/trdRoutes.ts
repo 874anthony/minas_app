@@ -21,12 +21,9 @@ router
 
 // SERIES ROUTES
 router
-	.route('/dependency/:idDependency/serie')
+	.route('/serie')
 	.post(trdSerieController.createSerie)
-	.get(
-		trdSerieController.getSeriesByDependency,
-		trdSerieController.getAllSeries
-	);
+	.get(trdSerieController.getAllSeries);
 
 router
 	.route('/dependency/:idDependency/serie/:id')
@@ -35,12 +32,9 @@ router
 
 // SUBSERIES ROUTES
 router
-	.route('/dependency/:idDependency/serie/:idSerie/subserie')
+	.route('/subserie')
 	.post(trdSubSerieController.createSubSerie)
-	.get(
-		trdSubSerieController.getSubseriesBySerieDep,
-		trdSubSerieController.getAllSubseries
-	);
+	.get(trdSubSerieController.getAllSubseries);
 
 router
 	.route('/dependency/:idDependency/serie/:idSerie/subserie/:id')
@@ -49,14 +43,9 @@ router
 
 // DOCUMENT ROUTES
 router
-	.route(
-		'/dependency/:idDependency/serie/:idserie/subserie/:idsubserie/tipodoc'
-	)
+	.route('/tipodoc')
 	.post(trdTipoDocController.createTipoDoc)
-	.get(
-		trdTipoDocController.getTipoDocBySerieDepSubs,
-		trdTipoDocController.getAllTipoDocs
-	);
+	.get(trdTipoDocController.getAllTipoDocs);
 
 router
 	.route(

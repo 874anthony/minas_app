@@ -1,10 +1,12 @@
 import express, { NextFunction, Request, Response } from 'express';
 import cors from 'cors';
+import helmet from 'helmet';
 import morgan from 'morgan';
 import path from 'path';
 
 // TODO: Own Imports LATER BE REMOVED
 import HttpException from './utils/httpException';
+import globalErrorHandler from './controllers/errorController';
 
 // Own routes
 import companyRouter from './routes/company/companyRoutes';
@@ -30,6 +32,8 @@ const app = express();
 
 // To handle the CORS
 app.use(cors());
+// To sanitaze HTTP requests
+app.use(helmet());
 //  To recognize the incoming Request Object as a JSON Object.
 app.use(express.json({ limit: '50mb' }));
 //  To recognize the incoming Request Object as strings or arrays.
@@ -40,20 +44,22 @@ if (process.env.NODE_ENV === 'development') {
 	app.use(morgan('dev'));
 }
 
+console.log(__dirname);
+
 // Defining the static files
 app.use(
 	'/pdf-companies',
-	express.static(path.join(__dirname, '../store/documents/company'))
+	express.static(path.join(__dirname, '/store/documents/company'))
 );
 
 app.use(
 	'/pdf-contractors',
-	express.static(path.join(__dirname, '../store/documents/contractors'))
+	express.static(path.join(__dirname, '/store/documents/contractors'))
 );
 
 app.use(
 	'/pdf-ordinaries',
-	express.static(path.join(__dirname, '../store/documents/ordinaries'))
+	express.static(path.join(__dirname, '/store/documents/ordinaries'))
 );
 
 app.set('view engine', 'ejs');
@@ -101,23 +107,9 @@ app.use(
 	specialpunctualHeavyVehicleRouter
 );
 
-// Define the global error handler to pass next errors
-function globalErrorHandler(
-	err: HttpException,
-	req: Request,
-	res: Response,
-	next: NextFunction
-) {
-	const status = err.status || 500;
-	const message = err.message || 'Something went wrong';
-
-	return res.status(status).json({
-		error: err,
-		status,
-		message,
-		stack: err.stack,
-	});
-}
+app.all('*', (req: Request, res: Response, next: NextFunction) => {
+	next(new HttpException(`Can't find ${req.originalUrl} on this server!`, 404));
+});
 
 // Using the the global error handler
 app.use(globalErrorHandler);

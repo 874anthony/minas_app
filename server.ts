@@ -1,12 +1,16 @@
 // Importing dependencies
 import mongoose from 'mongoose';
+// import dotenv from 'dotenv';
+
+// Import enviroment variables and parsing into the single process.env
+// dotenv.config({ path: './config.env' });
+
+import app from './app';
+
 import dotenv from 'dotenv';
 
 // Import enviroment variables and parsing into the single process.env
 dotenv.config({ path: './config.env' });
-
-import app from './app';
-
 // Creating the DB instance
 const DB = process.env.DATABASE_URI!.replace(
 	'<password>',

@@ -119,9 +119,6 @@ const createOrdinary = (
 	subsanarRoles?: Object
 ) =>
 	catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-		console.log(req.params.idCompany);
-		console.log(req.params.idContractor);
-
 		if (!req.params.idCompany && !req.params.idContractor) {
 			return next(
 				new HttpException(
