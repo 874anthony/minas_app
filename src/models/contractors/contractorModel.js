@@ -117,7 +117,7 @@ var ContractorSchema = new mongoose_1.Schema({
         type: [Map],
         of: String,
     },
-    finishDates: [Date],
+    finishDates: Date,
     docSocialSecurityAt: Date,
     observations: [
         {

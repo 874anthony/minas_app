@@ -1,4 +1,5 @@
 import { Schema, model } from 'mongoose';
+import { getModelByType } from '../../../interfaces/ordinaries/ordinariesEnum';
 import { addDate } from '../../../utils/date';
 import Event from '../../events/eventsModel';
 
@@ -73,8 +74,8 @@ const PermanentPersonSchema = new Schema({
 		ref: 'contractor',
 		required: false,
 	},
-	startDates: [Date],
-	finishDates: [Date],
+	startDates: Date,
+	finishDates: Date,
 	status: {
 		type: String,
 		default: 'PENDIENTE',
@@ -91,6 +92,7 @@ const PermanentPersonSchema = new Schema({
 		default: 'permanentPerson',
 	},
 	licenseVigency: Date,
+	accessType: String,
 	updatedAt: {
 		type: Date,
 	},
@@ -100,6 +102,8 @@ PermanentPersonSchema.pre('save', function (next) {
 	if (this.isNew) {
 		const days = 3;
 		this.maxAuthorizationDate = addDate(this.recepcionDate, days);
+
+		this.accessType = getModelByType[this.ordinaryType];
 	}
 	next();
 });

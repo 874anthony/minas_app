@@ -42,6 +42,14 @@ export const ModelsOrdinary = {
 	punctualHeavyVehicle: ordinariesModels.PunctualHeavyVehicle,
 	specialpunctualHeavyVehicle: ordinariesModels.SpecialPunctualHeavyVehicle,
 };
+
+export const PersonsOrdinary = {
+	permanentPerson: ordinariesModels.PermanentPersonModel,
+	punctualworkPerson: ordinariesModels.PunctualWorkPerson,
+	specialworkPerson: ordinariesModels.SpecialWorkPerson,
+	visitorPerson: ordinariesModels.VisitorPerson,
+};
+
 export interface StatusBody {
 	id: string;
 	checkAccessControl?: boolean;

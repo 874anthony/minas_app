@@ -84,7 +84,7 @@ const ContractorSchema: Schema<ContractorInterface> = new Schema({
 		type: [Map],
 		of: String,
 	},
-	finishDates: [Date],
+	finishDates: Date,
 	docSocialSecurityAt: Date,
 	observations: [
 		{

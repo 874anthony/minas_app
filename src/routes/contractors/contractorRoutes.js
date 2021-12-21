@@ -54,7 +54,7 @@ router.use('/:idContractor/ordinaries-vehicle/special-punctual-heavy-vehicle', s
 // Custom routes
 router
     .route('/pending-contractors')
-    .get(contractorController.contractorsByCompany, contractorController.getPendingContractors, contractorController.getAllContractors);
+    .get(contractorController.getPendingContractors, contractorController.getAllContractors);
 // Routes with the id
 router
     .route('/:id')

@@ -50,7 +50,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getVehicleNumber = exports.uploadVehicle = exports.uploadPerson = exports.inactiveOrdsByCompany = exports.updateOrdinary = exports.createOrdinary = exports.getOrdById = exports.getAllOrds = exports.checkContractorID = exports.checkCompanyID = exports.getOrdinaryCitizenship = void 0;
+exports.downloadFile = exports.exportExcelPerson = exports.getVehicleNumber = exports.uploadVehicle = exports.uploadPerson = exports.inactiveOrdsByCompany = exports.updateOrdinary = exports.createOrdinary = exports.getOrdById = exports.getAllOrds = exports.checkContractorID = exports.checkCompanyID = exports.getOrdinaryCitizenship = void 0;
+var exceljs_1 = __importDefault(require("exceljs"));
+var download_1 = __importDefault(require("download"));
 // Importing our utils to this controller
 var catchAsync_1 = __importDefault(require("../utils/catchAsync"));
 var httpException_1 = __importDefault(require("../utils/httpException"));
@@ -455,3 +457,113 @@ var inactiveOrdsByCompany = (0, catchAsync_1.default)(function (req, res, next) 
     });
 }); });
 exports.inactiveOrdsByCompany = inactiveOrdsByCompany;
+var exportExcelPerson = (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var workbook, sheet, path, extension, predicate, ordinariesPromises, ordinaries, error_3;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                workbook = new exceljs_1.default.Workbook();
+                sheet = workbook.addWorksheet('PERSONAL');
+                path = __dirname + "/../../store/reports";
+                extension = 'xlsx';
+                predicate = "ordinaries-test." + extension;
+                sheet.columns = [
+                    { header: 'Registro', key: 'radicado', width: 20 },
+                    { header: 'ESTADO', key: 'status', width: 20 },
+                    { header: 'Fecha Inicio labores', key: 'startDates', width: 20 },
+                    { header: 'Fecha Fin labores', key: 'finishDates', width: 20 },
+                    { header: 'Contratista ', key: 'nameCompany', width: 20 },
+                    { header: 'CC', key: 'citizenship', width: 20 },
+                    { header: 'Nombre', key: 'name', width: 20 },
+                    { header: 'Cargo', key: 'appointment', width: 20 },
+                    { header: 'Fecha Recepción', key: 'recepcionDate', width: 20 },
+                    {
+                        header: 'Plazo máximo de autorización',
+                        key: 'maxAuthorizationDate',
+                        width: 20,
+                    },
+                    { header: 'Fecha Inducción', key: 'inductionDate', width: 20 },
+                    { header: 'Vigencia Induccion', key: 'inductionVigency', width: 20 },
+                    { header: 'Tipo de ingreso', key: 'accessType', width: 20 },
+                    { header: 'Sexo', key: 'gender', width: 20 },
+                    { header: 'Lugar Residencia', key: 'residentPlace', width: 20 },
+                    { header: 'Lugar Nacimiento', key: 'birthplace', width: 20 },
+                    // TODO: Fix docs
+                    // { header: 'Salud', key: 'docHealth', width: 20 },
+                    // { header: 'Pensión', key: 'docPension', width: 20 },
+                    // { header: 'ARL', key: 'docARL', width: 20 },
+                    { header: 'Fecha concepto medico', key: 'medicalConceptDate', width: 20 },
+                    { header: 'Categoria Licencia', key: 'licenseCategory', width: 20 },
+                    { header: 'Vigencia Licencia', key: 'licenseVigency', width: 20 },
+                ];
+                ordinariesPromises = Object.values(ordinariesEnum_1.PersonsOrdinary).map(function (Model) { return __awaiter(void 0, void 0, void 0, function () {
+                    return __generator(this, function (_a) {
+                        switch (_a.label) {
+                            case 0: return [4 /*yield*/, Model.find().populate([
+                                    {
+                                        path: 'companyID',
+                                        select: 'businessName',
+                                    },
+                                    {
+                                        path: 'contractorID',
+                                        select: 'businessName',
+                                    },
+                                ])];
+                            case 1: return [2 /*return*/, _a.sent()];
+                        }
+                    });
+                }); });
+                return [4 /*yield*/, Promise.all(ordinariesPromises)];
+            case 1:
+                ordinaries = _a.sent();
+                ordinaries.flat().forEach(function (ordinary) {
+                    var nameCompany;
+                    if (Object.keys(ordinary['_doc'] === 'companyID')) {
+                        nameCompany = ordinary['_doc']['companyID'].businessName;
+                    }
+                    else if (Object.keys(ordinary['_doc'] === 'contractorID')) {
+                        nameCompany = ordinary['_doc']['contractorID'].businessName;
+                    }
+                    var ordinaryExcel = __assign(__assign({}, ordinary['_doc']), { nameCompany: nameCompany });
+                    sheet.addRow(ordinaryExcel);
+                });
+                //Making the first line in excel bold
+                sheet.getRow(1).eachCell(function (cell) {
+                    cell.font = { bold: true };
+                });
+                _a.label = 2;
+            case 2:
+                _a.trys.push([2, 4, , 5]);
+                return [4 /*yield*/, workbook.xlsx.writeFile(path + "/" + predicate)];
+            case 3:
+                _a.sent();
+                return [3 /*break*/, 5];
+            case 4:
+                error_3 = _a.sent();
+                console.log(error_3);
+                return [2 /*return*/, next(new httpException_1.default('Something went wrong', 500))];
+            case 5:
+                res
+                    .status(200)
+                    .json({ status: true, message: 'El Excel se ha guardado con éxito' });
+                return [2 /*return*/];
+        }
+    });
+}); });
+exports.exportExcelPerson = exportExcelPerson;
+// TODO: Finish this
+var downloadFile = (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var file, filePath;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                file = 'ordinaries-test.xlsx';
+                filePath = __dirname + "/../../store/reports";
+                return [4 /*yield*/, (0, download_1.default)(file, filePath)];
+            case 1:
+                _a.sent();
+                return [2 /*return*/];
+        }
+    });
+}); });
+exports.downloadFile = downloadFile;

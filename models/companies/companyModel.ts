@@ -112,7 +112,7 @@ const CompanySchema: Schema<CompanyInterface> = new Schema(
 			of: String,
 		},
 		docSocialSecurityAt: Date,
-		finishDates: [Date],
+		finishDates: Date,
 		observations: [
 			{
 				type: String,
