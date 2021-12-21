@@ -5,9 +5,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 // Importing dependencies
 var mongoose_1 = __importDefault(require("mongoose"));
-// import dotenv from 'dotenv';
+var dotenv_1 = __importDefault(require("dotenv"));
 // Import enviroment variables and parsing into the single process.env
-// dotenv.config({ path: './config.env' });
+dotenv_1.default.config({ path: './config.env' });
 var app_1 = __importDefault(require("./app"));
 var dotenv_1 = __importDefault(require("dotenv"));
 // Import enviroment variables and parsing into the single process.env
@@ -18,7 +18,8 @@ var DB = process.env.DATABASE_URI.replace('<password>', process.env.MONGODB_PASS
 // TODO: Handle errors
 mongoose_1.default
     .connect(DB, { dbName: 'minas_gecelca' })
-    .then(function () { return console.log('DB connected succesfully!'); });
+    .then(function () { return console.log('DB connected succesfully!'); })
+    .catch(console.log);
 var port = process.env.PORT || 3000;
 app_1.default.listen(port, function () {
     console.log("Server inizialited, app is running on " + port);

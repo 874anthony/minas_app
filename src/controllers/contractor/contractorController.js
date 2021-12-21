@@ -132,7 +132,7 @@ var inactiveOrdsByContractor = (0, catchAsync_1.default)(function (req, res, nex
     });
 }); });
 exports.inactiveOrdsByContractor = inactiveOrdsByContractor;
-var job = new cron_1.CronJob('* * * * * *', function () { return __awaiter(void 0, void 0, void 0, function () {
+var job = new cron_1.CronJob('0 0 1 * *', function () { return __awaiter(void 0, void 0, void 0, function () {
     var date;
     return __generator(this, function (_a) {
         switch (_a.label) {

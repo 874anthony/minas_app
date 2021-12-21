@@ -20,14 +20,13 @@ var handleCastErrorDB = function (err) {
     return new httpException_1.default(message, 400);
 };
 var handleDuplicateFieldsDB = function (err) {
-    var value = err.errmsg.match(/(["'])(\\?.)*?\1/)[0];
-    // console.log(value);
+    var value = err.message.match(/(["'])(\\?.)*?\1/)[0];
     var message = "Duplicate field value: " + value + ". Please use another value!";
     return new httpException_1.default(message, 400);
 };
 var handleValidationErrorDB = function (err) {
     var errors = Object.values(err.errors).map(function (el) { return el.message; });
-    var message = "Invalid input data. " + errors.join('. ');
+    var message = "Invalid input data: " + errors.join('. ');
     return new httpException_1.default(message, 400);
 };
 var handleJWTError = function () {
@@ -39,7 +38,7 @@ var handleJWTExpiredError = function () {
 var sendErrorDev = function (err, req, res) {
     // A) API
     if (req.originalUrl.startsWith('/api')) {
-        return res.status(err.statusCode).json({
+        return res.status(err.status).json({
             status: err.status,
             error: err,
             message: err.message,
@@ -48,7 +47,7 @@ var sendErrorDev = function (err, req, res) {
     }
     // B) RENDERED WEBSITE
     console.error('ERROR 💥', err);
-    return res.status(err.statusCode).render('error', {
+    return res.status(err.status).render('error', {
         title: 'Something went wrong!',
         msg: err.message,
     });
@@ -58,7 +57,7 @@ var sendErrorProd = function (err, req, res) {
     if (req.originalUrl.startsWith('/api')) {
         // A) Operational, trusted error: send message to client
         if (err.isOperational) {
-            return res.status(err.statusCode).json({
+            return res.status(err.status).json({
                 status: err.status,
                 message: err.message,
             });
@@ -76,7 +75,7 @@ var sendErrorProd = function (err, req, res) {
     // A) Operational, trusted error: send message to client
     if (err.isOperational) {
         // console.log(err);
-        return res.status(err.statusCode).render('error', {
+        return res.status(err.status).render('error', {
             title: 'Something went wrong!',
             msg: err.message,
         });
@@ -85,7 +84,7 @@ var sendErrorProd = function (err, req, res) {
     // 1) Log error
     console.error('ERROR 💥', err);
     // 2) Send generic message
-    return res.status(err.statusCode).render('error', {
+    return res.status(err.status).render('error', {
         title: 'Something went wrong!',
         msg: 'Please try again later.',
     });
@@ -100,11 +99,11 @@ exports.default = (function (err, req, res, next) {
     else if (process.env.NODE_ENV === 'production') {
         var error = __assign({}, err);
         error.message = err.message;
-        if (error.name === 'CastError')
+        if (error.kind === 'ObjectId')
             error = handleCastErrorDB(error);
         if (error.code === 11000)
             error = handleDuplicateFieldsDB(error);
-        if (error.name === 'ValidationError')
+        if (error.errors)
             error = handleValidationErrorDB(error);
         if (error.name === 'JsonWebTokenError')
             error = handleJWTError();
