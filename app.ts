@@ -44,8 +44,6 @@ if (process.env.NODE_ENV === 'development') {
 	app.use(morgan('dev'));
 }
 
-console.log(__dirname);
-
 // Defining the static files
 app.use(
 	'/pdf-companies',

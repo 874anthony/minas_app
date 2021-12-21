@@ -6,8 +6,7 @@ const handleCastErrorDB = (err) => {
 };
 
 const handleDuplicateFieldsDB = (err) => {
-	const value = err.errmsg.match(/(["'])(\\?.)*?\1/)[0];
-	// console.log(value);
+	const value = err.message.match(/(["'])(\\?.)*?\1/)[0];
 
 	const message = `Duplicate field value: ${value}. Please use another value!`;
 	return new HttpException(message, 400);
@@ -16,7 +15,7 @@ const handleDuplicateFieldsDB = (err) => {
 const handleValidationErrorDB = (err) => {
 	const errors = Object.values(err.errors).map((el: any) => el.message);
 
-	const message = `Invalid input data. ${errors.join('. ')}`;
+	const message = `Invalid input data: ${errors.join('. ')}`;
 	return new HttpException(message, 400);
 };
 
@@ -29,7 +28,7 @@ const handleJWTExpiredError = () =>
 const sendErrorDev = (err, req, res) => {
 	// A) API
 	if (req.originalUrl.startsWith('/api')) {
-		return res.status(err.statusCode).json({
+		return res.status(err.status).json({
 			status: err.status,
 			error: err,
 			message: err.message,
@@ -39,7 +38,7 @@ const sendErrorDev = (err, req, res) => {
 
 	// B) RENDERED WEBSITE
 	console.error('ERROR 💥', err);
-	return res.status(err.statusCode).render('error', {
+	return res.status(err.status).render('error', {
 		title: 'Something went wrong!',
 		msg: err.message,
 	});
@@ -50,7 +49,7 @@ const sendErrorProd = (err, req, res) => {
 	if (req.originalUrl.startsWith('/api')) {
 		// A) Operational, trusted error: send message to client
 		if (err.isOperational) {
-			return res.status(err.statusCode).json({
+			return res.status(err.status).json({
 				status: err.status,
 				message: err.message,
 			});
@@ -69,7 +68,7 @@ const sendErrorProd = (err, req, res) => {
 	// A) Operational, trusted error: send message to client
 	if (err.isOperational) {
 		// console.log(err);
-		return res.status(err.statusCode).render('error', {
+		return res.status(err.status).render('error', {
 			title: 'Something went wrong!',
 			msg: err.message,
 		});
@@ -78,7 +77,7 @@ const sendErrorProd = (err, req, res) => {
 	// 1) Log error
 	console.error('ERROR 💥', err);
 	// 2) Send generic message
-	return res.status(err.statusCode).render('error', {
+	return res.status(err.status).render('error', {
 		title: 'Something went wrong!',
 		msg: 'Please try again later.',
 	});
@@ -96,10 +95,9 @@ export default (err, req, res, next) => {
 		let error = { ...err };
 		error.message = err.message;
 
-		if (error.name === 'CastError') error = handleCastErrorDB(error);
+		if (error.kind === 'ObjectId') error = handleCastErrorDB(error);
 		if (error.code === 11000) error = handleDuplicateFieldsDB(error);
-		if (error.name === 'ValidationError')
-			error = handleValidationErrorDB(error);
+		if (error.errors) error = handleValidationErrorDB(error);
 		if (error.name === 'JsonWebTokenError') error = handleJWTError();
 		if (error.name === 'TokenExpiredError') error = handleJWTExpiredError();
 
