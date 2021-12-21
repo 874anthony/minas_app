@@ -75,7 +75,6 @@ router.use(
 router
 	.route('/pending-contractors')
 	.get(
-		contractorController.contractorsByCompany,
 		contractorController.getPendingContractors,
 		contractorController.getAllContractors
 	);
