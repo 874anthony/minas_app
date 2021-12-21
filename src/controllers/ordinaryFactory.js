@@ -50,9 +50,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.downloadFile = exports.exportExcelPerson = exports.getVehicleNumber = exports.uploadVehicle = exports.uploadPerson = exports.inactiveOrdsByCompany = exports.updateOrdinary = exports.createOrdinary = exports.getOrdById = exports.getAllOrds = exports.checkContractorID = exports.checkCompanyID = exports.getOrdinaryCitizenship = void 0;
+exports.exportExcelPerson = exports.getVehicleNumber = exports.uploadVehicle = exports.uploadPerson = exports.inactiveOrdsByCompany = exports.updateOrdinary = exports.createOrdinary = exports.getOrdById = exports.getAllOrds = exports.checkContractorID = exports.checkCompanyID = exports.getOrdinaryCitizenship = void 0;
 var exceljs_1 = __importDefault(require("exceljs"));
-var download_1 = __importDefault(require("download"));
 // Importing our utils to this controller
 var catchAsync_1 = __importDefault(require("../utils/catchAsync"));
 var httpException_1 = __importDefault(require("../utils/httpException"));
@@ -466,13 +465,14 @@ var exportExcelPerson = (0, catchAsync_1.default)(function (req, res, next) { re
                 sheet = workbook.addWorksheet('PERSONAL');
                 path = __dirname + "/../../store/reports";
                 extension = 'xlsx';
-                predicate = "ordinaries-test." + extension;
+                predicate = "ordinaries-" + Date.now() + "." + extension;
                 sheet.columns = [
                     { header: 'Registro', key: 'radicado', width: 20 },
                     { header: 'ESTADO', key: 'status', width: 20 },
                     { header: 'Fecha Inicio labores', key: 'startDates', width: 20 },
                     { header: 'Fecha Fin labores', key: 'finishDates', width: 20 },
                     { header: 'Contratista ', key: 'nameCompany', width: 20 },
+                    { header: 'SubContratista ', key: 'nameContractor', width: 20 },
                     { header: 'CC', key: 'citizenship', width: 20 },
                     { header: 'Nombre', key: 'name', width: 20 },
                     { header: 'Cargo', key: 'appointment', width: 20 },
@@ -506,7 +506,11 @@ var exportExcelPerson = (0, catchAsync_1.default)(function (req, res, next) { re
                                     },
                                     {
                                         path: 'contractorID',
-                                        select: 'businessName',
+                                        select: 'businessName companyID',
+                                        populate: {
+                                            path: 'companyID',
+                                            select: 'businessName',
+                                        },
                                     },
                                 ])];
                             case 1: return [2 /*return*/, _a.sent()];
@@ -518,13 +522,17 @@ var exportExcelPerson = (0, catchAsync_1.default)(function (req, res, next) { re
                 ordinaries = _a.sent();
                 ordinaries.flat().forEach(function (ordinary) {
                     var nameCompany;
-                    if (Object.keys(ordinary['_doc'] === 'companyID')) {
+                    var nameContractor;
+                    if (Object.keys(ordinary['_doc']).includes('companyID')) {
                         nameCompany = ordinary['_doc']['companyID'].businessName;
+                        nameContractor = 'No Aplica';
                     }
-                    else if (Object.keys(ordinary['_doc'] === 'contractorID')) {
-                        nameCompany = ordinary['_doc']['contractorID'].businessName;
+                    else if (Object.keys(ordinary['_doc']).includes('contractorID')) {
+                        nameContractor = ordinary['_doc']['contractorID'].businessName;
+                        nameCompany =
+                            ordinary['_doc']['contractorID'].companyID['businessName'];
                     }
-                    var ordinaryExcel = __assign(__assign({}, ordinary['_doc']), { nameCompany: nameCompany });
+                    var ordinaryExcel = __assign(__assign({}, ordinary['_doc']), { nameCompany: nameCompany, nameContractor: nameContractor });
                     sheet.addRow(ordinaryExcel);
                 });
                 //Making the first line in excel bold
@@ -540,30 +548,11 @@ var exportExcelPerson = (0, catchAsync_1.default)(function (req, res, next) { re
                 return [3 /*break*/, 5];
             case 4:
                 error_3 = _a.sent();
-                console.log(error_3);
                 return [2 /*return*/, next(new httpException_1.default('Something went wrong', 500))];
             case 5:
-                res
-                    .status(200)
-                    .json({ status: true, message: 'El Excel se ha guardado con éxito' });
+                res.download(path + "/" + predicate);
                 return [2 /*return*/];
         }
     });
 }); });
 exports.exportExcelPerson = exportExcelPerson;
-// TODO: Finish this
-var downloadFile = (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var file, filePath;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                file = 'ordinaries-test.xlsx';
-                filePath = __dirname + "/../../store/reports";
-                return [4 /*yield*/, (0, download_1.default)(file, filePath)];
-            case 1:
-                _a.sent();
-                return [2 /*return*/];
-        }
-    });
-}); });
-exports.downloadFile = downloadFile;

@@ -109,10 +109,7 @@ const uploadCompanyDocs = upload.fields([
 
 const findAll = (Model) =>
 	catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-		let filter = {};
-		if (req.params.idCompany) filter = { company: req.params.idCompany };
-
-		const features = new APIFeatures(Model.find(filter), req.query)
+		const features = new APIFeatures(Model.find(), req.query)
 			.filter()
 			.sort()
 			.limitFields()
@@ -159,12 +156,7 @@ const findOne = (Model, populateOptions?) =>
 
 const createOne = (Model) =>
 	catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-		if (
-			!req.files ||
-			!req.files['docComCam'] ||
-			!req.files['docRUT'] ||
-			!req.files['docLegalRepresentativeID']
-		) {
+		if (!req.files) {
 			return next(
 				new HttpException(
 					'No se han cargado todos los archivos, por favor inténtelo nuevamente',
@@ -187,13 +179,22 @@ const createOne = (Model) =>
 			}
 		}
 
-		const body: DtoCreateCompany = req.body;
+		const body: DtoCreateCompany = { ...req.body };
 
-		// Extracting the filenames from the files
-		body.docComCam = req.files['docComCam'][0].filename;
-		body.docRUT = req.files['docRUT'][0].filename;
-		body.docLegalRepresentativeID =
-			req.files['docLegalRepresentativeID'][0].filename;
+		// Looping through the req.files object to set it to the body
+		Object.keys(req.files).forEach(
+			(el) => (body[el] = req.files![el][0].filename)
+		);
+
+		if (body['docSocialSecurity']) {
+			body['docSocialSecurity'] = {
+				year: new Date().getFullYear().toString(),
+				month: months[new Date().getMonth()],
+				filename: req.files!['docSocialSecurity'][0].filename,
+			};
+
+			body['docSocialSecurityAt'] = Date.now();
+		}
 
 		const companyCreated = await Model.create(body);
 

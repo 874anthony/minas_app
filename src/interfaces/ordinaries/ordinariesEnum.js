@@ -35,7 +35,7 @@ var StatusOrdinary;
     StatusOrdinary["Inactive"] = "INACTIVO";
     StatusOrdinary["Rejected"] = "RECHAZADO";
     StatusOrdinary["Sanitation"] = "SUBSANAR";
-    StatusOrdinary["Forbidden"] = "PROHIBIDO";
+    // Forbidden = 'PROHIBIDO',
     StatusOrdinary["Visa"] = "POR VISAR";
 })(StatusOrdinary = exports.StatusOrdinary || (exports.StatusOrdinary = {}));
 exports.getModelByType = {

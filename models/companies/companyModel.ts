@@ -76,16 +76,13 @@ const CompanySchema: Schema<CompanyInterface> = new Schema(
 			trim: true,
 		},
 		docComCam: {
-			required: true,
 			type: String,
 		},
 		docRUT: {
 			type: String,
-			required: true,
 		},
 		docLegalRepresentativeID: {
 			type: String,
-			required: true,
 		},
 		radicado: {
 			type: String,

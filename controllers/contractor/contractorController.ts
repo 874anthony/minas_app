@@ -10,6 +10,7 @@ import { ModelsOrdinary } from '../../interfaces/ordinaries/ordinariesEnum';
 // Own Factory
 import * as companyFactory from '../companyFactory';
 import catchAsync from '../../utils/catchAsync';
+import APIFeatures from '../../utils/apiFeatures';
 
 // // ================================================ Middlewares starts here =========================================
 // Middlewares
@@ -48,7 +49,37 @@ const getPendingContractors = (
 
 // // ================================================ Endpoints starts here =========================================
 
-const getAllContractors = companyFactory.findAll(Contractor);
+const getAllContractors = catchAsync(
+	async (req: Request, res: Response, next: NextFunction) => {
+		let features = new APIFeatures(Contractor.find(), req.query)
+			.filter()
+			.sort()
+			.limitFields()
+			.paginate();
+
+		const contractors = await features.query.populate([
+			{
+				path: 'companyID',
+				select: 'businessName status',
+			},
+		]);
+
+		if (contractors.length === 0) {
+			return next(
+				new HttpException(
+					'No hay documentos con ese criterio de búsqueda!',
+					204
+				)
+			);
+		}
+
+		return res.status(200).json({
+			status: true,
+			contractors,
+		});
+	}
+);
+
 const getContractor = companyFactory.findOne(Contractor);
 const createContractor = companyFactory.createOne(Contractor);
 const updateContractor = companyFactory.updateOne(Contractor);

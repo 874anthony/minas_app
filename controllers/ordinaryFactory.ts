@@ -1,7 +1,6 @@
 // Import 3rd-party packages
 import { NextFunction, Request, Response } from 'express';
 import ExcelJS from 'exceljs';
-import download from 'download';
 
 // Importing our utils to this controller
 import catchAsync from '../utils/catchAsync';
@@ -440,9 +439,7 @@ const exportExcelPerson = catchAsync(
 
 		const path = `${__dirname}/../../store/reports`;
 		const extension = 'xlsx';
-
-		// const predicate = `ordinaries-${Date.now()}.${extension}`;
-		const predicate = `ordinaries-test.${extension}`;
+		const predicate = `ordinaries-${Date.now()}.${extension}`;
 
 		sheet.columns = [
 			{ header: 'Registro', key: 'radicado', width: 20 },
@@ -450,6 +447,7 @@ const exportExcelPerson = catchAsync(
 			{ header: 'Fecha Inicio labores', key: 'startDates', width: 20 },
 			{ header: 'Fecha Fin labores', key: 'finishDates', width: 20 },
 			{ header: 'Contratista ', key: 'nameCompany', width: 20 },
+			{ header: 'SubContratista ', key: 'nameContractor', width: 20 },
 			{ header: 'CC', key: 'citizenship', width: 20 },
 			{ header: 'Nombre', key: 'name', width: 20 },
 			{ header: 'Cargo', key: 'appointment', width: 20 },
@@ -485,7 +483,11 @@ const exportExcelPerson = catchAsync(
 					},
 					{
 						path: 'contractorID',
-						select: 'businessName',
+						select: 'businessName companyID',
+						populate: {
+							path: 'companyID',
+							select: 'businessName',
+						},
 					},
 				]);
 			}
@@ -495,14 +497,22 @@ const exportExcelPerson = catchAsync(
 
 		ordinaries.flat().forEach((ordinary) => {
 			let nameCompany;
+			let nameContractor;
 
-			if (Object.keys(ordinary['_doc'] === 'companyID')) {
+			if (Object.keys(ordinary['_doc']).includes('companyID')) {
 				nameCompany = ordinary['_doc']['companyID'].businessName;
-			} else if (Object.keys(ordinary['_doc'] === 'contractorID')) {
-				nameCompany = ordinary['_doc']['contractorID'].businessName;
+				nameContractor = 'No Aplica';
+			} else if (Object.keys(ordinary['_doc']).includes('contractorID')) {
+				nameContractor = ordinary['_doc']['contractorID'].businessName;
+				nameCompany =
+					ordinary['_doc']['contractorID'].companyID['businessName'];
 			}
 
-			const ordinaryExcel = { ...ordinary['_doc'], nameCompany };
+			const ordinaryExcel = {
+				...ordinary['_doc'],
+				nameCompany,
+				nameContractor,
+			};
 
 			sheet.addRow(ordinaryExcel);
 		});
@@ -515,25 +525,10 @@ const exportExcelPerson = catchAsync(
 		try {
 			await workbook.xlsx.writeFile(`${path}/${predicate}`);
 		} catch (error) {
-			console.log(error);
 			return next(new HttpException('Something went wrong', 500));
 		}
 
-		res
-			.status(200)
-			.json({ status: true, message: 'El Excel se ha guardado con éxito' });
-	}
-);
-
-// TODO: Finish this
-const downloadFile = catchAsync(
-	async (req: Request, res: Response, next: NextFunction) => {
-		const file = 'ordinaries-test.xlsx';
-
-		// Path at which image will get downloaded
-		const filePath = `${__dirname}/../../store/reports`;
-
-		await download(file, filePath);
+		res.download(`${path}/${predicate}`);
 	}
 );
 
@@ -550,5 +545,4 @@ export {
 	uploadVehicle,
 	getVehicleNumber,
 	exportExcelPerson,
-	downloadFile,
 };

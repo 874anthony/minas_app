@@ -13,7 +13,7 @@ export enum StatusOrdinary {
 	Inactive = 'INACTIVO',
 	Rejected = 'RECHAZADO',
 	Sanitation = 'SUBSANAR',
-	Forbidden = 'PROHIBIDO',
+	// Forbidden = 'PROHIBIDO',
 	Visa = 'POR VISAR',
 }
 
