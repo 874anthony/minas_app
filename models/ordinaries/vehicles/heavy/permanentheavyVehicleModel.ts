@@ -1,4 +1,5 @@
 import { Schema, model } from 'mongoose';
+import { getModelByType } from '../../../../interfaces/ordinaries/ordinariesEnum';
 import { addDate } from '../../../../utils/date';
 import Event from '../../../events/eventsModel';
 
@@ -44,6 +45,7 @@ const PermanentHeavyVehicleSchema = new Schema({
 		type: String,
 		required: true,
 	},
+	accessType: String,
 	soatVigency: Date,
 	docSoat: String,
 	docPropertyCard: String,
@@ -61,6 +63,16 @@ const PermanentHeavyVehicleSchema = new Schema({
 	operationCardVigency: Date,
 	qrCodeDate: Date,
 	observations: [String],
+});
+
+PermanentHeavyVehicleSchema.pre('save', function (next) {
+	if (this.isNew) {
+		const days = 3;
+		this.maxAuthorizationDate = addDate(this.recepcionDate, days);
+
+		this.accessType = getModelByType[this.ordinaryType];
+	}
+	next();
 });
 
 PermanentHeavyVehicleSchema.pre('save', async function (next) {

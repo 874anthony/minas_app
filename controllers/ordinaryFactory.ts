@@ -473,7 +473,6 @@ const exportExcelPerson = catchAsync(
 		];
 
 		// Drawing the excel with the information
-
 		const ordinariesPromises = Object.values(PersonsOrdinary).map(
 			async (Model) => {
 				return await Model.find().populate([

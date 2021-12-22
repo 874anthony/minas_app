@@ -90,7 +90,22 @@ var isAllowedOrdinary = (0, catchAsync_1.default)(function (req, res, next) { re
                 _a = req.params, id = _a.id, ordinaryType = _a.ordinaryType;
                 if (!id || !ordinaryType)
                     return [2 /*return*/, next(new httpException_1.default('No ha proporcinado el tipo de ordinario, intente nuevamente', 404))];
-                return [4 /*yield*/, ordinariesEnum_1.ModelsOrdinary[ordinaryType].findById(id)];
+                return [4 /*yield*/, ordinariesEnum_1.ModelsOrdinary[ordinaryType]
+                        .findById(id)
+                        .populate([
+                        {
+                            path: 'companyID',
+                            select: 'businessName',
+                        },
+                        {
+                            path: 'contractorID',
+                            select: 'businessName',
+                            populate: {
+                                path: 'companyID',
+                                select: 'businessName',
+                            },
+                        },
+                    ])];
             case 1:
                 currentOrdinary = _b.sent();
                 ejsOpts = {
@@ -98,7 +113,9 @@ var isAllowedOrdinary = (0, catchAsync_1.default)(function (req, res, next) { re
                     name: "" + (currentOrdinary.name !== undefined
                         ? currentOrdinary.name
                         : currentOrdinary.vehicleType),
-                    ordType: "" + ordinariesEnum_1.getModelByType[ordinaryType],
+                    ordType: "" + (ordinaryType === 'specialworkPerson'
+                        ? currentOrdinary.specialType
+                        : ordinariesEnum_1.getModelByType[ordinaryType]),
                     number: "" + (currentOrdinary.citizenship !== undefined
                         ? currentOrdinary.citizenship
                         : currentOrdinary.vehicleNumber),
@@ -108,6 +125,12 @@ var isAllowedOrdinary = (0, catchAsync_1.default)(function (req, res, next) { re
                     occupation: "" + (currentOrdinary.appointment !== undefined
                         ? currentOrdinary.appointment
                         : currentOrdinary.serviceType),
+                    company: "" + (currentOrdinary.companyID !== undefined
+                        ? currentOrdinary['companyID'].businessName
+                        : currentOrdinary['contractorID'].companyID['businessName']),
+                    contractor: "" + (currentOrdinary.contractorID !== undefined
+                        ? currentOrdinary['contractorID'].businessName
+                        : 'Sin contratista'),
                 };
                 res.render(__dirname + "/../../views/pages/qrcode.ejs", ejsOpts);
                 return [2 /*return*/];

@@ -41,6 +41,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var mongoose_1 = require("mongoose");
 var date_1 = require("../../../../utils/date");
+var ordinariesEnum_1 = require("../../../../interfaces/ordinaries/ordinariesEnum");
 var eventsModel_1 = __importDefault(require("../../../events/eventsModel"));
 // Definying the schema
 var PunctualHeavyVehicleSchema = new mongoose_1.Schema({
@@ -84,6 +85,7 @@ var PunctualHeavyVehicleSchema = new mongoose_1.Schema({
         type: String,
         required: true,
     },
+    accessType: String,
     soatVigency: Date,
     docSoat: String,
     docPropertyCard: String,
@@ -101,6 +103,14 @@ var PunctualHeavyVehicleSchema = new mongoose_1.Schema({
     operationCardVigency: Date,
     qrCodeDate: Date,
     observations: [String],
+});
+PunctualHeavyVehicleSchema.pre('save', function (next) {
+    if (this.isNew) {
+        var days = 3;
+        this.maxAuthorizationDate = (0, date_1.addDate)(this.recepcionDate, days);
+        this.accessType = ordinariesEnum_1.getModelByType[this.ordinaryType];
+    }
+    next();
 });
 PunctualHeavyVehicleSchema.pre('save', function (next) {
     return __awaiter(this, void 0, void 0, function () {
