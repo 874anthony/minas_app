@@ -459,8 +459,9 @@ var inactiveOrdsByCompany = (0, catchAsync_1.default)(function (req, res, next) 
 exports.inactiveOrdsByCompany = inactiveOrdsByCompany;
 var exportExcelPerson = (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     var workbook, sheet, path, extension, predicate, ordinariesPromises, ordinaries, error_3;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
+    var _a;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
             case 0:
                 workbook = new exceljs_1.default.Workbook();
                 sheet = workbook.addWorksheet('PERSONAL');
@@ -523,7 +524,7 @@ var exportExcelPerson = (0, catchAsync_1.default)(function (req, res, next) { re
                 }); });
                 return [4 /*yield*/, Promise.all(ordinariesPromises)];
             case 1:
-                ordinaries = _a.sent();
+                ordinaries = _b.sent();
                 ordinaries.flat().forEach(function (ordinary) {
                     var nameCompany;
                     var nameContractor;
@@ -541,17 +542,38 @@ var exportExcelPerson = (0, catchAsync_1.default)(function (req, res, next) { re
                 });
                 //Making the first line in excel bold
                 sheet.getRow(1).eachCell(function (cell) {
-                    cell.font = { bold: true };
+                    cell.font = {
+                        name: 'Arial Black',
+                        color: { argb: '000000' },
+                        family: 2,
+                        size: 10,
+                        bold: true,
+                    };
+                    cell.fill = {
+                        type: 'gradient',
+                        gradient: 'angle',
+                        degree: 0,
+                        stops: [
+                            { position: 0, color: { argb: 'FFE5CC' } },
+                            { position: 0.9, color: { argb: 'FFFFFFFF' } },
+                            { position: 1, color: { argb: 'FFE5CC' } },
+                        ],
+                    };
+                    cell.alignment = { vertical: 'middle', horizontal: 'center' };
                 });
-                _a.label = 2;
+                (_a = sheet.getRows(2, ordinaries.flat().length)) === null || _a === void 0 ? void 0 : _a.forEach(function (cell) {
+                    cell.font = { bold: true };
+                    cell.alignment = { vertical: 'middle', horizontal: 'center' };
+                });
+                _b.label = 2;
             case 2:
-                _a.trys.push([2, 4, , 5]);
+                _b.trys.push([2, 4, , 5]);
                 return [4 /*yield*/, workbook.xlsx.writeFile(path + "/" + predicate)];
             case 3:
-                _a.sent();
+                _b.sent();
                 return [3 /*break*/, 5];
             case 4:
-                error_3 = _a.sent();
+                error_3 = _b.sent();
                 return [2 /*return*/, next(new httpException_1.default('Something went wrong', 500))];
             case 5:
                 res.download(path + "/" + predicate);
@@ -562,8 +584,9 @@ var exportExcelPerson = (0, catchAsync_1.default)(function (req, res, next) { re
 exports.exportExcelPerson = exportExcelPerson;
 var exportExcelVehicle = (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     var workbook, sheet, path, extension, predicate, ordinariesPromises, ordinaries, error_4;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
+    var _a;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
             case 0:
                 workbook = new exceljs_1.default.Workbook();
                 sheet = workbook.addWorksheet('VEHICULOS');
@@ -616,7 +639,7 @@ var exportExcelVehicle = (0, catchAsync_1.default)(function (req, res, next) { r
                 }); });
                 return [4 /*yield*/, Promise.all(ordinariesPromises)];
             case 1:
-                ordinaries = _a.sent();
+                ordinaries = _b.sent();
                 ordinaries.flat().forEach(function (ordinary) {
                     var nameCompany;
                     var nameContractor;
@@ -634,17 +657,38 @@ var exportExcelVehicle = (0, catchAsync_1.default)(function (req, res, next) { r
                 });
                 //Making the first line in excel bold
                 sheet.getRow(1).eachCell(function (cell) {
-                    cell.font = { bold: true };
+                    cell.font = {
+                        name: 'Arial Black',
+                        color: { argb: '000000' },
+                        family: 2,
+                        size: 10,
+                        bold: true,
+                    };
+                    cell.fill = {
+                        type: 'gradient',
+                        gradient: 'angle',
+                        degree: 0,
+                        stops: [
+                            { position: 0, color: { argb: 'FFE5CC' } },
+                            { position: 0.9, color: { argb: 'FFFFFFFF' } },
+                            { position: 1, color: { argb: 'FFE5CC' } },
+                        ],
+                    };
+                    cell.alignment = { vertical: 'middle', horizontal: 'center' };
                 });
-                _a.label = 2;
+                (_a = sheet.getRows(2, ordinaries.flat().length)) === null || _a === void 0 ? void 0 : _a.forEach(function (cell) {
+                    cell.font = { bold: true };
+                    cell.alignment = { vertical: 'middle', horizontal: 'center' };
+                });
+                _b.label = 2;
             case 2:
-                _a.trys.push([2, 4, , 5]);
+                _b.trys.push([2, 4, , 5]);
                 return [4 /*yield*/, workbook.xlsx.writeFile(path + "/" + predicate)];
             case 3:
-                _a.sent();
+                _b.sent();
                 return [3 /*break*/, 5];
             case 4:
-                error_4 = _a.sent();
+                error_4 = _b.sent();
                 return [2 /*return*/, next(new httpException_1.default('Something went wrong', 500))];
             case 5:
                 res.download(path + "/" + predicate);

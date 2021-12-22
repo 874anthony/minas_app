@@ -525,7 +525,30 @@ const exportExcelPerson = catchAsync(
 
 		//Making the first line in excel bold
 		sheet.getRow(1).eachCell((cell) => {
+			cell.font = {
+				name: 'Arial Black',
+				color: { argb: '000000' },
+				family: 2,
+				size: 10,
+				bold: true,
+			};
+			cell.fill = {
+				type: 'gradient',
+				gradient: 'angle',
+				degree: 0,
+				stops: [
+					{ position: 0, color: { argb: 'FFE5CC' } },
+					{ position: 0.9, color: { argb: 'FFFFFFFF' } },
+					{ position: 1, color: { argb: 'FFE5CC' } },
+				],
+			};
+
+			cell.alignment = { vertical: 'middle', horizontal: 'center' };
+		});
+
+		sheet.getRows(2, ordinaries.flat().length)?.forEach((cell) => {
 			cell.font = { bold: true };
+			cell.alignment = { vertical: 'middle', horizontal: 'center' };
 		});
 
 		try {
@@ -619,7 +642,30 @@ const exportExcelVehicle = catchAsync(
 
 		//Making the first line in excel bold
 		sheet.getRow(1).eachCell((cell) => {
+			cell.font = {
+				name: 'Arial Black',
+				color: { argb: '000000' },
+				family: 2,
+				size: 10,
+				bold: true,
+			};
+			cell.fill = {
+				type: 'gradient',
+				gradient: 'angle',
+				degree: 0,
+				stops: [
+					{ position: 0, color: { argb: 'FFE5CC' } },
+					{ position: 0.9, color: { argb: 'FFFFFFFF' } },
+					{ position: 1, color: { argb: 'FFE5CC' } },
+				],
+			};
+
+			cell.alignment = { vertical: 'middle', horizontal: 'center' };
+		});
+
+		sheet.getRows(2, ordinaries.flat().length)?.forEach((cell) => {
 			cell.font = { bold: true };
+			cell.alignment = { vertical: 'middle', horizontal: 'center' };
 		});
 
 		try {
