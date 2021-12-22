@@ -6,10 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 // Importing dependencies
 var mongoose_1 = __importDefault(require("mongoose"));
 var dotenv_1 = __importDefault(require("dotenv"));
-// Import enviroment variables and parsing into the single process.env
-dotenv_1.default.config({ path: './config.env' });
 var app_1 = __importDefault(require("./app"));
-var dotenv_1 = __importDefault(require("dotenv"));
 // Import enviroment variables and parsing into the single process.env
 dotenv_1.default.config({ path: './config.env' });
 // Creating the DB instance

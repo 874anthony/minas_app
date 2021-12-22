@@ -50,7 +50,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getVehicleNumber = exports.uploadVehicle = exports.uploadPerson = exports.inactiveOrdsByCompany = exports.updateOrdinary = exports.createOrdinary = exports.getOrdById = exports.getAllOrds = exports.checkContractorID = exports.checkCompanyID = exports.getOrdinaryCitizenship = void 0;
+exports.exportExcelPerson = exports.getVehicleNumber = exports.uploadVehicle = exports.uploadPerson = exports.inactiveOrdsByCompany = exports.updateOrdinary = exports.createOrdinary = exports.getOrdById = exports.getAllOrds = exports.checkContractorID = exports.checkCompanyID = exports.getOrdinaryCitizenship = void 0;
+var exceljs_1 = __importDefault(require("exceljs"));
 // Importing our utils to this controller
 var catchAsync_1 = __importDefault(require("../utils/catchAsync"));
 var httpException_1 = __importDefault(require("../utils/httpException"));
@@ -455,3 +456,103 @@ var inactiveOrdsByCompany = (0, catchAsync_1.default)(function (req, res, next) 
     });
 }); });
 exports.inactiveOrdsByCompany = inactiveOrdsByCompany;
+var exportExcelPerson = (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var workbook, sheet, path, extension, predicate, ordinariesPromises, ordinaries, error_3;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                workbook = new exceljs_1.default.Workbook();
+                sheet = workbook.addWorksheet('PERSONAL');
+                path = __dirname + "/../../store/reports";
+                extension = 'xlsx';
+                predicate = "ordinaries-" + Date.now() + "." + extension;
+                sheet.columns = [
+                    { header: 'Registro', key: 'radicado', width: 20 },
+                    { header: 'ESTADO', key: 'status', width: 20 },
+                    { header: 'Fecha Inicio labores', key: 'startDates', width: 20 },
+                    { header: 'Fecha Fin labores', key: 'finishDates', width: 20 },
+                    { header: 'Contratista ', key: 'nameCompany', width: 20 },
+                    { header: 'SubContratista ', key: 'nameContractor', width: 20 },
+                    { header: 'CC', key: 'citizenship', width: 20 },
+                    { header: 'Nombre', key: 'name', width: 20 },
+                    { header: 'Cargo', key: 'appointment', width: 20 },
+                    { header: 'Fecha Recepción', key: 'recepcionDate', width: 20 },
+                    {
+                        header: 'Plazo máximo de autorización',
+                        key: 'maxAuthorizationDate',
+                        width: 20,
+                    },
+                    { header: 'Fecha Inducción', key: 'inductionDate', width: 20 },
+                    { header: 'Vigencia Induccion', key: 'inductionVigency', width: 20 },
+                    { header: 'Tipo de ingreso', key: 'accessType', width: 20 },
+                    { header: 'Sexo', key: 'gender', width: 20 },
+                    { header: 'Lugar Residencia', key: 'residentPlace', width: 20 },
+                    { header: 'Lugar Nacimiento', key: 'birthplace', width: 20 },
+                    // TODO: Fix docs
+                    // { header: 'Salud', key: 'docHealth', width: 20 },
+                    // { header: 'Pensión', key: 'docPension', width: 20 },
+                    // { header: 'ARL', key: 'docARL', width: 20 },
+                    { header: 'Fecha concepto medico', key: 'medicalConceptDate', width: 20 },
+                    { header: 'Categoria Licencia', key: 'licenseCategory', width: 20 },
+                    { header: 'Vigencia Licencia', key: 'licenseVigency', width: 20 },
+                ];
+                ordinariesPromises = Object.values(ordinariesEnum_1.PersonsOrdinary).map(function (Model) { return __awaiter(void 0, void 0, void 0, function () {
+                    return __generator(this, function (_a) {
+                        switch (_a.label) {
+                            case 0: return [4 /*yield*/, Model.find().populate([
+                                    {
+                                        path: 'companyID',
+                                        select: 'businessName',
+                                    },
+                                    {
+                                        path: 'contractorID',
+                                        select: 'businessName companyID',
+                                        populate: {
+                                            path: 'companyID',
+                                            select: 'businessName',
+                                        },
+                                    },
+                                ])];
+                            case 1: return [2 /*return*/, _a.sent()];
+                        }
+                    });
+                }); });
+                return [4 /*yield*/, Promise.all(ordinariesPromises)];
+            case 1:
+                ordinaries = _a.sent();
+                ordinaries.flat().forEach(function (ordinary) {
+                    var nameCompany;
+                    var nameContractor;
+                    if (Object.keys(ordinary['_doc']).includes('companyID')) {
+                        nameCompany = ordinary['_doc']['companyID'].businessName;
+                        nameContractor = 'No Aplica';
+                    }
+                    else if (Object.keys(ordinary['_doc']).includes('contractorID')) {
+                        nameContractor = ordinary['_doc']['contractorID'].businessName;
+                        nameCompany =
+                            ordinary['_doc']['contractorID'].companyID['businessName'];
+                    }
+                    var ordinaryExcel = __assign(__assign({}, ordinary['_doc']), { nameCompany: nameCompany, nameContractor: nameContractor });
+                    sheet.addRow(ordinaryExcel);
+                });
+                //Making the first line in excel bold
+                sheet.getRow(1).eachCell(function (cell) {
+                    cell.font = { bold: true };
+                });
+                _a.label = 2;
+            case 2:
+                _a.trys.push([2, 4, , 5]);
+                return [4 /*yield*/, workbook.xlsx.writeFile(path + "/" + predicate)];
+            case 3:
+                _a.sent();
+                return [3 /*break*/, 5];
+            case 4:
+                error_3 = _a.sent();
+                return [2 /*return*/, next(new httpException_1.default('Something went wrong', 500))];
+            case 5:
+                res.download(path + "/" + predicate);
+                return [2 /*return*/];
+        }
+    });
+}); });
+exports.exportExcelPerson = exportExcelPerson;

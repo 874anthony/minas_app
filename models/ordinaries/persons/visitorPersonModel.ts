@@ -72,8 +72,8 @@ const VisitorPersonSchema = new Schema({
 		ref: 'contractor',
 		required: false,
 	},
-	startDates: [Date],
-	finishDates: [Date],
+	startDates: Date,
+	finishDates: Date,
 	status: {
 		type: String,
 		default: 'PENDIENTE',

@@ -19,7 +19,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ModelsOrdinary = exports.getModelByType = exports.StatusOrdinary = exports.Gender = void 0;
+exports.PersonsOrdinary = exports.ModelsOrdinary = exports.getModelByType = exports.StatusOrdinary = exports.Gender = void 0;
 var ordinariesModels = __importStar(require("../../models/ordinaries/importAllOrdinaries"));
 var Gender;
 (function (Gender) {
@@ -35,7 +35,7 @@ var StatusOrdinary;
     StatusOrdinary["Inactive"] = "INACTIVO";
     StatusOrdinary["Rejected"] = "RECHAZADO";
     StatusOrdinary["Sanitation"] = "SUBSANAR";
-    StatusOrdinary["Forbidden"] = "PROHIBIDO";
+    // Forbidden = 'PROHIBIDO',
     StatusOrdinary["Visa"] = "POR VISAR";
 })(StatusOrdinary = exports.StatusOrdinary || (exports.StatusOrdinary = {}));
 exports.getModelByType = {
@@ -61,4 +61,10 @@ exports.ModelsOrdinary = {
     permanentHeavyVehicle: ordinariesModels.PermanentHeavyVehicle,
     punctualHeavyVehicle: ordinariesModels.PunctualHeavyVehicle,
     specialpunctualHeavyVehicle: ordinariesModels.SpecialPunctualHeavyVehicle,
+};
+exports.PersonsOrdinary = {
+    permanentPerson: ordinariesModels.PermanentPersonModel,
+    punctualworkPerson: ordinariesModels.PunctualWorkPerson,
+    specialworkPerson: ordinariesModels.SpecialWorkPerson,
+    visitorPerson: ordinariesModels.VisitorPerson,
 };

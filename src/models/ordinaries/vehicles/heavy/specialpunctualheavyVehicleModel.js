@@ -61,8 +61,8 @@ var SpecialPunctualHeavyVehicleSchema = new mongoose_1.Schema({
         ref: 'contractor',
         required: false,
     },
-    startDates: [Date],
-    finishDates: [Date],
+    startDates: Date,
+    finishDates: Date,
     type: {
         type: String,
         required: true,

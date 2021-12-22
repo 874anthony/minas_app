@@ -1,5 +1,6 @@
 // Import 3rd-party packages
 import { NextFunction, Request, Response } from 'express';
+import ExcelJS from 'exceljs';
 
 // Importing our utils to this controller
 import catchAsync from '../utils/catchAsync';
@@ -10,6 +11,7 @@ import APIFeatures from '../utils/apiFeatures';
 import {
 	getModelByType,
 	ModelsOrdinary,
+	PersonsOrdinary,
 	StatusOrdinary,
 } from '../interfaces/ordinaries/ordinariesEnum';
 import { TRDDependency } from '../models/trd/trdImportAll';
@@ -430,6 +432,106 @@ const inactiveOrdsByCompany = catchAsync(
 	}
 );
 
+const exportExcelPerson = catchAsync(
+	async (req: Request, res: Response, next: NextFunction) => {
+		const workbook = new ExcelJS.Workbook(); // Creating a new workbook
+		const sheet = workbook.addWorksheet('PERSONAL');
+
+		const path = `${__dirname}/../../store/reports`;
+		const extension = 'xlsx';
+		const predicate = `ordinaries-${Date.now()}.${extension}`;
+
+		sheet.columns = [
+			{ header: 'Registro', key: 'radicado', width: 20 },
+			{ header: 'ESTADO', key: 'status', width: 20 },
+			{ header: 'Fecha Inicio labores', key: 'startDates', width: 20 },
+			{ header: 'Fecha Fin labores', key: 'finishDates', width: 20 },
+			{ header: 'Contratista ', key: 'nameCompany', width: 20 },
+			{ header: 'SubContratista ', key: 'nameContractor', width: 20 },
+			{ header: 'CC', key: 'citizenship', width: 20 },
+			{ header: 'Nombre', key: 'name', width: 20 },
+			{ header: 'Cargo', key: 'appointment', width: 20 },
+			{ header: 'Fecha Recepción', key: 'recepcionDate', width: 20 },
+			{
+				header: 'Plazo máximo de autorización',
+				key: 'maxAuthorizationDate',
+				width: 20,
+			},
+			{ header: 'Fecha Inducción', key: 'inductionDate', width: 20 },
+			{ header: 'Vigencia Induccion', key: 'inductionVigency', width: 20 },
+			{ header: 'Tipo de ingreso', key: 'accessType', width: 20 },
+			{ header: 'Sexo', key: 'gender', width: 20 },
+			{ header: 'Lugar Residencia', key: 'residentPlace', width: 20 },
+			{ header: 'Lugar Nacimiento', key: 'birthplace', width: 20 },
+			// TODO: Fix docs
+			// { header: 'Salud', key: 'docHealth', width: 20 },
+			// { header: 'Pensión', key: 'docPension', width: 20 },
+			// { header: 'ARL', key: 'docARL', width: 20 },
+			{ header: 'Fecha concepto medico', key: 'medicalConceptDate', width: 20 },
+			{ header: 'Categoria Licencia', key: 'licenseCategory', width: 20 },
+			{ header: 'Vigencia Licencia', key: 'licenseVigency', width: 20 },
+		];
+
+		// Drawing the excel with the information
+
+		const ordinariesPromises = Object.values(PersonsOrdinary).map(
+			async (Model) => {
+				return await Model.find().populate([
+					{
+						path: 'companyID',
+						select: 'businessName',
+					},
+					{
+						path: 'contractorID',
+						select: 'businessName companyID',
+						populate: {
+							path: 'companyID',
+							select: 'businessName',
+						},
+					},
+				]);
+			}
+		);
+
+		const ordinaries = await Promise.all(ordinariesPromises);
+
+		ordinaries.flat().forEach((ordinary) => {
+			let nameCompany;
+			let nameContractor;
+
+			if (Object.keys(ordinary['_doc']).includes('companyID')) {
+				nameCompany = ordinary['_doc']['companyID'].businessName;
+				nameContractor = 'No Aplica';
+			} else if (Object.keys(ordinary['_doc']).includes('contractorID')) {
+				nameContractor = ordinary['_doc']['contractorID'].businessName;
+				nameCompany =
+					ordinary['_doc']['contractorID'].companyID['businessName'];
+			}
+
+			const ordinaryExcel = {
+				...ordinary['_doc'],
+				nameCompany,
+				nameContractor,
+			};
+
+			sheet.addRow(ordinaryExcel);
+		});
+
+		//Making the first line in excel bold
+		sheet.getRow(1).eachCell((cell) => {
+			cell.font = { bold: true };
+		});
+
+		try {
+			await workbook.xlsx.writeFile(`${path}/${predicate}`);
+		} catch (error) {
+			return next(new HttpException('Something went wrong', 500));
+		}
+
+		res.download(`${path}/${predicate}`);
+	}
+);
+
 export {
 	getOrdinaryCitizenship,
 	checkCompanyID,
@@ -442,4 +544,5 @@ export {
 	uploadPerson,
 	uploadVehicle,
 	getVehicleNumber,
+	exportExcelPerson,
 };

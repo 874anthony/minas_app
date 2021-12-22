@@ -140,14 +140,11 @@ var uploadCompanyDocs = upload.fields([
 exports.uploadCompanyDocs = uploadCompanyDocs;
 var findAll = function (Model) {
     return (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-        var filter, features, companies;
+        var features, companies;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    filter = {};
-                    if (req.params.idCompany)
-                        filter = { company: req.params.idCompany };
-                    features = new apiFeatures_1.default(Model.find(filter), req.query)
+                    features = new apiFeatures_1.default(Model.find(), req.query)
                         .filter()
                         .sort()
                         .limitFields()
@@ -204,10 +201,7 @@ var createOne = function (Model) {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    if (!req.files ||
-                        !req.files['docComCam'] ||
-                        !req.files['docRUT'] ||
-                        !req.files['docLegalRepresentativeID']) {
+                    if (!req.files) {
                         return [2 /*return*/, next(new httpException_1.default('No se han cargado todos los archivos, por favor inténtelo nuevamente', 404))];
                     }
                     if (!req.body.companyID) return [3 /*break*/, 4];
@@ -222,12 +216,17 @@ var createOne = function (Model) {
                     error_1 = _a.sent();
                     return [2 /*return*/, next(new httpException_1.default('No hay una compañía con ese ID, inténtelo nuevamente', 404))];
                 case 4:
-                    body = req.body;
-                    // Extracting the filenames from the files
-                    body.docComCam = req.files['docComCam'][0].filename;
-                    body.docRUT = req.files['docRUT'][0].filename;
-                    body.docLegalRepresentativeID =
-                        req.files['docLegalRepresentativeID'][0].filename;
+                    body = __assign({}, req.body);
+                    // Looping through the req.files object to set it to the body
+                    Object.keys(req.files).forEach(function (el) { return (body[el] = req.files[el][0].filename); });
+                    if (body['docSocialSecurity']) {
+                        body['docSocialSecurity'] = {
+                            year: new Date().getFullYear().toString(),
+                            month: date_1.months[new Date().getMonth()],
+                            filename: req.files['docSocialSecurity'][0].filename,
+                        };
+                        body['docSocialSecurityAt'] = Date.now();
+                    }
                     return [4 /*yield*/, Model.create(body)];
                 case 5:
                     companyCreated = _a.sent();

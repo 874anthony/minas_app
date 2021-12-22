@@ -168,7 +168,7 @@ const changeStatusOrdinary = catchAsync(
 			action = 'Actualización Tramitador - Rechazado';
 			description = `El registro ha sido anulado por ${user.role}`;
 
-			docMatched.status = StatusOrdinary.Forbidden;
+			docMatched.status = StatusOrdinary.Rejected;
 			await docMatched.save({ validateBeforeSave: false });
 
 			await workflowDoc.remove();

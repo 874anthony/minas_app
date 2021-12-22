@@ -92,16 +92,13 @@ var CompanySchema = new mongoose_1.Schema({
         trim: true,
     },
     docComCam: {
-        required: true,
         type: String,
     },
     docRUT: {
         type: String,
-        required: true,
     },
     docLegalRepresentativeID: {
         type: String,
-        required: true,
     },
     radicado: {
         type: String,
@@ -128,7 +125,7 @@ var CompanySchema = new mongoose_1.Schema({
         of: String,
     },
     docSocialSecurityAt: Date,
-    finishDates: [Date],
+    finishDates: Date,
     observations: [
         {
             type: String,

@@ -67,6 +67,7 @@ var ordinariesEnum_1 = require("../../interfaces/ordinaries/ordinariesEnum");
 // Own Factory
 var companyFactory = __importStar(require("../companyFactory"));
 var catchAsync_1 = __importDefault(require("../../utils/catchAsync"));
+var apiFeatures_1 = __importDefault(require("../../utils/apiFeatures"));
 // // ================================================ Middlewares starts here =========================================
 // Middlewares
 var uploadContractorDocs = companyFactory.uploadCompanyDocs;
@@ -90,7 +91,34 @@ var getPendingContractors = function (req, res, next) {
 };
 exports.getPendingContractors = getPendingContractors;
 // // ================================================ Endpoints starts here =========================================
-var getAllContractors = companyFactory.findAll(contractorModel_1.default);
+var getAllContractors = (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var features, contractors;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                features = new apiFeatures_1.default(contractorModel_1.default.find(), req.query)
+                    .filter()
+                    .sort()
+                    .limitFields()
+                    .paginate();
+                return [4 /*yield*/, features.query.populate([
+                        {
+                            path: 'companyID',
+                            select: 'businessName status',
+                        },
+                    ])];
+            case 1:
+                contractors = _a.sent();
+                if (contractors.length === 0) {
+                    return [2 /*return*/, next(new httpException_1.default('No hay documentos con ese criterio de búsqueda!', 204))];
+                }
+                return [2 /*return*/, res.status(200).json({
+                        status: true,
+                        contractors: contractors,
+                    })];
+        }
+    });
+}); });
 exports.getAllContractors = getAllContractors;
 var getContractor = companyFactory.findOne(contractorModel_1.default);
 exports.getContractor = getContractor;

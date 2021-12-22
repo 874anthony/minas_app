@@ -213,7 +213,7 @@ var changeStatusOrdinary = (0, catchAsync_1.default)(function (req, res, next) {
                 docMatched = _a.sent();
                 action = 'Actualización Tramitador - Rechazado';
                 description = "El registro ha sido anulado por " + user.role;
-                docMatched.status = ordinariesEnum_1.StatusOrdinary.Forbidden;
+                docMatched.status = ordinariesEnum_1.StatusOrdinary.Rejected;
                 return [4 /*yield*/, docMatched.save({ validateBeforeSave: false })];
             case 4:
                 _a.sent();

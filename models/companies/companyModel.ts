@@ -76,16 +76,13 @@ const CompanySchema: Schema<CompanyInterface> = new Schema(
 			trim: true,
 		},
 		docComCam: {
-			required: true,
 			type: String,
 		},
 		docRUT: {
 			type: String,
-			required: true,
 		},
 		docLegalRepresentativeID: {
 			type: String,
-			required: true,
 		},
 		radicado: {
 			type: String,
@@ -112,7 +109,7 @@ const CompanySchema: Schema<CompanyInterface> = new Schema(
 			of: String,
 		},
 		docSocialSecurityAt: Date,
-		finishDates: [Date],
+		finishDates: Date,
 		observations: [
 			{
 				type: String,
