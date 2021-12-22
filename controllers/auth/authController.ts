@@ -60,11 +60,7 @@ const isAllowedOrdinary = catchAsync(
 					? currentOrdinary.name
 					: currentOrdinary.vehicleType
 			}`,
-			ordType: `${
-				ordinaryType === 'specialworkPerson'
-					? currentOrdinary.specialType
-					: getModelByType[ordinaryType]
-			}`,
+			ordType: `${currentOrdinary.accessType}`,
 			number: `${
 				currentOrdinary.citizenship !== undefined
 					? currentOrdinary.citizenship
