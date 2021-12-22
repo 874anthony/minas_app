@@ -1,5 +1,6 @@
 import { Schema, model } from 'mongoose';
 import { addDate } from '../../../../utils/date';
+import { getModelByType } from '../../../../interfaces/ordinaries/ordinariesEnum';
 import Event from '../../../events/eventsModel';
 
 // Definying the schema
@@ -44,6 +45,7 @@ const SpecialPunctualHeavyVehicleSchema = new Schema({
 		type: String,
 		required: true,
 	},
+	accessType: String,
 	soatVigency: Date,
 	docSoat: String,
 	docPropertyCard: String,
@@ -61,6 +63,14 @@ const SpecialPunctualHeavyVehicleSchema = new Schema({
 	operationCardVigency: Date,
 	qrCodeDate: Date,
 	observations: [String],
+});
+
+SpecialPunctualHeavyVehicleSchema.pre('save', function (next) {
+	if (this.isNew) {
+		const days = 3;
+		this.maxAuthorizationDate = addDate(this.recepcionDate, days);
+	}
+	next();
 });
 
 SpecialPunctualHeavyVehicleSchema.pre('save', async function (next) {

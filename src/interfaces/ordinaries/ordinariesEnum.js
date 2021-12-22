@@ -35,7 +35,6 @@ var StatusOrdinary;
     StatusOrdinary["Inactive"] = "INACTIVO";
     StatusOrdinary["Rejected"] = "RECHAZADO";
     StatusOrdinary["Sanitation"] = "SUBSANAR";
-    // Forbidden = 'PROHIBIDO',
     StatusOrdinary["Visa"] = "POR VISAR";
 })(StatusOrdinary = exports.StatusOrdinary || (exports.StatusOrdinary = {}));
 exports.getModelByType = {
@@ -51,10 +50,12 @@ exports.getModelByType = {
     specialpunctualHeavyVehicle: ' Vehiculo Especial Pesado',
 };
 exports.ModelsOrdinary = {
+    // Personas
+    visitorPerson: ordinariesModels.VisitorPerson,
     permanentPerson: ordinariesModels.PermanentPersonModel,
     punctualworkPerson: ordinariesModels.PunctualWorkPerson,
     specialworkPerson: ordinariesModels.SpecialWorkPerson,
-    visitorPerson: ordinariesModels.VisitorPerson,
+    // Vehiculos
     visitorVehicle: ordinariesModels.VisitorVehicle,
     permanentLightVehicle: ordinariesModels.PermanentLightVehicle,
     punctualLightVehicle: ordinariesModels.PunctualLightVehicle,

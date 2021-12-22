@@ -1,5 +1,6 @@
 import { Schema, model } from 'mongoose';
 import { addDate } from '../../../utils/date';
+import { getModelByType } from '../../../interfaces/ordinaries/ordinariesEnum';
 import Event from '../../events/eventsModel';
 
 // Definying the schema
@@ -89,6 +90,7 @@ const VisitorPersonSchema = new Schema({
 		type: String,
 		default: 'visitorPerson',
 	},
+	accessType: String,
 	licenseVigency: Date,
 	updatedAt: {
 		type: Date,
@@ -99,6 +101,8 @@ VisitorPersonSchema.pre('save', function (next) {
 	if (this.isNew) {
 		const days = 3;
 		this.maxAuthorizationDate = addDate(this.recepcionDate, days);
+
+		this.accessType = getModelByType[this.ordinaryType];
 	}
 	next();
 });

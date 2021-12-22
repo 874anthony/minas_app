@@ -10,7 +10,6 @@ const SpecialWorkPersonSchema = new Schema({
 		trim: true,
 		minlength: 3,
 	},
-
 	appointment: {
 		type: String,
 		required: true,
@@ -99,6 +98,7 @@ const SpecialWorkPersonSchema = new Schema({
 		default: 'specialworkPerson',
 	},
 	licenseVigency: Date,
+	accessType: String,
 	updatedAt: {
 		type: Date,
 	},

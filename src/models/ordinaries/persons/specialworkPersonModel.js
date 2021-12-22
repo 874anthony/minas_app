@@ -137,6 +137,7 @@ var SpecialWorkPersonSchema = new mongoose_1.Schema({
         default: 'specialworkPerson',
     },
     licenseVigency: Date,
+    accessType: String,
     updatedAt: {
         type: Date,
     },

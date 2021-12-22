@@ -1,5 +1,6 @@
 import { Schema, model } from 'mongoose';
 import { addDate } from '../../../../utils/date';
+import { getModelByType } from '../../../../interfaces/ordinaries/ordinariesEnum';
 import Event from '../../../events/eventsModel';
 
 // Definying the schema
@@ -61,6 +62,17 @@ const PunctualLightVehicleSchema = new Schema({
 	operationCardVigency: Date,
 	qrCodeDate: Date,
 	observations: [String],
+	accessType: String,
+});
+
+PunctualLightVehicleSchema.pre('save', function (next) {
+	if (this.isNew) {
+		const days = 3;
+		this.maxAuthorizationDate = addDate(this.recepcionDate, days);
+
+		this.accessType = getModelByType[this.ordinaryType];
+	}
+	next();
 });
 
 PunctualLightVehicleSchema.pre('save', async function (next) {

@@ -13,7 +13,6 @@ export enum StatusOrdinary {
 	Inactive = 'INACTIVO',
 	Rejected = 'RECHAZADO',
 	Sanitation = 'SUBSANAR',
-	// Forbidden = 'PROHIBIDO',
 	Visa = 'POR VISAR',
 }
 
@@ -31,10 +30,12 @@ export const getModelByType = {
 };
 
 export const ModelsOrdinary = {
+	// Personas
+	visitorPerson: ordinariesModels.VisitorPerson,
 	permanentPerson: ordinariesModels.PermanentPersonModel,
 	punctualworkPerson: ordinariesModels.PunctualWorkPerson,
 	specialworkPerson: ordinariesModels.SpecialWorkPerson,
-	visitorPerson: ordinariesModels.VisitorPerson,
+	// Vehiculos
 	visitorVehicle: ordinariesModels.VisitorVehicle,
 	permanentLightVehicle: ordinariesModels.PermanentLightVehicle,
 	punctualLightVehicle: ordinariesModels.PunctualLightVehicle,

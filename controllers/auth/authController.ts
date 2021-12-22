@@ -34,7 +34,22 @@ const isAllowedOrdinary = catchAsync(
 				)
 			);
 
-		const currentOrdinary = await ModelsOrdinary[ordinaryType].findById(id);
+		const currentOrdinary = await ModelsOrdinary[ordinaryType]
+			.findById(id)
+			.populate([
+				{
+					path: 'companyID',
+					select: 'businessName',
+				},
+				{
+					path: 'contractorID',
+					select: 'businessName',
+					populate: {
+						path: 'companyID',
+						select: 'businessName',
+					},
+				},
+			]);
 
 		let ejsOpts: Object = {
 			status: `<li style="color: ${
@@ -45,7 +60,11 @@ const isAllowedOrdinary = catchAsync(
 					? currentOrdinary.name
 					: currentOrdinary.vehicleType
 			}`,
-			ordType: `${getModelByType[ordinaryType]}`,
+			ordType: `${
+				ordinaryType === 'specialworkPerson'
+					? currentOrdinary.specialType
+					: getModelByType[ordinaryType]
+			}`,
 			number: `${
 				currentOrdinary.citizenship !== undefined
 					? currentOrdinary.citizenship
@@ -60,6 +79,16 @@ const isAllowedOrdinary = catchAsync(
 				currentOrdinary.appointment !== undefined
 					? currentOrdinary.appointment
 					: currentOrdinary.serviceType
+			}`,
+			company: `${
+				currentOrdinary.companyID !== undefined
+					? currentOrdinary['companyID'].businessName
+					: currentOrdinary['contractorID'].companyID['businessName']
+			}`,
+			contractor: `${
+				currentOrdinary.contractorID !== undefined
+					? currentOrdinary['contractorID'].businessName
+					: 'Sin contratista'
 			}`,
 		};
 

@@ -84,6 +84,7 @@ var SpecialPunctualHeavyVehicleSchema = new mongoose_1.Schema({
         type: String,
         required: true,
     },
+    accessType: String,
     soatVigency: Date,
     docSoat: String,
     docPropertyCard: String,
@@ -101,6 +102,13 @@ var SpecialPunctualHeavyVehicleSchema = new mongoose_1.Schema({
     operationCardVigency: Date,
     qrCodeDate: Date,
     observations: [String],
+});
+SpecialPunctualHeavyVehicleSchema.pre('save', function (next) {
+    if (this.isNew) {
+        var days = 3;
+        this.maxAuthorizationDate = (0, date_1.addDate)(this.recepcionDate, days);
+    }
+    next();
 });
 SpecialPunctualHeavyVehicleSchema.pre('save', function (next) {
     return __awaiter(this, void 0, void 0, function () {

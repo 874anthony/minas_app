@@ -41,6 +41,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var mongoose_1 = require("mongoose");
 var date_1 = require("../../../utils/date");
+var ordinariesEnum_1 = require("../../../interfaces/ordinaries/ordinariesEnum");
 var eventsModel_1 = __importDefault(require("../../events/eventsModel"));
 // Definying the schema
 var PunctualWorkPersonSchema = new mongoose_1.Schema({
@@ -127,6 +128,7 @@ var PunctualWorkPersonSchema = new mongoose_1.Schema({
         type: String,
         default: 'punctualworkPerson',
     },
+    accessType: String,
     licenseVigency: Date,
     updatedAt: {
         type: Date,
@@ -136,6 +138,7 @@ PunctualWorkPersonSchema.pre('save', function (next) {
     if (this.isNew) {
         var days = 3;
         this.maxAuthorizationDate = (0, date_1.addDate)(this.recepcionDate, days);
+        this.accessType = ordinariesEnum_1.getModelByType[this.ordinaryType];
     }
     next();
 });
