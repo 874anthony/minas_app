@@ -17,6 +17,9 @@ router.route('/inactivate-all').put(ordinaryFactory.inactiveOrdsByCompany);
 router.route('/inactivate-all-contractors').put(inactiveOrdsByContractor);
 
 router.route('/generate-report-persons').get(ordinaryFactory.exportExcelPerson);
+router
+	.route('/generate-report-vehicles')
+	.get(ordinaryFactory.exportExcelVehicle);
 
 router.route('/').get(ordinaryFactory.getAllOrds);
 

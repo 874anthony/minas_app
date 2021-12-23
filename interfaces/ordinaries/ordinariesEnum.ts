@@ -17,16 +17,16 @@ export enum StatusOrdinary {
 }
 
 export const getModelByType = {
-	permanentPerson: 'Persona Permanente',
-	punctualworkPerson: 'Persona Trabajo Puntual',
-	specialworkPerson: 'Persona Especial',
-	visitorPerson: 'Persona Visitante',
-	visitorVehicle: 'Vehiculo Visitante',
-	permanentLightVehicle: 'Vehiculo Liviano Permanente',
-	punctualLightVehicle: 'Vehiculo Liviano Puntual',
-	permanentHeavyVehicle: 'Vehiculo Pesado Permanente',
-	punctualHeavyVehicle: 'Vehiculo Pesado Puntual',
-	specialpunctualHeavyVehicle: ' Vehiculo Especial Pesado',
+	permanentPerson: 'Persona permanente',
+	punctualworkPerson: 'Persona trabajo puntual',
+	specialworkPerson: 'Persona especial',
+	visitorPerson: 'Persona visitante',
+	visitorVehicle: 'Vehiculo visitante',
+	permanentLightVehicle: 'Vehiculo liviano permanente',
+	punctualLightVehicle: 'Vehiculo liviano puntual',
+	permanentHeavyVehicle: 'Vehiculo pesado permanente',
+	punctualHeavyVehicle: 'Vehiculo pesado puntual',
+	specialpunctualHeavyVehicle: ' Vehiculo especial pesado',
 };
 
 export const ModelsOrdinary = {
@@ -49,6 +49,15 @@ export const PersonsOrdinary = {
 	punctualworkPerson: ordinariesModels.PunctualWorkPerson,
 	specialworkPerson: ordinariesModels.SpecialWorkPerson,
 	visitorPerson: ordinariesModels.VisitorPerson,
+};
+
+export const VehiclesOrdinary = {
+	visitorVehicle: ordinariesModels.VisitorVehicle,
+	permanentLightVehicle: ordinariesModels.PermanentLightVehicle,
+	punctualLightVehicle: ordinariesModels.PunctualLightVehicle,
+	permanentHeavyVehicle: ordinariesModels.PermanentHeavyVehicle,
+	punctualHeavyVehicle: ordinariesModels.PunctualHeavyVehicle,
+	specialpunctualHeavyVehicle: ordinariesModels.SpecialPunctualHeavyVehicle,
 };
 
 export interface StatusBody {

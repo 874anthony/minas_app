@@ -1,6 +1,7 @@
 // Import 3rd-party packages
 import { NextFunction, Request, Response } from 'express';
 import ExcelJS from 'exceljs';
+import fs from 'fs';
 
 // Importing our utils to this controller
 import catchAsync from '../utils/catchAsync';
@@ -13,6 +14,7 @@ import {
 	ModelsOrdinary,
 	PersonsOrdinary,
 	StatusOrdinary,
+	VehiclesOrdinary,
 } from '../interfaces/ordinaries/ordinariesEnum';
 import { TRDDependency } from '../models/trd/trdImportAll';
 import {
@@ -438,38 +440,43 @@ const exportExcelPerson = catchAsync(
 		const sheet = workbook.addWorksheet('PERSONAL');
 
 		const path = `${__dirname}/../../store/reports`;
+
+		if (!fs.existsSync(path)) {
+			fs.mkdirSync(path, { recursive: true });
+		}
+
 		const extension = 'xlsx';
-		const predicate = `ordinaries-${Date.now()}.${extension}`;
+		const predicate = `ordinaries-person-${Date.now()}.${extension}`;
 
 		sheet.columns = [
 			{ header: 'Registro', key: 'radicado', width: 20 },
 			{ header: 'ESTADO', key: 'status', width: 20 },
-			{ header: 'Fecha Inicio labores', key: 'startDates', width: 20 },
-			{ header: 'Fecha Fin labores', key: 'finishDates', width: 20 },
+			{ header: 'Fecha inicio labores', key: 'startDates', width: 20 },
+			{ header: 'Fecha fin labores', key: 'finishDates', width: 20 },
 			{ header: 'Contratista ', key: 'nameCompany', width: 20 },
-			{ header: 'SubContratista ', key: 'nameContractor', width: 20 },
-			{ header: 'CC', key: 'citizenship', width: 20 },
+			{ header: 'Subcontratista ', key: 'nameContractor', width: 20 },
+			{ header: 'Cedula', key: 'citizenship', width: 20 },
 			{ header: 'Nombre', key: 'name', width: 20 },
 			{ header: 'Cargo', key: 'appointment', width: 20 },
-			{ header: 'Fecha Recepción', key: 'recepcionDate', width: 20 },
+			{ header: 'Fecha recepción', key: 'recepcionDate', width: 20 },
 			{
 				header: 'Plazo máximo de autorización',
 				key: 'maxAuthorizationDate',
 				width: 20,
 			},
-			{ header: 'Fecha Inducción', key: 'inductionDate', width: 20 },
-			{ header: 'Vigencia Induccion', key: 'inductionVigency', width: 20 },
+			{ header: 'Fecha inducción', key: 'inductionDate', width: 20 },
+			{ header: 'Vigencia induccion', key: 'inductionVigency', width: 20 },
 			{ header: 'Tipo de ingreso', key: 'accessType', width: 20 },
 			{ header: 'Sexo', key: 'gender', width: 20 },
-			{ header: 'Lugar Residencia', key: 'residentPlace', width: 20 },
-			{ header: 'Lugar Nacimiento', key: 'birthplace', width: 20 },
+			{ header: 'Lugar residencia', key: 'residentPlace', width: 20 },
+			{ header: 'Lugar nacimiento', key: 'birthplace', width: 20 },
 			// TODO: Fix docs
 			// { header: 'Salud', key: 'docHealth', width: 20 },
 			// { header: 'Pensión', key: 'docPension', width: 20 },
 			// { header: 'ARL', key: 'docARL', width: 20 },
 			{ header: 'Fecha concepto medico', key: 'medicalConceptDate', width: 20 },
-			{ header: 'Categoria Licencia', key: 'licenseCategory', width: 20 },
-			{ header: 'Vigencia Licencia', key: 'licenseVigency', width: 20 },
+			{ header: 'Categoria licencia', key: 'licenseCategory', width: 20 },
+			{ header: 'Vigencia licencia', key: 'licenseVigency', width: 20 },
 		];
 
 		// Drawing the excel with the information
@@ -518,7 +525,147 @@ const exportExcelPerson = catchAsync(
 
 		//Making the first line in excel bold
 		sheet.getRow(1).eachCell((cell) => {
+			cell.font = {
+				name: 'Arial Black',
+				color: { argb: '000000' },
+				family: 2,
+				size: 10,
+				bold: true,
+			};
+			cell.fill = {
+				type: 'gradient',
+				gradient: 'angle',
+				degree: 0,
+				stops: [
+					{ position: 0, color: { argb: 'FFE5CC' } },
+					{ position: 0.9, color: { argb: 'FFFFFFFF' } },
+					{ position: 1, color: { argb: 'FFE5CC' } },
+				],
+			};
+
+			cell.alignment = { vertical: 'middle', horizontal: 'center' };
+		});
+
+		sheet.getRows(2, ordinaries.flat().length)?.forEach((cell) => {
 			cell.font = { bold: true };
+			cell.alignment = { vertical: 'middle', horizontal: 'center' };
+		});
+
+		try {
+			await workbook.xlsx.writeFile(`${path}/${predicate}`);
+		} catch (error) {
+			return next(new HttpException('Something went wrong', 500));
+		}
+
+		res.download(`${path}/${predicate}`);
+	}
+);
+
+const exportExcelVehicle = catchAsync(
+	async (req: Request, res: Response, next: NextFunction) => {
+		const workbook = new ExcelJS.Workbook(); // Creating a new workbook
+		const sheet = workbook.addWorksheet('VEHICULOS');
+
+		const path = `${__dirname}/../../store/reports`;
+
+		if (!fs.existsSync(path)) {
+			fs.mkdirSync(path, { recursive: true });
+		}
+
+		const extension = 'xlsx';
+		const predicate = `ordinaries-vehicles-${Date.now()}.${extension}`;
+
+		sheet.columns = [
+			{ header: 'Registro', key: 'radicado', width: 20 },
+			{ header: 'ESTADO', key: 'status', width: 20 },
+			{ header: 'Fecha inicio labores', key: 'startDates', width: 20 },
+			{ header: 'Fecha fin labores', key: 'finishDates', width: 20 },
+			{ header: 'Contratista ', key: 'nameCompany', width: 20 },
+			{ header: 'Subcontratista ', key: 'nameContractor', width: 20 },
+			{ header: 'MAQ/VEHI', key: 'type', width: 20 },
+			{ header: 'Tipo', key: 'vehicleType', width: 20 },
+			{ header: 'Placa/número de serie', key: 'vehicleNumber', width: 20 },
+			{ header: 'Tipo de ingreso', key: 'accessType', width: 20 },
+			{ header: 'Tipo de servicio', key: 'serviceType', width: 20 },
+			{ header: 'Vigencia SOAT', key: 'soatVigency', width: 20 },
+			{ header: 'Vigencia tecnomecanica', key: 'technoVigency', width: 20 },
+			{
+				header: 'Vigencia Tarjeta de Operacion',
+				key: 'operationCardVigency',
+				width: 20,
+			},
+		];
+
+		// Drawing the excel with the information
+		const ordinariesPromises = Object.values(VehiclesOrdinary).map(
+			async (Model) => {
+				return await Model.find().populate([
+					{
+						path: 'companyID',
+						select: 'businessName',
+					},
+					{
+						path: 'contractorID',
+						select: 'businessName companyID',
+						populate: {
+							path: 'companyID',
+							select: 'businessName',
+						},
+					},
+				]);
+			}
+		);
+
+		const ordinaries = await Promise.all(ordinariesPromises);
+
+		ordinaries.flat().forEach((ordinary) => {
+			let nameCompany;
+			let nameContractor;
+
+			if (Object.keys(ordinary['_doc']).includes('companyID')) {
+				nameCompany = ordinary['_doc']['companyID'].businessName;
+				nameContractor = 'No Aplica';
+			} else if (Object.keys(ordinary['_doc']).includes('contractorID')) {
+				nameContractor = ordinary['_doc']['contractorID'].businessName;
+				nameCompany =
+					ordinary['_doc']['contractorID'].companyID['businessName'];
+			}
+
+			const ordinaryExcel = {
+				...ordinary['_doc'],
+				nameCompany,
+				nameContractor,
+			};
+
+			sheet.addRow(ordinaryExcel);
+		});
+
+		//Making the first line in excel bold
+		sheet.getRow(1).eachCell((cell) => {
+			cell.font = {
+				name: 'Arial Black',
+				color: { argb: '000000' },
+				family: 2,
+				size: 10,
+				bold: true,
+			};
+			cell.fill = {
+				type: 'gradient',
+				gradient: 'angle',
+				degree: 0,
+				stops: [
+					{ position: 0, color: { argb: 'FFE5CC' } },
+					{ position: 0.9, color: { argb: 'FFFFFFFF' } },
+					{ position: 1, color: { argb: 'FFE5CC' } },
+				],
+			};
+
+			cell.alignment = { vertical: 'middle', horizontal: 'center' };
+		});
+
+		sheet.getRows(2, ordinaries.flat().length)?.forEach((cell) => {
+			cell.font = { bold: true };
+			cell.alignment = { vertical: 'middle', horizontal: 'center' };
 		});
 
 		try {
@@ -544,4 +691,5 @@ export {
 	uploadVehicle,
 	getVehicleNumber,
 	exportExcelPerson,
+	exportExcelVehicle,
 };

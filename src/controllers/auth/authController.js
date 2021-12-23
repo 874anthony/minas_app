@@ -113,9 +113,7 @@ var isAllowedOrdinary = (0, catchAsync_1.default)(function (req, res, next) { re
                     name: "" + (currentOrdinary.name !== undefined
                         ? currentOrdinary.name
                         : currentOrdinary.vehicleType),
-                    ordType: "" + (ordinaryType === 'specialworkPerson'
-                        ? currentOrdinary.specialType
-                        : ordinariesEnum_1.getModelByType[ordinaryType]),
+                    ordType: "" + currentOrdinary.accessType,
                     number: "" + (currentOrdinary.citizenship !== undefined
                         ? currentOrdinary.citizenship
                         : currentOrdinary.vehicleNumber),

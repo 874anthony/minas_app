@@ -19,7 +19,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.PersonsOrdinary = exports.ModelsOrdinary = exports.getModelByType = exports.StatusOrdinary = exports.Gender = void 0;
+exports.VehiclesOrdinary = exports.PersonsOrdinary = exports.ModelsOrdinary = exports.getModelByType = exports.StatusOrdinary = exports.Gender = void 0;
 var ordinariesModels = __importStar(require("../../models/ordinaries/importAllOrdinaries"));
 var Gender;
 (function (Gender) {
@@ -38,16 +38,16 @@ var StatusOrdinary;
     StatusOrdinary["Visa"] = "POR VISAR";
 })(StatusOrdinary = exports.StatusOrdinary || (exports.StatusOrdinary = {}));
 exports.getModelByType = {
-    permanentPerson: 'Persona Permanente',
-    punctualworkPerson: 'Persona Trabajo Puntual',
-    specialworkPerson: 'Persona Especial',
-    visitorPerson: 'Persona Visitante',
-    visitorVehicle: 'Vehiculo Visitante',
-    permanentLightVehicle: 'Vehiculo Liviano Permanente',
-    punctualLightVehicle: 'Vehiculo Liviano Puntual',
-    permanentHeavyVehicle: 'Vehiculo Pesado Permanente',
-    punctualHeavyVehicle: 'Vehiculo Pesado Puntual',
-    specialpunctualHeavyVehicle: ' Vehiculo Especial Pesado',
+    permanentPerson: 'Persona permanente',
+    punctualworkPerson: 'Persona trabajo puntual',
+    specialworkPerson: 'Persona especial',
+    visitorPerson: 'Persona visitante',
+    visitorVehicle: 'Vehiculo visitante',
+    permanentLightVehicle: 'Vehiculo liviano permanente',
+    punctualLightVehicle: 'Vehiculo liviano puntual',
+    permanentHeavyVehicle: 'Vehiculo pesado permanente',
+    punctualHeavyVehicle: 'Vehiculo pesado puntual',
+    specialpunctualHeavyVehicle: ' Vehiculo especial pesado',
 };
 exports.ModelsOrdinary = {
     // Personas
@@ -68,4 +68,12 @@ exports.PersonsOrdinary = {
     punctualworkPerson: ordinariesModels.PunctualWorkPerson,
     specialworkPerson: ordinariesModels.SpecialWorkPerson,
     visitorPerson: ordinariesModels.VisitorPerson,
+};
+exports.VehiclesOrdinary = {
+    visitorVehicle: ordinariesModels.VisitorVehicle,
+    permanentLightVehicle: ordinariesModels.PermanentLightVehicle,
+    punctualLightVehicle: ordinariesModels.PunctualLightVehicle,
+    permanentHeavyVehicle: ordinariesModels.PermanentHeavyVehicle,
+    punctualHeavyVehicle: ordinariesModels.PunctualHeavyVehicle,
+    specialpunctualHeavyVehicle: ordinariesModels.SpecialPunctualHeavyVehicle,
 };
