@@ -81,8 +81,6 @@ var PermanentPersonSchema = new mongoose_1.Schema({
     },
     licenseCategory: {
         type: String,
-        required: true,
-        maxlength: [3, 'La categoría solo puede tener 3 letras como máximo'],
         trim: true,
     },
     docHealth: {
@@ -90,9 +88,7 @@ var PermanentPersonSchema = new mongoose_1.Schema({
     },
     docPension: String,
     docARL: String,
-    docCitizenship: {
-        type: String,
-    },
+    docCitizenship: String,
     docSocialSecurity: String,
     docMedicalFitness: String,
     radicado: {
@@ -125,6 +121,7 @@ var PermanentPersonSchema = new mongoose_1.Schema({
     },
     maxAuthorizationDate: Date,
     qrCodeDate: Date,
+    requestedTime: Date,
     ordinaryType: {
         type: String,
         default: 'permanentPerson',

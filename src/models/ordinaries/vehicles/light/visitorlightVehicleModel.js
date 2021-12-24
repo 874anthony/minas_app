@@ -91,8 +91,9 @@ var VisitorlightVehicleSchema = new mongoose_1.Schema({
     docVehicleListCheck: String,
     technoVigency: Date,
     operationCardVigency: Date,
-    qrCodeDate: Date,
     observations: [String],
+    qrCodeDate: Date,
+    requestedTime: Date,
     accessType: String,
 });
 VisitorlightVehicleSchema.pre('save', function (next) {

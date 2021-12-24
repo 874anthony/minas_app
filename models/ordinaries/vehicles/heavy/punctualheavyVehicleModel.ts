@@ -61,8 +61,9 @@ const PunctualHeavyVehicleSchema = new Schema({
 	docQualityCert: String,
 	technoVigency: Date,
 	operationCardVigency: Date,
-	qrCodeDate: Date,
 	observations: [String],
+	qrCodeDate: Date,
+	requestedTime: Date,
 });
 
 PunctualHeavyVehicleSchema.pre('save', function (next) {

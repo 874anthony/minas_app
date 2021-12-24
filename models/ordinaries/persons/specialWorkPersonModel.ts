@@ -40,18 +40,12 @@ const SpecialWorkPersonSchema = new Schema({
 	},
 	licenseCategory: {
 		type: String,
-		required: true,
-		maxlength: [3, 'La categoría solo puede tener 3 letras como máximo'],
 		trim: true,
 	},
-	docHealth: {
-		type: String,
-	},
+	docHealth: String,
 	docPension: String,
 	docARL: String,
-	docCitizenship: {
-		type: String,
-	},
+	docCitizenship: String,
 	docSocialSecurity: String,
 	docMedicalFitness: String,
 	docCV: String,
@@ -61,7 +55,7 @@ const SpecialWorkPersonSchema = new Schema({
 	docDrivingTest: String,
 	docCraneOperator: String,
 	docSafeworkHeights: String,
-	docRigger: String,
+	docCompetenceCert: String,
 	radicado: {
 		type: String,
 		default: 'Sin radicado',
@@ -93,6 +87,7 @@ const SpecialWorkPersonSchema = new Schema({
 	},
 	maxAuthorizationDate: Date,
 	qrCodeDate: Date,
+	requestedTime: Date,
 	ordinaryType: {
 		type: String,
 		default: 'specialworkPerson',

@@ -48,7 +48,8 @@ const uploadPerson = uploadOrdinaryPerson.fields([
 	{ name: 'docDrivingTest', maxCount: 1 },
 	{ name: 'docCraneOperator', maxCount: 1 },
 	{ name: 'docSafeworkHeights', maxCount: 1 },
-	{ name: 'docRigger', maxCount: 1 },
+	{ name: 'docCompetenceCert', maxCount: 1 },
+	{ name: 'attached', maxCount: 20 },
 ]);
 
 const uploadVehicle = uploadOrdinaryVehicle.fields([
@@ -64,6 +65,7 @@ const uploadVehicle = uploadOrdinaryVehicle.fields([
 	{ name: 'docVehicleListCheck', maxCount: 1 },
 	{ name: 'docTeamCert', maxCount: 1 },
 	{ name: 'docQualityCert', maxCount: 1 },
+	{ name: 'attached', maxCount: 20 },
 ]);
 
 // AQUI TERMINA LOS UPLOADS MIDDLEWARES
@@ -144,10 +146,20 @@ const createOrdinary = (
 		// Mutating the object req.body
 		const body = { ...req.body };
 
+		const arrayFilenames: Array<string> = [];
+
 		// Looping through the req.files object to set it to the body
-		Object.keys(req.files).forEach(
-			(el) => (body[el] = req.files![el][0].filename)
-		);
+		Object.keys(req.files).forEach((el) => {
+			if (el === 'attached') {
+				Object.values(req.files![el]).forEach((el2: any, i) => {
+					arrayFilenames.push(req.files![el][i].filename);
+				});
+			} else {
+				body[el] = req.files![el][0].filename;
+			}
+		});
+
+		body['attached'] = arrayFilenames;
 
 		// CHECK IF THE DEPENDENCY (TRD) EXISTS
 		const dependency = await TRDDependency.findById(body.dependency);
@@ -267,8 +279,6 @@ const createOrdinary = (
 			);
 		}
 
-		// Hasta aquí
-
 		res.status(200).json({
 			status: true,
 			message: 'Se ha creado el ordinario con éxito',
@@ -294,21 +304,29 @@ const updateOrdinary = (Model) =>
 		// Mutating the object req.body
 		const body = { ...req.body };
 
+		const arrayFilenames: Array<string> = [];
+
 		if (req.files) {
 			// Looping through the req.files object to set it to the body
-			Object.keys(req.files).forEach(
-				(el) => (body[el] = req.files![el][0].filename)
-			);
+			Object.keys(req.files).forEach((el) => {
+				if (el === 'attached') {
+					Object.values(req.files![el]).forEach((el2: any, i) => {
+						arrayFilenames.push(req.files![el][i].filename);
+					});
+				} else {
+					body[el] = req.files![el][0].filename;
+				}
+			});
 		}
 
+		body['attached'] = arrayFilenames;
 		body['updatedAt'] = Date.now();
 
 		Object.keys(body).forEach((key) => {
 			if (
 				key === 'observations' ||
 				key === 'startDates' ||
-				key === 'finishDates' ||
-				key === 'attached'
+				key === 'finishDates'
 			) {
 				ordinaryUpdated[key].push(body[key]);
 			} else {

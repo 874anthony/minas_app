@@ -51,8 +51,9 @@ const VisitorlightVehicleSchema = new Schema({
 	docVehicleListCheck: String,
 	technoVigency: Date,
 	operationCardVigency: Date,
-	qrCodeDate: Date,
 	observations: [String],
+	qrCodeDate: Date,
+	requestedTime: Date,
 	accessType: String,
 });
 

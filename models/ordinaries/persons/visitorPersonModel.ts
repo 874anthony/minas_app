@@ -11,7 +11,6 @@ const VisitorPersonSchema = new Schema({
 		trim: true,
 		minlength: 3,
 	},
-
 	appointment: {
 		type: String,
 		required: true,
@@ -42,18 +41,12 @@ const VisitorPersonSchema = new Schema({
 	},
 	licenseCategory: {
 		type: String,
-		required: true,
-		maxlength: [3, 'La categoría solo puede tener 3 letras como máximo'],
 		trim: true,
 	},
-	docHealth: {
-		type: String,
-	},
+	docHealth: String,
 	docPension: String,
 	docARL: String,
-	docCitizenship: {
-		type: String,
-	},
+	docCitizenship: String,
 	docSocialSecurity: String,
 	radicado: {
 		type: String,
@@ -61,7 +54,6 @@ const VisitorPersonSchema = new Schema({
 	},
 	observations: [String],
 	medicalConceptDate: Date,
-
 	inductionDate: Date,
 	inductionVigency: Date,
 	companyID: {
@@ -86,6 +78,7 @@ const VisitorPersonSchema = new Schema({
 	},
 	maxAuthorizationDate: Date,
 	qrCodeDate: Date,
+	requestedTime: Date,
 	ordinaryType: {
 		type: String,
 		default: 'visitorPerson',

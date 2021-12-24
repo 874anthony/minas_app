@@ -42,8 +42,6 @@ const PermanentPersonSchema = new Schema({
 	},
 	licenseCategory: {
 		type: String,
-		required: true,
-		maxlength: [3, 'La categoría solo puede tener 3 letras como máximo'],
 		trim: true,
 	},
 	docHealth: {
@@ -51,9 +49,7 @@ const PermanentPersonSchema = new Schema({
 	},
 	docPension: String,
 	docARL: String,
-	docCitizenship: {
-		type: String,
-	},
+	docCitizenship: String,
 	docSocialSecurity: String,
 	docMedicalFitness: String,
 	radicado: {
@@ -62,7 +58,6 @@ const PermanentPersonSchema = new Schema({
 	},
 	observations: [String],
 	medicalConceptDate: Date,
-
 	inductionDate: Date,
 	inductionVigency: Date,
 	companyID: {
@@ -87,6 +82,7 @@ const PermanentPersonSchema = new Schema({
 	},
 	maxAuthorizationDate: Date,
 	qrCodeDate: Date,
+	requestedTime: Date,
 	ordinaryType: {
 		type: String,
 		default: 'permanentPerson',

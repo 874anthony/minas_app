@@ -49,7 +49,7 @@ export default class Email {
 			attachments: [
 				{
 					filename: 'image-2.png',
-					path: `${__dirname}/../views/images/image-2.png`,
+					path: `${__dirname}/../views/images/image-2.jfif`,
 					cid: 'unique@gecelca-logo',
 				},
 			],

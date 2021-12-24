@@ -101,8 +101,9 @@ var PermanentHeavyVehicleSchema = new mongoose_1.Schema({
     docQualityCert: String,
     technoVigency: Date,
     operationCardVigency: Date,
-    qrCodeDate: Date,
     observations: [String],
+    qrCodeDate: Date,
+    requestedTime: Date,
 });
 PermanentHeavyVehicleSchema.pre('save', function (next) {
     if (this.isNew) {

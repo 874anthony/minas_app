@@ -59,8 +59,9 @@ const PermanentLightVehicleSchema = new Schema({
 	docQualityCert: String,
 	technoVigency: Date,
 	operationCardVigency: Date,
-	qrCodeDate: Date,
 	observations: [String],
+	qrCodeDate: Date,
+	requestedTime: Date,
 	accessType: String,
 });
 

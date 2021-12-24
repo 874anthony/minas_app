@@ -84,7 +84,8 @@ var uploadPerson = multerConfig_1.uploadOrdinaryPerson.fields([
     { name: 'docDrivingTest', maxCount: 1 },
     { name: 'docCraneOperator', maxCount: 1 },
     { name: 'docSafeworkHeights', maxCount: 1 },
-    { name: 'docRigger', maxCount: 1 },
+    { name: 'docCompetenceCert', maxCount: 1 },
+    { name: 'attached', maxCount: 20 },
 ]);
 exports.uploadPerson = uploadPerson;
 var uploadVehicle = multerConfig_1.uploadOrdinaryVehicle.fields([
@@ -100,6 +101,7 @@ var uploadVehicle = multerConfig_1.uploadOrdinaryVehicle.fields([
     { name: 'docVehicleListCheck', maxCount: 1 },
     { name: 'docTeamCert', maxCount: 1 },
     { name: 'docQualityCert', maxCount: 1 },
+    { name: 'attached', maxCount: 20 },
 ]);
 exports.uploadVehicle = uploadVehicle;
 // AQUI TERMINA LOS UPLOADS MIDDLEWARES
@@ -160,7 +162,7 @@ exports.checkContractorID = checkContractorID;
 // AQUI TERMINA LOS MIDDLEWARES
 var createOrdinary = function (Model, Roles, checkRoles, subsanarRoles) {
     return (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-        var body, dependency, trdOrdinary, year, dependencyCode, consecutive, radicado, newOrdinaryPerson, bodyEvent, usersPromises, usersArray, usersID, ordinaryOpts, bodyWorkflow, error_1;
+        var body, arrayFilenames, dependency, trdOrdinary, year, dependencyCode, consecutive, radicado, newOrdinaryPerson, bodyEvent, usersPromises, usersArray, usersID, ordinaryOpts, bodyWorkflow, error_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -171,8 +173,19 @@ var createOrdinary = function (Model, Roles, checkRoles, subsanarRoles) {
                         return [2 /*return*/, next(new httpException_1.default('No ha subido ningún archivo, intente nuevamente', 404))];
                     }
                     body = __assign({}, req.body);
+                    arrayFilenames = [];
                     // Looping through the req.files object to set it to the body
-                    Object.keys(req.files).forEach(function (el) { return (body[el] = req.files[el][0].filename); });
+                    Object.keys(req.files).forEach(function (el) {
+                        if (el === 'attached') {
+                            Object.values(req.files[el]).forEach(function (el2, i) {
+                                arrayFilenames.push(req.files[el][i].filename);
+                            });
+                        }
+                        else {
+                            body[el] = req.files[el][0].filename;
+                        }
+                    });
+                    body['attached'] = arrayFilenames;
                     return [4 /*yield*/, trdImportAll_1.TRDDependency.findById(body.dependency)];
                 case 1:
                     dependency = _a.sent();
@@ -282,7 +295,6 @@ var createOrdinary = function (Model, Roles, checkRoles, subsanarRoles) {
                     error_1 = _a.sent();
                     return [2 /*return*/, next(new httpException_1.default('No se ha asignado correctamente el workflow, por favor vuelva a intentar', 500))];
                 case 12:
-                    // Hasta aquí
                     res.status(200).json({
                         status: true,
                         message: 'Se ha creado el ordinario con éxito',
@@ -296,7 +308,7 @@ var createOrdinary = function (Model, Roles, checkRoles, subsanarRoles) {
 exports.createOrdinary = createOrdinary;
 var updateOrdinary = function (Model) {
     return (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-        var id, ordinaryUpdated, body, workflowDoc_1, bodyEvent;
+        var id, ordinaryUpdated, body, arrayFilenames, workflowDoc_1, bodyEvent;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -308,16 +320,26 @@ var updateOrdinary = function (Model) {
                         return [2 /*return*/, next(new httpException_1.default('No hay un ordinario con ese ID, intente nuevamente!', 404))];
                     }
                     body = __assign({}, req.body);
+                    arrayFilenames = [];
                     if (req.files) {
                         // Looping through the req.files object to set it to the body
-                        Object.keys(req.files).forEach(function (el) { return (body[el] = req.files[el][0].filename); });
+                        Object.keys(req.files).forEach(function (el) {
+                            if (el === 'attached') {
+                                Object.values(req.files[el]).forEach(function (el2, i) {
+                                    arrayFilenames.push(req.files[el][i].filename);
+                                });
+                            }
+                            else {
+                                body[el] = req.files[el][0].filename;
+                            }
+                        });
                     }
+                    body['attached'] = arrayFilenames;
                     body['updatedAt'] = Date.now();
                     Object.keys(body).forEach(function (key) {
                         if (key === 'observations' ||
                             key === 'startDates' ||
-                            key === 'finishDates' ||
-                            key === 'attached') {
+                            key === 'finishDates') {
                             ordinaryUpdated[key].push(body[key]);
                         }
                         else {
