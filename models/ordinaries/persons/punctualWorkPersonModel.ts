@@ -42,8 +42,6 @@ const PunctualWorkPersonSchema = new Schema({
 	},
 	licenseCategory: {
 		type: String,
-		required: true,
-		maxlength: [3, 'La categoría solo puede tener 3 letras como máximo'],
 		trim: true,
 	},
 	docHealth: {
@@ -51,9 +49,7 @@ const PunctualWorkPersonSchema = new Schema({
 	},
 	docPension: String,
 	docARL: String,
-	docCitizenship: {
-		type: String,
-	},
+	docCitizenship: String,
 	docSocialSecurity: String,
 	radicado: {
 		type: String,
@@ -61,7 +57,6 @@ const PunctualWorkPersonSchema = new Schema({
 	},
 	observations: [String],
 	medicalConceptDate: Date,
-
 	inductionDate: Date,
 	inductionVigency: Date,
 	companyID: {
@@ -86,6 +81,7 @@ const PunctualWorkPersonSchema = new Schema({
 	},
 	maxAuthorizationDate: Date,
 	qrCodeDate: Date,
+	requestedTime: Date,
 	ordinaryType: {
 		type: String,
 		default: 'punctualworkPerson',

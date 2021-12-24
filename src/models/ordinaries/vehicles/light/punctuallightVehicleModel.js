@@ -100,8 +100,9 @@ var PunctualLightVehicleSchema = new mongoose_1.Schema({
     docQualityCert: String,
     technoVigency: Date,
     operationCardVigency: Date,
-    qrCodeDate: Date,
     observations: [String],
+    qrCodeDate: Date,
+    requestedTime: Date,
     accessType: String,
 });
 PunctualLightVehicleSchema.pre('save', function (next) {

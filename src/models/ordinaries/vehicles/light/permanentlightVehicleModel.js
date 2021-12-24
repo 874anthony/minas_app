@@ -99,8 +99,9 @@ var PermanentLightVehicleSchema = new mongoose_1.Schema({
     docQualityCert: String,
     technoVigency: Date,
     operationCardVigency: Date,
-    qrCodeDate: Date,
     observations: [String],
+    qrCodeDate: Date,
+    requestedTime: Date,
     accessType: String,
 });
 PermanentLightVehicleSchema.pre('save', function (next) {
