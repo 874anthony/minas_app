@@ -28,6 +28,7 @@ import User from '../models/users/userModel';
 import Workflow from '../models/workflows/workflowModel';
 import Event from '../models/events/eventsModel';
 import TRDOrdinary from '../models/trd/trdOrdinary';
+import Company from '../models/companies/companyModel';
 
 // ================================================ Endpoints starts here =========================================
 
@@ -432,7 +433,7 @@ const getOrdById = catchAsync(
 
 const inactiveOrdsByCompany = catchAsync(
 	async (req: Request, res: Response, next: NextFunction) => {
-		const idCompany = req.params.id;
+		const { idCompany } = req.params;
 
 		Object.values(ModelsOrdinary).forEach(async (Model) => {
 			await Model.updateMany(
@@ -448,6 +449,34 @@ const inactiveOrdsByCompany = catchAsync(
 		res.status(200).json({
 			status: true,
 			message: 'Se ha inactivado a todos los ordinarios con éxito',
+		});
+	}
+);
+
+const activeOrdsByCompany = catchAsync(
+	async (req: Request, res: Response, next: NextFunction) => {
+		const { idCompany } = req.params;
+
+		Object.values(ModelsOrdinary).forEach(async (Model) => {
+			await Model.updateMany(
+				{
+					$match: { $and: [{ companyID: idCompany }, { status: 'INACTIVO' }] },
+				},
+				{
+					$set: { status: 'ACTIVO' },
+				}
+			);
+		});
+
+		await Company.findByIdAndUpdate(
+			idCompany,
+			{ status: 'ACTIVO' },
+			{ new: true, validateBeforeSave: false }
+		);
+
+		res.status(200).json({
+			status: true,
+			message: 'Se ha activado a todos los ordinarios con éxito',
 		});
 	}
 );
@@ -705,6 +734,7 @@ export {
 	createOrdinary,
 	updateOrdinary,
 	inactiveOrdsByCompany,
+	activeOrdsByCompany,
 	uploadPerson,
 	uploadVehicle,
 	getVehicleNumber,

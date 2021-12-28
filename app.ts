@@ -51,11 +51,6 @@ app.use(
 );
 
 app.use(
-	'/pdf-contractors',
-	express.static(path.join(__dirname, '../store/documents/contractors'))
-);
-
-app.use(
 	'/pdf-ordinaries',
 	express.static(path.join(__dirname, '../store/documents/ordinaries'))
 );

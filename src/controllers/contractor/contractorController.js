@@ -58,7 +58,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.contractorsByCompany = exports.getPendingContractors = exports.addContractor = exports.inactiveOrdsByContractor = exports.getContractorNIT = exports.uploadContractorDocs = exports.rejectContractor = exports.updateContractor = exports.acceptContractor = exports.createContractor = exports.getContractor = exports.getAllContractors = void 0;
+exports.contractorsByCompany = exports.getPendingContractors = exports.addContractor = exports.activeOrdsByContractor = exports.inactiveOrdsByContractor = exports.getContractorNIT = exports.uploadContractorDocs = exports.rejectContractor = exports.updateContractor = exports.acceptContractor = exports.createContractor = exports.getContractor = exports.getAllContractors = void 0;
 var cron_1 = require("cron");
 // Own models
 var httpException_1 = __importDefault(require("../../utils/httpException"));
@@ -135,7 +135,7 @@ exports.getContractorNIT = getContractorNIT;
 var inactiveOrdsByContractor = (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     var idContractor;
     return __generator(this, function (_a) {
-        idContractor = req.params.id;
+        idContractor = req.params.idContractor;
         Object.values(ordinariesEnum_1.ModelsOrdinary).forEach(function (Model) { return __awaiter(void 0, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
@@ -160,18 +160,48 @@ var inactiveOrdsByContractor = (0, catchAsync_1.default)(function (req, res, nex
     });
 }); });
 exports.inactiveOrdsByContractor = inactiveOrdsByContractor;
-var job = new cron_1.CronJob('0 0 1 * *', function () { return __awaiter(void 0, void 0, void 0, function () {
-    var date;
+var activeOrdsByContractor = (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var idContractor;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                date = new Date();
-                date.setMonth(date.getMonth() - 1); //1 month ago
-                return [4 /*yield*/, contractorModel_1.default.updateMany({
-                        docSocialSecurityAt: { $lte: date },
-                    }, {
-                        $set: { status: 'REVISION', docSocialSecurityAt: null },
-                    })];
+                idContractor = req.params.idContractor;
+                Object.values(ordinariesEnum_1.ModelsOrdinary).forEach(function (Model) { return __awaiter(void 0, void 0, void 0, function () {
+                    return __generator(this, function (_a) {
+                        switch (_a.label) {
+                            case 0: return [4 /*yield*/, Model.updateMany({
+                                    $match: {
+                                        $and: [{ contractorID: idContractor }, { status: 'INACTIVO' }],
+                                    },
+                                }, {
+                                    $set: { status: 'ACTIVO' },
+                                })];
+                            case 1:
+                                _a.sent();
+                                return [2 /*return*/];
+                        }
+                    });
+                }); });
+                return [4 /*yield*/, contractorModel_1.default.findByIdAndUpdate(idContractor, { status: 'ACTIVO' }, { new: true, validateBeforeSave: false })];
+            case 1:
+                _a.sent();
+                res.status(200).json({
+                    status: true,
+                    message: 'Se ha activado a todos los ordinarios con éxito',
+                });
+                return [2 /*return*/];
+        }
+    });
+}); });
+exports.activeOrdsByContractor = activeOrdsByContractor;
+var job = new cron_1.CronJob('0 1 * * *', function () { return __awaiter(void 0, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, contractorModel_1.default.updateMany({
+                    docSocialSecurityAt: { $lte: Date.now() },
+                }, {
+                    $set: { status: 'REVISION', docSocialSecurityAt: null },
+                })];
             case 1:
                 _a.sent();
                 return [2 /*return*/];

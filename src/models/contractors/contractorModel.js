@@ -44,6 +44,7 @@ var validator_1 = __importDefault(require("validator"));
 var crypto_js_1 = __importDefault(require("crypto-js"));
 var crypto_1 = __importDefault(require("crypto"));
 var companyModel_1 = require("../companies/companyModel");
+var ordinariesEnum_1 = require("../../interfaces/ordinaries/ordinariesEnum");
 // Definying the schema
 var ContractorSchema = new mongoose_1.Schema({
     businessName: {
@@ -93,9 +94,6 @@ var ContractorSchema = new mongoose_1.Schema({
         type: String,
     },
     radicado: {
-        type: String,
-    },
-    password: {
         type: String,
     },
     status: {
@@ -173,4 +171,33 @@ ContractorSchema.methods.decryptPassword = function (hashedPassword) {
         });
     });
 };
+ContractorSchema.pre('save', function (next) {
+    return __awaiter(this, void 0, void 0, function () {
+        var idContractor_1;
+        var _this = this;
+        return __generator(this, function (_a) {
+            if (this.isModified('status') && this.status === 'REVISION') {
+                idContractor_1 = this._id;
+                Object.values(ordinariesEnum_1.ModelsOrdinary).forEach(function (Model) { return __awaiter(_this, void 0, void 0, function () {
+                    return __generator(this, function (_a) {
+                        switch (_a.label) {
+                            case 0: return [4 /*yield*/, Model.updateMany({
+                                    $match: {
+                                        $and: [{ contractorID: idContractor_1 }, { status: 'ACTIVO' }],
+                                    },
+                                }, {
+                                    $set: { status: 'INACTIVO' },
+                                })];
+                            case 1:
+                                _a.sent();
+                                return [2 /*return*/];
+                        }
+                    });
+                }); });
+            }
+            next();
+            return [2 /*return*/];
+        });
+    });
+});
 exports.default = (0, mongoose_1.model)('contractor', ContractorSchema);

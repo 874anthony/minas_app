@@ -3,6 +3,7 @@ import validator from 'validator';
 
 import CryptoJS from 'crypto-js';
 import crypto from 'crypto';
+import { ModelsOrdinary } from '../../interfaces/ordinaries/ordinariesEnum';
 
 export enum StatusCompany {
 	Active = 'ACTIVO',
@@ -161,5 +162,24 @@ CompanySchema.methods.decryptPassword = async function (hashedPassword) {
 		process.env.PASSWORD_PHARAPRHASE!
 	).toString(CryptoJS.enc.Utf8);
 };
+
+CompanySchema.pre('save', async function (next) {
+	if (this.isModified('status') && this.status === 'REVISION') {
+		const idCompany = this._id;
+
+		Object.values(ModelsOrdinary).forEach(async (Model) => {
+			await Model.updateMany(
+				{
+					$match: { $and: [{ companyID: idCompany }, { status: 'ACTIVO' }] },
+				},
+				{
+					$set: { status: 'INACTIVO' },
+				}
+			);
+		});
+	}
+
+	next();
+});
 
 export default model<CompanyInterface>('company', CompanySchema);

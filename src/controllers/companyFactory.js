@@ -225,7 +225,6 @@ var createOne = function (Model) {
                             month: date_1.months[new Date().getMonth()],
                             filename: req.files['docSocialSecurity'][0].filename,
                         };
-                        body['docSocialSecurityAt'] = Date.now();
                     }
                     return [4 /*yield*/, Model.create(body)];
                 case 5:
@@ -265,7 +264,6 @@ var updateOne = function (Model) {
                             month: date_1.months[new Date().getMonth()],
                             filename: req.files['docSocialSecurity'][0].filename,
                         };
-                        body['docSocialSecurityAt'] = Date.now();
                     }
                     Object.keys(body).forEach(function (key) { return __awaiter(void 0, void 0, void 0, function () {
                         return __generator(this, function (_a) {

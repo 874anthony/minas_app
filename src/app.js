@@ -45,7 +45,6 @@ if (process.env.NODE_ENV === 'development') {
 }
 // Defining the static files
 app.use('/pdf-companies', express_1.default.static(path_1.default.join(__dirname, '../store/documents/company')));
-app.use('/pdf-contractors', express_1.default.static(path_1.default.join(__dirname, '../store/documents/contractors')));
 app.use('/pdf-ordinaries', express_1.default.static(path_1.default.join(__dirname, '../store/documents/ordinaries')));
 app.set('view engine', 'ejs');
 app.set('views', __dirname + "/views");

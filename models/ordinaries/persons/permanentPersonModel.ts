@@ -82,11 +82,11 @@ const PermanentPersonSchema = new Schema({
 	},
 	maxAuthorizationDate: Date,
 	qrCodeDate: Date,
-	requestedTime: Date,
 	ordinaryType: {
 		type: String,
 		default: 'permanentPerson',
 	},
+	reasonDescription: String,
 	licenseVigency: Date,
 	accessType: String,
 	updatedAt: {

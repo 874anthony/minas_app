@@ -94,18 +94,14 @@ var getCompanyNIT = factory.getCompanyNIT(companyModel_1.default);
 exports.getCompanyNIT = getCompanyNIT;
 var loginCompany = (0, authController_1.login)(companyModel_1.default);
 exports.loginCompany = loginCompany;
-var job = new cron_1.CronJob('0 0 1 * *', function () { return __awaiter(void 0, void 0, void 0, function () {
-    var date;
+var job = new cron_1.CronJob('0 1 * * *', function () { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0:
-                date = new Date();
-                date.setMonth(date.getMonth() - 1); //1 month ago
-                return [4 /*yield*/, companyModel_1.default.updateMany({
-                        docSocialSecurityAt: { $lte: date },
-                    }, {
-                        $set: { status: 'REVISION', docSocialSecurityAt: null },
-                    })];
+            case 0: return [4 /*yield*/, companyModel_1.default.updateMany({
+                    docSocialSecurityAt: { $lte: Date.now() },
+                }, {
+                    $set: { status: 'REVISION', docSocialSecurityAt: null },
+                })];
             case 1:
                 _a.sent();
                 return [2 /*return*/];
