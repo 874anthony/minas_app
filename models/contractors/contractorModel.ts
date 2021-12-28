@@ -6,6 +6,7 @@ import crypto from 'crypto';
 
 import { StatusCompany } from '../companies/companyModel';
 import { CompanyInterface } from '../companies/companyModel';
+import { ModelsOrdinary } from '../../interfaces/ordinaries/ordinariesEnum';
 
 export interface ContractorInterface extends Schema, CompanyInterface {
 	companyID: Schema.Types.ObjectId;
@@ -60,9 +61,6 @@ const ContractorSchema: Schema<ContractorInterface> = new Schema({
 		type: String,
 	},
 	radicado: {
-		type: String,
-	},
-	password: {
 		type: String,
 	},
 	status: {
@@ -142,5 +140,26 @@ ContractorSchema.methods.decryptPassword = async function (hashedPassword) {
 		process.env.PASSWORD_PHARAPRHASE!
 	).toString(CryptoJS.enc.Utf8);
 };
+
+ContractorSchema.pre('save', async function (next) {
+	if (this.isModified('status') && this.status === 'REVISION') {
+		const idContractor = this._id;
+
+		Object.values(ModelsOrdinary).forEach(async (Model) => {
+			await Model.updateMany(
+				{
+					$match: {
+						$and: [{ contractorID: idContractor }, { status: 'ACTIVO' }],
+					},
+				},
+				{
+					$set: { status: 'INACTIVO' },
+				}
+			);
+		});
+	}
+
+	next();
+});
 
 export default model<ContractorInterface>('contractor', ContractorSchema);

@@ -50,7 +50,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.exportExcelVehicle = exports.exportExcelPerson = exports.getVehicleNumber = exports.uploadVehicle = exports.uploadPerson = exports.inactiveOrdsByCompany = exports.updateOrdinary = exports.createOrdinary = exports.getOrdById = exports.getAllOrds = exports.checkContractorID = exports.checkCompanyID = exports.getOrdinaryCitizenship = void 0;
+exports.exportExcelVehicle = exports.exportExcelPerson = exports.getVehicleNumber = exports.uploadVehicle = exports.uploadPerson = exports.activeOrdsByCompany = exports.inactiveOrdsByCompany = exports.updateOrdinary = exports.createOrdinary = exports.getOrdById = exports.getAllOrds = exports.checkContractorID = exports.checkCompanyID = exports.getOrdinaryCitizenship = void 0;
 var exceljs_1 = __importDefault(require("exceljs"));
 var fs_1 = __importDefault(require("fs"));
 // Importing our utils to this controller
@@ -67,6 +67,7 @@ var userModel_1 = __importDefault(require("../models/users/userModel"));
 var workflowModel_1 = __importDefault(require("../models/workflows/workflowModel"));
 var eventsModel_1 = __importDefault(require("../models/events/eventsModel"));
 var trdOrdinary_1 = __importDefault(require("../models/trd/trdOrdinary"));
+var companyModel_1 = __importDefault(require("../models/companies/companyModel"));
 // ================================================ Endpoints starts here =========================================
 // UPLOADS MIDDLEWARES
 // const uploadAttached = uploadOrdinaryPerson.single()
@@ -456,7 +457,7 @@ exports.getOrdById = getOrdById;
 var inactiveOrdsByCompany = (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     var idCompany;
     return __generator(this, function (_a) {
-        idCompany = req.params.id;
+        idCompany = req.params.idCompany;
         Object.values(ordinariesEnum_1.ModelsOrdinary).forEach(function (Model) { return __awaiter(void 0, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
@@ -479,6 +480,38 @@ var inactiveOrdsByCompany = (0, catchAsync_1.default)(function (req, res, next) 
     });
 }); });
 exports.inactiveOrdsByCompany = inactiveOrdsByCompany;
+var activeOrdsByCompany = (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var idCompany;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                idCompany = req.params.idCompany;
+                Object.values(ordinariesEnum_1.ModelsOrdinary).forEach(function (Model) { return __awaiter(void 0, void 0, void 0, function () {
+                    return __generator(this, function (_a) {
+                        switch (_a.label) {
+                            case 0: return [4 /*yield*/, Model.updateMany({
+                                    $match: { $and: [{ companyID: idCompany }, { status: 'INACTIVO' }] },
+                                }, {
+                                    $set: { status: 'ACTIVO' },
+                                })];
+                            case 1:
+                                _a.sent();
+                                return [2 /*return*/];
+                        }
+                    });
+                }); });
+                return [4 /*yield*/, companyModel_1.default.findByIdAndUpdate(idCompany, { status: 'ACTIVO' }, { new: true, validateBeforeSave: false })];
+            case 1:
+                _a.sent();
+                res.status(200).json({
+                    status: true,
+                    message: 'Se ha activado a todos los ordinarios con éxito',
+                });
+                return [2 /*return*/];
+        }
+    });
+}); });
+exports.activeOrdsByCompany = activeOrdsByCompany;
 var exportExcelPerson = (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     var workbook, sheet, path, extension, predicate, ordinariesPromises, ordinaries, error_3;
     var _a;

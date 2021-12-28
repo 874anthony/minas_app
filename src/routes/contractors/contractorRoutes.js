@@ -35,12 +35,14 @@ var permanentheavyVehicleRoutes_1 = __importDefault(require("../ordinaries/vehic
 var punctuallightVehicleRoutes_1 = __importDefault(require("../ordinaries/vehicles/light/punctuallightVehicleRoutes"));
 var punctualheavyVehicleRoutes_1 = __importDefault(require("../ordinaries/vehicles/heavy/punctualheavyVehicleRoutes"));
 var specialpunctualheavyVehicleRoutes_1 = __importDefault(require("../ordinaries/vehicles/heavy/specialpunctualheavyVehicleRoutes"));
+var ordinariesRoutes_1 = __importDefault(require("../ordinaries/ordinariesRoutes"));
 // Enabling the mergeParams to get access to the idCompany
 var router = express_1.default.Router({ mergeParams: true });
 router
     .route('/')
     .get(contractorController.contractorsByCompany, contractorController.getAllContractors)
     .post(contractorController.uploadContractorDocs, contractorController.addContractor, contractorController.createContractor);
+router.use('/:idContractor/ordinaries', ordinariesRoutes_1.default);
 router.use('/:idContractor/ordinaries-person/permanent-person', permanentPersonRoutes_1.default);
 router.use('/:idContractor/ordinaries-person/punctual-work-person', punctualworkPersonRoutes_1.default);
 router.use('/:idContractor/ordinaries-person/special-work-person', specialworkPersonRoutes_1.default);

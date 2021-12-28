@@ -34,7 +34,9 @@ router
     .route('/ordinaries-by-contractor/:idContractor')
     .get(ordinaryFactory.checkContractorID, ordinaryFactory.getAllOrds);
 router.route('/inactivate-all').put(ordinaryFactory.inactiveOrdsByCompany);
+router.route('/activate-all').put(ordinaryFactory.activeOrdsByCompany);
 router.route('/inactivate-all-contractors').put(contractorController_1.inactiveOrdsByContractor);
+router.route('/activate-all-contractors').put(contractorController_1.activeOrdsByContractor);
 router.route('/generate-report-persons').get(ordinaryFactory.exportExcelPerson);
 router
     .route('/generate-report-vehicles')

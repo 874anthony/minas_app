@@ -13,6 +13,7 @@ import permanentHeavyVehicleRouter from '../ordinaries/vehicles/heavy/permanenth
 import punctualLightVehicleRouter from '../ordinaries/vehicles/light/punctuallightVehicleRoutes';
 import punctualHeavyVehicleRouter from '../ordinaries/vehicles/heavy/punctualheavyVehicleRoutes';
 import specialpunctualHeavyVehicleRouter from '../ordinaries/vehicles/heavy/specialpunctualheavyVehicleRoutes';
+import ordinariesRouter from '../ordinaries/ordinariesRoutes';
 
 // Enabling the mergeParams to get access to the idCompany
 const router = express.Router({ mergeParams: true });
@@ -28,6 +29,8 @@ router
 		contractorController.addContractor,
 		contractorController.createContractor
 	);
+
+router.use('/:idContractor/ordinaries', ordinariesRouter);
 
 router.use(
 	'/:idContractor/ordinaries-person/permanent-person',

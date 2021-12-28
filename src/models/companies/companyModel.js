@@ -44,6 +44,7 @@ var mongoose_1 = require("mongoose");
 var validator_1 = __importDefault(require("validator"));
 var crypto_js_1 = __importDefault(require("crypto-js"));
 var crypto_1 = __importDefault(require("crypto"));
+var ordinariesEnum_1 = require("../../interfaces/ordinaries/ordinariesEnum");
 var StatusCompany;
 (function (StatusCompany) {
     StatusCompany["Active"] = "ACTIVO";
@@ -176,4 +177,31 @@ CompanySchema.methods.decryptPassword = function (hashedPassword) {
         });
     });
 };
+CompanySchema.pre('save', function (next) {
+    return __awaiter(this, void 0, void 0, function () {
+        var idCompany_1;
+        var _this = this;
+        return __generator(this, function (_a) {
+            if (this.isModified('status') && this.status === 'REVISION') {
+                idCompany_1 = this._id;
+                Object.values(ordinariesEnum_1.ModelsOrdinary).forEach(function (Model) { return __awaiter(_this, void 0, void 0, function () {
+                    return __generator(this, function (_a) {
+                        switch (_a.label) {
+                            case 0: return [4 /*yield*/, Model.updateMany({
+                                    $match: { $and: [{ companyID: idCompany_1 }, { status: 'ACTIVO' }] },
+                                }, {
+                                    $set: { status: 'INACTIVO' },
+                                })];
+                            case 1:
+                                _a.sent();
+                                return [2 /*return*/];
+                        }
+                    });
+                }); });
+            }
+            next();
+            return [2 /*return*/];
+        });
+    });
+});
 exports.default = (0, mongoose_1.model)('company', CompanySchema);

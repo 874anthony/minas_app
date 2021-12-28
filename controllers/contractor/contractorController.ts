@@ -89,7 +89,7 @@ const getContractorNIT = companyFactory.getCompanyNIT(Contractor);
 
 const inactiveOrdsByContractor = catchAsync(
 	async (req: Request, res: Response, next: NextFunction) => {
-		const idContractor = req.params.id;
+		const { idContractor } = req.params;
 
 		Object.values(ModelsOrdinary).forEach(async (Model) => {
 			await Model.updateMany(
@@ -111,15 +111,42 @@ const inactiveOrdsByContractor = catchAsync(
 	}
 );
 
-const job = new CronJob(
-	'0 0 1 * *',
-	async () => {
-		const date = new Date();
-		date.setMonth(date.getMonth() - 1); //1 month ago
+const activeOrdsByContractor = catchAsync(
+	async (req: Request, res: Response, next: NextFunction) => {
+		const { idContractor } = req.params;
 
+		Object.values(ModelsOrdinary).forEach(async (Model) => {
+			await Model.updateMany(
+				{
+					$match: {
+						$and: [{ contractorID: idContractor }, { status: 'INACTIVO' }],
+					},
+				},
+				{
+					$set: { status: 'ACTIVO' },
+				}
+			);
+		});
+
+		await Contractor.findByIdAndUpdate(
+			idContractor,
+			{ status: 'ACTIVO' },
+			{ new: true, validateBeforeSave: false }
+		);
+
+		res.status(200).json({
+			status: true,
+			message: 'Se ha activado a todos los ordinarios con éxito',
+		});
+	}
+);
+
+const job = new CronJob(
+	'0 1 * * *',
+	async () => {
 		await Contractor.updateMany(
 			{
-				docSocialSecurityAt: { $lte: date },
+				docSocialSecurityAt: { $lte: Date.now() },
 			},
 			{
 				$set: { status: 'REVISION', docSocialSecurityAt: null },
@@ -141,6 +168,7 @@ export {
 	uploadContractorDocs,
 	getContractorNIT,
 	inactiveOrdsByContractor,
+	activeOrdsByContractor,
 	addContractor,
 	getPendingContractors,
 	contractorsByCompany,

@@ -1,5 +1,8 @@
 import express from 'express';
-import { inactiveOrdsByContractor } from '../../controllers/contractor/contractorController';
+import {
+	activeOrdsByContractor,
+	inactiveOrdsByContractor,
+} from '../../controllers/contractor/contractorController';
 
 import * as ordinaryFactory from '../../controllers/ordinaryFactory';
 
@@ -14,7 +17,10 @@ router
 	.get(ordinaryFactory.checkContractorID, ordinaryFactory.getAllOrds);
 
 router.route('/inactivate-all').put(ordinaryFactory.inactiveOrdsByCompany);
+router.route('/activate-all').put(ordinaryFactory.activeOrdsByCompany);
+
 router.route('/inactivate-all-contractors').put(inactiveOrdsByContractor);
+router.route('/activate-all-contractors').put(activeOrdsByContractor);
 
 router.route('/generate-report-persons').get(ordinaryFactory.exportExcelPerson);
 router

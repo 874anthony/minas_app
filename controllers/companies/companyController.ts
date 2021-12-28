@@ -39,14 +39,11 @@ const getCompanyNIT = factory.getCompanyNIT(Company);
 const loginCompany = login(Company);
 
 const job = new CronJob(
-	'0 0 1 * *',
+	'0 1 * * *',
 	async () => {
-		const date = new Date();
-		date.setMonth(date.getMonth() - 1); //1 month ago
-
 		await Company.updateMany(
 			{
-				docSocialSecurityAt: { $lte: date },
+				docSocialSecurityAt: { $lte: Date.now() },
 			},
 			{
 				$set: { status: 'REVISION', docSocialSecurityAt: null },
