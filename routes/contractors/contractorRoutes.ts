@@ -14,7 +14,7 @@ import permanentLightVehicleRouter from '../ordinaries/vehicles/light/permanentl
 import permanentHeavyVehicleRouter from '../ordinaries/vehicles/heavy/permanentheavyVehicleRoutes';
 import punctualLightVehicleRouter from '../ordinaries/vehicles/light/punctuallightVehicleRoutes';
 import punctualHeavyVehicleRouter from '../ordinaries/vehicles/heavy/punctualheavyVehicleRoutes';
-import specialpunctualHeavyVehicleRouter from '../ordinaries/vehicles/heavy/specialpunctualheavyVehicleRoutes';
+import specialHeavyVehicleRouter from '../ordinaries/vehicles/heavy/specialheavyVehicleRoutes';
 // Machinery
 import permanentMachineryRouter from '../ordinaries/machinery/permanentMachineryRoutes';
 import punctualMachineryRouter from '../ordinaries/machinery/punctualMachineryRoutes';
@@ -76,8 +76,8 @@ router.use(
 	punctualHeavyVehicleRouter
 );
 router.use(
-	'/:idContractor/ordinaries-vehicle/special-punctual-heavy-vehicle',
-	specialpunctualHeavyVehicleRouter
+	'/:idContractor/ordinaries-vehicle/special-heavy-vehicle',
+	specialHeavyVehicleRouter
 );
 router.use(
 	'/:idContractor/ordinaries-machinery/permanent-machinery',

@@ -36,7 +36,7 @@ var permanentlightVehicleRoutes_1 = __importDefault(require("../ordinaries/vehic
 var permanentheavyVehicleRoutes_1 = __importDefault(require("../ordinaries/vehicles/heavy/permanentheavyVehicleRoutes"));
 var punctuallightVehicleRoutes_1 = __importDefault(require("../ordinaries/vehicles/light/punctuallightVehicleRoutes"));
 var punctualheavyVehicleRoutes_1 = __importDefault(require("../ordinaries/vehicles/heavy/punctualheavyVehicleRoutes"));
-var specialpunctualheavyVehicleRoutes_1 = __importDefault(require("../ordinaries/vehicles/heavy/specialpunctualheavyVehicleRoutes"));
+var specialheavyVehicleRoutes_1 = __importDefault(require("../ordinaries/vehicles/heavy/specialheavyVehicleRoutes"));
 // Machinery
 var permanentMachineryRoutes_1 = __importDefault(require("../ordinaries/machinery/permanentMachineryRoutes"));
 var punctualMachineryRoutes_1 = __importDefault(require("../ordinaries/machinery/punctualMachineryRoutes"));
@@ -57,7 +57,7 @@ router.use('/:idContractor/ordinaries-vehicle/permanent-light-vehicle', permanen
 router.use('/:idContractor/ordinaries-vehicle/permanent-heavy-vehicle', permanentheavyVehicleRoutes_1.default);
 router.use('/:idContractor/ordinaries-vehicle/punctual-light-vehicle', punctuallightVehicleRoutes_1.default);
 router.use('/:idContractor/ordinaries-vehicle/punctual-heavy-vehicle', punctualheavyVehicleRoutes_1.default);
-router.use('/:idContractor/ordinaries-vehicle/special-punctual-heavy-vehicle', specialpunctualheavyVehicleRoutes_1.default);
+router.use('/:idContractor/ordinaries-vehicle/special-heavy-vehicle', specialheavyVehicleRoutes_1.default);
 router.use('/:idContractor/ordinaries-machinery/permanent-machinery', permanentMachineryRoutes_1.default);
 router.use('/:idContractor/ordinaries-machinery/punctual-machinery', punctualMachineryRoutes_1.default);
 // Custom routes

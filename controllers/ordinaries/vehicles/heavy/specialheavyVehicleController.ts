@@ -1,19 +1,19 @@
 // Importing own models
-import SpecialPunctualHeavyVehicleModel from '../../../../models/ordinaries/vehicles/heavy/specialpunctualheavyVehicleModel';
+import SpecialHeavyVehicleModel from '../../../../models/ordinaries/vehicles/heavy/specialheavyVehicleModel';
 import CronJob from '../../../../utils/cronJob';
 import { UserRoles } from '../../../../models/users/userModel';
 
 // Importing the factory
 import * as ordinaryFactory from '../../../ordinaryFactory';
 
-const uploadSpecialPunctualHeavyVehicles = ordinaryFactory.uploadVehicle;
+const uploadSpecialHeavyVehicles = ordinaryFactory.uploadVehicle;
 
 const getVehicleNumber = ordinaryFactory.getVehicleNumber(
-	SpecialPunctualHeavyVehicleModel
+	SpecialHeavyVehicleModel
 );
 
-const createSpecialPunctualHeavyVehicle = ordinaryFactory.createOrdinary(
-	SpecialPunctualHeavyVehicleModel,
+const createSpecialHeavyVehicle = ordinaryFactory.createOrdinary(
+	SpecialHeavyVehicleModel,
 	[UserRoles.AccessControl, UserRoles.SISO, UserRoles.Auditing],
 	{
 		checkAccessControl: false,
@@ -27,17 +27,17 @@ const createSpecialPunctualHeavyVehicle = ordinaryFactory.createOrdinary(
 	}
 );
 
-const updateSpecialPunctualHeavyVehicle = ordinaryFactory.updateOrdinary(
-	SpecialPunctualHeavyVehicleModel
+const updateSpecialHeavyVehicle = ordinaryFactory.updateOrdinary(
+	SpecialHeavyVehicleModel
 );
 
 // Cron Job to verify if Date.now() > qrCodeDate
-const job = CronJob(SpecialPunctualHeavyVehicleModel);
+const job = CronJob(SpecialHeavyVehicleModel);
 job.start();
 
 export {
-	createSpecialPunctualHeavyVehicle,
-	updateSpecialPunctualHeavyVehicle,
+	createSpecialHeavyVehicle,
+	updateSpecialHeavyVehicle,
 	getVehicleNumber,
-	uploadSpecialPunctualHeavyVehicles,
+	uploadSpecialHeavyVehicles,
 };

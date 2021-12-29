@@ -63,7 +63,7 @@ exports.ModelsOrdinary = {
     punctualLightVehicle: ordinariesModels.PunctualLightVehicle,
     permanentHeavyVehicle: ordinariesModels.PermanentHeavyVehicle,
     punctualHeavyVehicle: ordinariesModels.PunctualHeavyVehicle,
-    specialHeavyVehicle: ordinariesModels.SpecialPunctualHeavyVehicle,
+    specialHeavyVehicle: ordinariesModels.SpecialHeavyVehicle,
     // Machinery
     permanentMachinery: ordinariesModels.PermanentMachinery,
     punctualMachinery: ordinariesModels.PunctualMachinery,
@@ -80,7 +80,7 @@ exports.VehiclesOrdinary = {
     punctualLightVehicle: ordinariesModels.PunctualLightVehicle,
     permanentHeavyVehicle: ordinariesModels.PermanentHeavyVehicle,
     punctualHeavyVehicle: ordinariesModels.PunctualHeavyVehicle,
-    specialHeavyVehicle: ordinariesModels.SpecialPunctualHeavyVehicle,
+    specialHeavyVehicle: ordinariesModels.SpecialHeavyVehicle,
     permanentMachinery: ordinariesModels.PermanentMachinery,
     punctualMachinery: ordinariesModels.PunctualMachinery,
 };

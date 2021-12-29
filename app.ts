@@ -17,16 +17,6 @@ import userRouter from './routes/users/userRoutes';
 import workflowRouter from './routes/ordinaries/workflowRoutes';
 import eventRouter from './routes/events/eventsRoutes';
 import ordinaryRouter from './routes/ordinaries/ordinariesRoutes';
-import permanentPersonRouter from './routes/ordinaries/persons/permanentPersonRoutes';
-import punctualworkPersonRouter from './routes/ordinaries/persons/punctualworkPersonRoutes';
-import visitorPersonRouter from './routes/ordinaries/persons/visitorPersonRoutes';
-import specialworkPersonRouter from './routes/ordinaries/persons/specialworkPersonRoutes';
-import visitorVehicleRouter from './routes/ordinaries/vehicles/light/visitorlightVehicleRoutes';
-import permanentLightVehicleRouter from './routes/ordinaries/vehicles/light/permanentlightVehicleRoutes';
-import permanentHeavyVehicleRouter from './routes/ordinaries/vehicles/heavy/permanentheavyVehicleRoutes';
-import punctualLightVehicleRouter from './routes/ordinaries/vehicles/light/punctuallightVehicleRoutes';
-import punctualHeavyVehicleRouter from './routes/ordinaries/vehicles/heavy/punctualheavyVehicleRoutes';
-import specialpunctualHeavyVehicleRouter from './routes/ordinaries/vehicles/heavy/specialpunctualheavyVehicleRoutes';
 
 const app = express();
 
