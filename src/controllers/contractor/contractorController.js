@@ -114,7 +114,9 @@ var getAllContractors = (0, catchAsync_1.default)(function (req, res, next) { re
                 }
                 return [2 /*return*/, res.status(200).json({
                         status: true,
-                        contractors: contractors,
+                        data: {
+                            contractors: contractors,
+                        },
                     })];
         }
     });

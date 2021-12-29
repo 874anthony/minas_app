@@ -628,8 +628,8 @@ const exportExcelVehicle = catchAsync(
 			{ header: 'Fecha fin labores', key: 'finishDates', width: 20 },
 			{ header: 'Contratista ', key: 'nameCompany', width: 20 },
 			{ header: 'Subcontratista ', key: 'nameContractor', width: 20 },
-			{ header: 'MAQ/VEHI', key: 'type', width: 20 },
-			{ header: 'Tipo', key: 'vehicleType', width: 20 },
+			{ header: 'MAQ/VEHI', key: 'maqVehi', width: 20 },
+			{ header: 'Tipo', key: 'type', width: 20 },
 			{ header: 'Placa/número de serie', key: 'vehicleNumber', width: 20 },
 			{ header: 'Tipo de ingreso', key: 'accessType', width: 20 },
 			{ header: 'Tipo de servicio', key: 'serviceType', width: 20 },
@@ -667,6 +667,7 @@ const exportExcelVehicle = catchAsync(
 		ordinaries.flat().forEach((ordinary) => {
 			let nameCompany;
 			let nameContractor;
+			let maqVehi;
 
 			if (Object.keys(ordinary['_doc']).includes('companyID')) {
 				nameCompany = ordinary['_doc']['companyID'].businessName;
@@ -677,10 +678,17 @@ const exportExcelVehicle = catchAsync(
 					ordinary['_doc']['contractorID'].companyID['businessName'];
 			}
 
+			if (ordinary['_doc']['ordinaryType'] === 'permanentMachinery') {
+				maqVehi = 'Maquinaria pesada';
+			} else {
+				maqVehi = ordinary['_doc']['vehicleType'];
+			}
+
 			const ordinaryExcel = {
 				...ordinary['_doc'],
 				nameCompany,
 				nameContractor,
+				maqVehi,
 			};
 
 			sheet.addRow(ordinaryExcel);
