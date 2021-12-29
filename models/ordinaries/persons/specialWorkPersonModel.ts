@@ -56,6 +56,7 @@ const SpecialWorkPersonSchema = new Schema({
 	docCraneOperator: String,
 	docSafeworkHeights: String,
 	docCompetenceCert: String,
+	docSISCONMP: String,
 	radicado: {
 		type: String,
 		default: 'Sin radicado',
@@ -87,7 +88,7 @@ const SpecialWorkPersonSchema = new Schema({
 	},
 	maxAuthorizationDate: Date,
 	qrCodeDate: Date,
-	requestedTime: Date,
+	reasonDescription: String,
 	ordinaryType: {
 		type: String,
 		default: 'specialworkPerson',

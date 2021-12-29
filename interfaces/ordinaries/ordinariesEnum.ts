@@ -27,6 +27,8 @@ export const getModelByType = {
 	permanentHeavyVehicle: 'Vehiculo pesado permanente',
 	punctualHeavyVehicle: 'Vehiculo pesado puntual',
 	specialpunctualHeavyVehicle: ' Vehiculo especial pesado',
+	permanentMachinery: ' Maquinaria pesada permanente',
+	punctualMachinery: ' Maquinaria pesada puntual',
 };
 
 export const ModelsOrdinary = {
@@ -42,6 +44,9 @@ export const ModelsOrdinary = {
 	permanentHeavyVehicle: ordinariesModels.PermanentHeavyVehicle,
 	punctualHeavyVehicle: ordinariesModels.PunctualHeavyVehicle,
 	specialpunctualHeavyVehicle: ordinariesModels.SpecialPunctualHeavyVehicle,
+	// Machinery
+	permanentMachinery: ordinariesModels.PermanentMachinery,
+	punctualMachinery: ordinariesModels.PunctualMachinery,
 };
 
 export const PersonsOrdinary = {
@@ -58,6 +63,8 @@ export const VehiclesOrdinary = {
 	permanentHeavyVehicle: ordinariesModels.PermanentHeavyVehicle,
 	punctualHeavyVehicle: ordinariesModels.PunctualHeavyVehicle,
 	specialpunctualHeavyVehicle: ordinariesModels.SpecialPunctualHeavyVehicle,
+	permanentMachinery: ordinariesModels.PermanentMachinery,
+	punctualMachinery: ordinariesModels.PunctualMachinery,
 };
 
 export interface StatusBody {

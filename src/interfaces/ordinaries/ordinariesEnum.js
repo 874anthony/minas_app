@@ -48,6 +48,8 @@ exports.getModelByType = {
     permanentHeavyVehicle: 'Vehiculo pesado permanente',
     punctualHeavyVehicle: 'Vehiculo pesado puntual',
     specialpunctualHeavyVehicle: ' Vehiculo especial pesado',
+    permanentMachinery: ' Maquinaria pesada permanente',
+    punctualMachinery: ' Maquinaria pesada puntual',
 };
 exports.ModelsOrdinary = {
     // Personas
@@ -62,6 +64,9 @@ exports.ModelsOrdinary = {
     permanentHeavyVehicle: ordinariesModels.PermanentHeavyVehicle,
     punctualHeavyVehicle: ordinariesModels.PunctualHeavyVehicle,
     specialpunctualHeavyVehicle: ordinariesModels.SpecialPunctualHeavyVehicle,
+    // Machinery
+    permanentMachinery: ordinariesModels.PermanentMachinery,
+    punctualMachinery: ordinariesModels.PunctualMachinery,
 };
 exports.PersonsOrdinary = {
     permanentPerson: ordinariesModels.PermanentPersonModel,
@@ -76,4 +81,6 @@ exports.VehiclesOrdinary = {
     permanentHeavyVehicle: ordinariesModels.PermanentHeavyVehicle,
     punctualHeavyVehicle: ordinariesModels.PunctualHeavyVehicle,
     specialpunctualHeavyVehicle: ordinariesModels.SpecialPunctualHeavyVehicle,
+    permanentMachinery: ordinariesModels.PermanentMachinery,
+    punctualMachinery: ordinariesModels.PunctualMachinery,
 };

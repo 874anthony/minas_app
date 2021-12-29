@@ -40,11 +40,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var mongoose_1 = require("mongoose");
-var date_1 = require("../../../../utils/date");
-var ordinariesEnum_1 = require("../../../../interfaces/ordinaries/ordinariesEnum");
-var eventsModel_1 = __importDefault(require("../../../events/eventsModel"));
+var date_1 = require("../../../utils/date");
+var ordinariesEnum_1 = require("../../../interfaces/ordinaries/ordinariesEnum");
+var eventsModel_1 = __importDefault(require("../../events/eventsModel"));
 // Definying the schema
-var PunctualHeavyVehicleSchema = new mongoose_1.Schema({
+var PermanentMachinerySchema = new mongoose_1.Schema({
     radicado: {
         type: String,
         default: 'Sin radicado',
@@ -68,44 +68,25 @@ var PunctualHeavyVehicleSchema = new mongoose_1.Schema({
         type: String,
         required: true,
     },
-    vehicleType: {
-        type: String,
-        required: true,
-    },
     vehicleNumber: {
         type: String,
         required: true,
         unique: true,
     },
+    reasonDescription: String,
     ordinaryType: {
         type: String,
-        default: 'punctualHeavyVehicle',
+        default: 'permanentMachinery',
     },
-    serviceType: {
-        type: String,
-        required: true,
-    },
-    accessType: String,
-    soatVigency: Date,
-    docSoat: String,
-    docPropertyCard: String,
-    docTechno: String,
     docInspectionVehicle: String,
     docMachineCard: String,
     docBill: String,
     docAduana: String,
-    docOperationCard: String,
-    docSISCONMP: String,
-    docVehicleListCheck: String,
-    docTeamCert: String,
-    docQualityCert: String,
-    technoVigency: Date,
-    operationCardVigency: Date,
     observations: [String],
     qrCodeDate: Date,
-    reasonDescription: String,
+    accessType: String,
 });
-PunctualHeavyVehicleSchema.pre('save', function (next) {
+PermanentMachinerySchema.pre('save', function (next) {
     if (this.isNew) {
         // const days = 3;
         // this.maxAuthorizationDate = addDate(this.recepcionDate, days);
@@ -113,7 +94,7 @@ PunctualHeavyVehicleSchema.pre('save', function (next) {
     }
     next();
 });
-PunctualHeavyVehicleSchema.pre('save', function (next) {
+PermanentMachinerySchema.pre('save', function (next) {
     return __awaiter(this, void 0, void 0, function () {
         var bodyEvent, qrCodeDays;
         return __generator(this, function (_a) {
@@ -138,4 +119,4 @@ PunctualHeavyVehicleSchema.pre('save', function (next) {
         });
     });
 });
-exports.default = (0, mongoose_1.model)('punctualheavy_vehicle', PunctualHeavyVehicleSchema);
+exports.default = (0, mongoose_1.model)('permanent_machinery', PermanentMachinerySchema);

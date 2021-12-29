@@ -63,13 +63,13 @@ const PunctualHeavyVehicleSchema = new Schema({
 	operationCardVigency: Date,
 	observations: [String],
 	qrCodeDate: Date,
-	requestedTime: Date,
+	reasonDescription: String,
 });
 
 PunctualHeavyVehicleSchema.pre('save', function (next) {
 	if (this.isNew) {
-		const days = 3;
-		this.maxAuthorizationDate = addDate(this.recepcionDate, days);
+		// const days = 3;
+		// this.maxAuthorizationDate = addDate(this.recepcionDate, days);
 
 		this.accessType = getModelByType[this.ordinaryType];
 	}

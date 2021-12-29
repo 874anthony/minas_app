@@ -96,6 +96,7 @@ var SpecialWorkPersonSchema = new mongoose_1.Schema({
     docCraneOperator: String,
     docSafeworkHeights: String,
     docCompetenceCert: String,
+    docSISCONMP: String,
     radicado: {
         type: String,
         default: 'Sin radicado',
@@ -126,7 +127,7 @@ var SpecialWorkPersonSchema = new mongoose_1.Schema({
     },
     maxAuthorizationDate: Date,
     qrCodeDate: Date,
-    requestedTime: Date,
+    reasonDescription: String,
     ordinaryType: {
         type: String,
         default: 'specialworkPerson',

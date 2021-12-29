@@ -3,16 +3,22 @@ import express from 'express';
 
 // Importing own routers
 import contractorRouter from '../../routes/contractors/contractorRoutes';
+// Persons
 import permanentPersonRouter from '../ordinaries/persons/permanentPersonRoutes';
 import punctualworkPersonRouter from '../ordinaries/persons/punctualworkPersonRoutes';
 import specialworkPersonRouter from '../ordinaries/persons/specialworkPersonRoutes';
 import visitorPersonRouter from '../ordinaries/persons/visitorPersonRoutes';
+// Vehicles
 import visitorVehicleRouter from '../ordinaries/vehicles/light/visitorlightVehicleRoutes';
 import permanentLightVehicleRouter from '../ordinaries/vehicles/light/permanentlightVehicleRoutes';
 import permanentHeavyVehicleRouter from '../ordinaries/vehicles/heavy/permanentheavyVehicleRoutes';
 import punctualLightVehicleRouter from '../ordinaries/vehicles/light/punctuallightVehicleRoutes';
 import punctualHeavyVehicleRouter from '../ordinaries/vehicles/heavy/punctualheavyVehicleRoutes';
 import specialpunctualHeavyVehicleRouter from '../ordinaries/vehicles/heavy/specialpunctualheavyVehicleRoutes';
+// Machinery
+import permanentMachineryRouter from '../ordinaries/machinery/permanentMachineryRoutes';
+import punctualMachineryRouter from '../ordinaries/machinery/punctualMachineryRoutes';
+
 import workflowRouter from '../ordinaries/workflowRoutes';
 import ordinariesRouter from '../ordinaries/ordinariesRoutes';
 
@@ -65,6 +71,15 @@ router.use(
 router.use(
 	'/:idCompany/ordinaries-vehicle/special-punctual-heavy-vehicle',
 	specialpunctualHeavyVehicleRouter
+);
+router.use(
+	'/:idCompany/ordinaries-machinery/permanent-machinery',
+	permanentMachineryRouter
+);
+
+router.use(
+	'/:idCompany/ordinaries-machinery/punctual-machinery',
+	punctualMachineryRouter
 );
 
 // Custom routes

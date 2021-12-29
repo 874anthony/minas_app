@@ -120,7 +120,7 @@ var PunctualWorkPersonSchema = new mongoose_1.Schema({
     },
     maxAuthorizationDate: Date,
     qrCodeDate: Date,
-    requestedTime: Date,
+    reasonDescription: String,
     ordinaryType: {
         type: String,
         default: 'punctualworkPerson',

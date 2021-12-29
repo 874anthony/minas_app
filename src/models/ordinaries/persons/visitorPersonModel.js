@@ -118,7 +118,7 @@ var VisitorPersonSchema = new mongoose_1.Schema({
     },
     maxAuthorizationDate: Date,
     qrCodeDate: Date,
-    requestedTime: Date,
+    reasonDescription: String,
     ordinaryType: {
         type: String,
         default: 'visitorPerson',

@@ -25,16 +25,21 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = __importDefault(require("express"));
 // Importing own controllers
 var contractorController = __importStar(require("../../controllers/contractor/contractorController"));
+// Persons
 var permanentPersonRoutes_1 = __importDefault(require("../ordinaries/persons/permanentPersonRoutes"));
 var punctualworkPersonRoutes_1 = __importDefault(require("../ordinaries/persons/punctualworkPersonRoutes"));
 var specialworkPersonRoutes_1 = __importDefault(require("../ordinaries/persons/specialworkPersonRoutes"));
 var visitorPersonRoutes_1 = __importDefault(require("../ordinaries/persons/visitorPersonRoutes"));
+// Vehicles
 var visitorlightVehicleRoutes_1 = __importDefault(require("../ordinaries/vehicles/light/visitorlightVehicleRoutes"));
 var permanentlightVehicleRoutes_1 = __importDefault(require("../ordinaries/vehicles/light/permanentlightVehicleRoutes"));
 var permanentheavyVehicleRoutes_1 = __importDefault(require("../ordinaries/vehicles/heavy/permanentheavyVehicleRoutes"));
 var punctuallightVehicleRoutes_1 = __importDefault(require("../ordinaries/vehicles/light/punctuallightVehicleRoutes"));
 var punctualheavyVehicleRoutes_1 = __importDefault(require("../ordinaries/vehicles/heavy/punctualheavyVehicleRoutes"));
 var specialpunctualheavyVehicleRoutes_1 = __importDefault(require("../ordinaries/vehicles/heavy/specialpunctualheavyVehicleRoutes"));
+// Machinery
+var permanentMachineryRoutes_1 = __importDefault(require("../ordinaries/machinery/permanentMachineryRoutes"));
+var punctualMachineryRoutes_1 = __importDefault(require("../ordinaries/machinery/punctualMachineryRoutes"));
 var ordinariesRoutes_1 = __importDefault(require("../ordinaries/ordinariesRoutes"));
 // Enabling the mergeParams to get access to the idCompany
 var router = express_1.default.Router({ mergeParams: true });
@@ -53,10 +58,10 @@ router.use('/:idContractor/ordinaries-vehicle/permanent-heavy-vehicle', permanen
 router.use('/:idContractor/ordinaries-vehicle/punctual-light-vehicle', punctuallightVehicleRoutes_1.default);
 router.use('/:idContractor/ordinaries-vehicle/punctual-heavy-vehicle', punctualheavyVehicleRoutes_1.default);
 router.use('/:idContractor/ordinaries-vehicle/special-punctual-heavy-vehicle', specialpunctualheavyVehicleRoutes_1.default);
+router.use('/:idContractor/ordinaries-machinery/permanent-machinery', permanentMachineryRoutes_1.default);
+router.use('/:idContractor/ordinaries-machinery/punctual-machinery', punctualMachineryRoutes_1.default);
 // Custom routes
-router
-    .route('/pending-contractors')
-    .get(contractorController.getPendingContractors, contractorController.getAllContractors);
+router.route('/all-contractors').get(contractorController.getAllContractors);
 // Routes with the id
 router
     .route('/:id')
