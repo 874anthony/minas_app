@@ -45,10 +45,13 @@ const VisitorlightVehicleSchema = new Schema({
 		type: String,
 		required: true,
 	},
-	soatVigency: Date,
 	docSoat: String,
-	docSISCONMP: String,
+	docPropertyCard: String,
+	docTechno: String,
 	docVehicleListCheck: String,
+
+	soatVigency: Date,
+
 	technoVigency: Date,
 	operationCardVigency: Date,
 	observations: [String],
