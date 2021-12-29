@@ -49,21 +49,15 @@ const PunctualHeavyVehicleSchema = new Schema({
 	docTechno: String,
 	docPropertyCard: String,
 	docOperationCard: String,
-	docVehicleListCheck: String,
 
 	accessType: String,
 	soatVigency: Date,
-	docInspectionVehicle: String,
-	docMachineCard: String,
-	docBill: String,
-	docAduana: String,
-	docTeamCert: String,
-	docQualityCert: String,
 	technoVigency: Date,
 	operationCardVigency: Date,
 	observations: [String],
 	qrCodeDate: Date,
 	reasonDescription: String,
+	attached: [String],
 });
 
 PunctualHeavyVehicleSchema.pre('save', function (next) {

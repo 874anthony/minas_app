@@ -53,15 +53,12 @@ const PermanentHeavyVehicleSchema = new Schema({
 	docVehicleListCheck: String,
 
 	accessType: String,
+	attached: [String],
 
 	soatVigency: Date,
-	docMachineCard: String,
-	docBill: String,
-	docAduana: String,
-	docTeamCert: String,
-	docQualityCert: String,
 	technoVigency: Date,
 	operationCardVigency: Date,
+
 	observations: [String],
 	qrCodeDate: Date,
 	reasonDescription: String,

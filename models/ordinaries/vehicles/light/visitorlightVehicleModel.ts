@@ -48,12 +48,12 @@ const VisitorlightVehicleSchema = new Schema({
 	docSoat: String,
 	docPropertyCard: String,
 	docTechno: String,
-	docVehicleListCheck: String,
 
 	soatVigency: Date,
-
 	technoVigency: Date,
 	operationCardVigency: Date,
+
+	attached: [String],
 	observations: [String],
 	qrCodeDate: Date,
 	reasonDescription: String,

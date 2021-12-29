@@ -41,7 +41,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var mongoose_1 = require("mongoose");
 var date_1 = require("../../../../utils/date");
-var ordinariesEnum_1 = require("../../../../interfaces/ordinaries/ordinariesEnum");
 var eventsModel_1 = __importDefault(require("../../../events/eventsModel"));
 // Definying the schema
 var SpecialPunctualHeavyVehicleSchema = new mongoose_1.Schema({
@@ -79,7 +78,7 @@ var SpecialPunctualHeavyVehicleSchema = new mongoose_1.Schema({
     },
     ordinaryType: {
         type: String,
-        default: 'specialpunctualHeavyVehicle',
+        default: 'specialHeavyVehicle',
     },
     serviceType: {
         type: String,
@@ -90,27 +89,23 @@ var SpecialPunctualHeavyVehicleSchema = new mongoose_1.Schema({
     docTechno: String,
     docOperationCard: String,
     docVehicleListCheck: String,
+    docInspectionVehicle: String,
     accessType: String,
+    attached: [String],
     soatVigency: Date,
-    docMachineCard: String,
-    docBill: String,
-    docAduana: String,
-    docTeamCert: String,
-    docQualityCert: String,
     technoVigency: Date,
     operationCardVigency: Date,
     observations: [String],
     qrCodeDate: Date,
     reasonDescription: String,
 });
-SpecialPunctualHeavyVehicleSchema.pre('save', function (next) {
-    if (this.isNew) {
-        // const days = 3;
-        // this.maxAuthorizationDate = addDate(this.recepcionDate, days);
-        this.accessType = ordinariesEnum_1.getModelByType[this.ordinaryType];
-    }
-    next();
-});
+// SpecialPunctualHeavyVehicleSchema.pre('save', function (next) {
+// if (this.isNew) {
+// // const days = 3;
+// // this.maxAuthorizationDate = addDate(this.recepcionDate, days);
+// }
+// next();
+// });
 SpecialPunctualHeavyVehicleSchema.pre('save', function (next) {
     return __awaiter(this, void 0, void 0, function () {
         var bodyEvent, qrCodeDays;
@@ -136,4 +131,4 @@ SpecialPunctualHeavyVehicleSchema.pre('save', function (next) {
         });
     });
 });
-exports.default = (0, mongoose_1.model)('specialpunctualheavy_vehicle', SpecialPunctualHeavyVehicleSchema);
+exports.default = (0, mongoose_1.model)('specialheavy_vehicle', SpecialPunctualHeavyVehicleSchema);
