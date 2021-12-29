@@ -9,7 +9,7 @@ import PermanentLightVehicle from './vehicles/light/permanentlightVehicleModel';
 import PermanentHeavyVehicle from './vehicles/heavy/permanentheavyVehicleModel';
 import PunctualLightVehicle from './vehicles/light/punctuallightVehicleModel';
 import PunctualHeavyVehicle from './vehicles/heavy/punctualheavyVehicleModel';
-import SpecialPunctualHeavyVehicle from './vehicles/heavy/specialpunctualheavyVehicleModel';
+import SpecialHeavyVehicle from './vehicles/heavy/specialheavyVehicleModel';
 // Machinery
 import PermanentMachinery from './machinery/permanentMachineryModel';
 import PunctualMachinery from './machinery/punctualMachineryModel';
@@ -26,7 +26,7 @@ export {
 	PunctualLightVehicle,
 	PermanentHeavyVehicle,
 	PunctualHeavyVehicle,
-	SpecialPunctualHeavyVehicle,
+	SpecialHeavyVehicle,
 	// Machinery
 	PermanentMachinery,
 	PunctualMachinery,

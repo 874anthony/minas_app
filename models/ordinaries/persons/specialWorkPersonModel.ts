@@ -49,14 +49,18 @@ const SpecialWorkPersonSchema = new Schema({
 	docSocialSecurity: String,
 	docMedicalFitness: String,
 	docCV: String,
+
 	docDrivingLicense: String,
 	docPsycho: String,
 	docDefDrivingLicense: String,
 	docDrivingTest: String,
 	docCraneOperator: String,
+
 	docSafeworkHeights: String,
 	docCompetenceCert: String,
+
 	docSISCONMP: String,
+
 	radicado: {
 		type: String,
 		default: 'Sin radicado',

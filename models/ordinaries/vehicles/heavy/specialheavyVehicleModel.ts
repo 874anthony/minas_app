@@ -39,42 +39,38 @@ const SpecialPunctualHeavyVehicleSchema = new Schema({
 	},
 	ordinaryType: {
 		type: String,
-		default: 'specialpunctualHeavyVehicle',
+		default: 'specialHeavyVehicle',
 	},
 	serviceType: {
 		type: String,
 		required: true,
 	},
-	accessType: String,
-	soatVigency: Date,
 	docSoat: String,
 	docPropertyCard: String,
 	docTechno: String,
-	docInspectionVehicle: String,
-	docMachineCard: String,
-	docBill: String,
-	docAduana: String,
 	docOperationCard: String,
-	docSISCONMP: String,
 	docVehicleListCheck: String,
-	docTeamCert: String,
-	docQualityCert: String,
+	docInspectionVehicle: String,
+
+	accessType: String,
+	attached: [String],
+
+	soatVigency: Date,
 	technoVigency: Date,
 	operationCardVigency: Date,
+
 	observations: [String],
 	qrCodeDate: Date,
 	reasonDescription: String,
 });
 
-SpecialPunctualHeavyVehicleSchema.pre('save', function (next) {
-	if (this.isNew) {
-		// const days = 3;
-		// this.maxAuthorizationDate = addDate(this.recepcionDate, days);
-
-		this.accessType = getModelByType[this.ordinaryType];
-	}
-	next();
-});
+// SpecialPunctualHeavyVehicleSchema.pre('save', function (next) {
+// if (this.isNew) {
+// // const days = 3;
+// // this.maxAuthorizationDate = addDate(this.recepcionDate, days);
+// }
+// next();
+// });
 
 SpecialPunctualHeavyVehicleSchema.pre('save', async function (next) {
 	if (this.isModified('status') && this.status === 'ACTIVO') {
@@ -92,7 +88,4 @@ SpecialPunctualHeavyVehicleSchema.pre('save', async function (next) {
 	next();
 });
 
-export default model(
-	'specialpunctualheavy_vehicle',
-	SpecialPunctualHeavyVehicleSchema
-);
+export default model('specialheavy_vehicle', SpecialPunctualHeavyVehicleSchema);

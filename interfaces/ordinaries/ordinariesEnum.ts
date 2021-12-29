@@ -26,7 +26,7 @@ export const getModelByType = {
 	punctualLightVehicle: 'Vehiculo liviano puntual',
 	permanentHeavyVehicle: 'Vehiculo pesado permanente',
 	punctualHeavyVehicle: 'Vehiculo pesado puntual',
-	specialpunctualHeavyVehicle: ' Vehiculo especial pesado',
+	specialHeavyVehicle: ' Vehiculo especial',
 	permanentMachinery: ' Maquinaria pesada permanente',
 	punctualMachinery: ' Maquinaria pesada puntual',
 };
@@ -43,7 +43,7 @@ export const ModelsOrdinary = {
 	punctualLightVehicle: ordinariesModels.PunctualLightVehicle,
 	permanentHeavyVehicle: ordinariesModels.PermanentHeavyVehicle,
 	punctualHeavyVehicle: ordinariesModels.PunctualHeavyVehicle,
-	specialpunctualHeavyVehicle: ordinariesModels.SpecialPunctualHeavyVehicle,
+	specialHeavyVehicle: ordinariesModels.SpecialHeavyVehicle,
 	// Machinery
 	permanentMachinery: ordinariesModels.PermanentMachinery,
 	punctualMachinery: ordinariesModels.PunctualMachinery,
@@ -62,7 +62,7 @@ export const VehiclesOrdinary = {
 	punctualLightVehicle: ordinariesModels.PunctualLightVehicle,
 	permanentHeavyVehicle: ordinariesModels.PermanentHeavyVehicle,
 	punctualHeavyVehicle: ordinariesModels.PunctualHeavyVehicle,
-	specialpunctualHeavyVehicle: ordinariesModels.SpecialPunctualHeavyVehicle,
+	specialHeavyVehicle: ordinariesModels.SpecialHeavyVehicle,
 	permanentMachinery: ordinariesModels.PermanentMachinery,
 	punctualMachinery: ordinariesModels.PunctualMachinery,
 };
