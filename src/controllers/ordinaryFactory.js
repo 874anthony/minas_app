@@ -657,8 +657,8 @@ var exportExcelVehicle = (0, catchAsync_1.default)(function (req, res, next) { r
                     { header: 'Fecha fin labores', key: 'finishDates', width: 20 },
                     { header: 'Contratista ', key: 'nameCompany', width: 20 },
                     { header: 'Subcontratista ', key: 'nameContractor', width: 20 },
-                    { header: 'MAQ/VEHI', key: 'type', width: 20 },
-                    { header: 'Tipo', key: 'vehicleType', width: 20 },
+                    { header: 'MAQ/VEHI', key: 'maqVehi', width: 20 },
+                    { header: 'Tipo', key: 'type', width: 20 },
                     { header: 'Placa/número de serie', key: 'vehicleNumber', width: 20 },
                     { header: 'Tipo de ingreso', key: 'accessType', width: 20 },
                     { header: 'Tipo de servicio', key: 'serviceType', width: 20 },
@@ -697,6 +697,7 @@ var exportExcelVehicle = (0, catchAsync_1.default)(function (req, res, next) { r
                 ordinaries.flat().forEach(function (ordinary) {
                     var nameCompany;
                     var nameContractor;
+                    var maqVehi;
                     if (Object.keys(ordinary['_doc']).includes('companyID')) {
                         nameCompany = ordinary['_doc']['companyID'].businessName;
                         nameContractor = 'No Aplica';
@@ -706,7 +707,13 @@ var exportExcelVehicle = (0, catchAsync_1.default)(function (req, res, next) { r
                         nameCompany =
                             ordinary['_doc']['contractorID'].companyID['businessName'];
                     }
-                    var ordinaryExcel = __assign(__assign({}, ordinary['_doc']), { nameCompany: nameCompany, nameContractor: nameContractor });
+                    if (ordinary['_doc']['ordinaryType'] === 'permanentMachinery') {
+                        maqVehi = 'Maquinaria pesada';
+                    }
+                    else {
+                        maqVehi = ordinary['_doc']['vehicleType'];
+                    }
+                    var ordinaryExcel = __assign(__assign({}, ordinary['_doc']), { nameCompany: nameCompany, nameContractor: nameContractor, maqVehi: maqVehi });
                     sheet.addRow(ordinaryExcel);
                 });
                 //Making the first line in excel bold

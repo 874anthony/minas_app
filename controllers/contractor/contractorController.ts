@@ -75,7 +75,9 @@ const getAllContractors = catchAsync(
 
 		return res.status(200).json({
 			status: true,
-			contractors,
+			data: {
+				contractors,
+			},
 		});
 	}
 );
