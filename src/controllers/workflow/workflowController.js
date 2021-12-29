@@ -98,6 +98,8 @@ var ModelsPerRole = {
         'punctualLightVehicle',
         'punctualHeavyVehicle',
         'specialpunctualHeavyVehicle',
+        'permanentMachinery',
+        'punctualMachinery',
     ],
     'Responsabilidad Social Empresarial': ['permanentPerson'],
     'Seguridad y Salud en el Trabajo': [
@@ -106,6 +108,8 @@ var ModelsPerRole = {
         'permanentLightVehicle',
         'permanentHeavyVehicle',
         'specialpunctualHeavyVehicle',
+        'permanentMachinery',
+        'punctualMachinery',
     ],
     'Seguridad Física': ['permanentPerson'],
     Interventoría: [
@@ -114,6 +118,8 @@ var ModelsPerRole = {
         'permanentLightVehicle',
         'permanentHeavyVehicle',
         'specialpunctualHeavyVehicle',
+        'permanentMachinery',
+        'punctualMachinery',
     ],
     'Gerencia Servicios Mineros': ['permanentPerson'],
 };
