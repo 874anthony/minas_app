@@ -1,10 +1,10 @@
 import { Schema, model } from 'mongoose';
-import { addDate } from '../../../../utils/date';
-import { getModelByType } from '../../../../interfaces/ordinaries/ordinariesEnum';
-import Event from '../../../events/eventsModel';
+import { addDate } from '../../../utils/date';
+import { getModelByType } from '../../../interfaces/ordinaries/ordinariesEnum';
+import Event from '../../events/eventsModel';
 
 // Definying the schema
-const SpecialPunctualHeavyVehicleSchema = new Schema({
+const PunctualMachinerySchema = new Schema({
 	radicado: {
 		type: String,
 		default: 'Sin radicado',
@@ -28,45 +28,26 @@ const SpecialPunctualHeavyVehicleSchema = new Schema({
 		type: String,
 		required: true,
 	},
-	vehicleType: {
-		type: String,
-		required: true,
-	},
 	vehicleNumber: {
 		type: String,
 		required: true,
 		unique: true,
 	},
+	reasonDescription: String,
 	ordinaryType: {
 		type: String,
-		default: 'specialpunctualHeavyVehicle',
+		default: 'punctualMachinery',
 	},
-	serviceType: {
-		type: String,
-		required: true,
-	},
-	accessType: String,
-	soatVigency: Date,
-	docSoat: String,
-	docPropertyCard: String,
-	docTechno: String,
 	docInspectionVehicle: String,
 	docMachineCard: String,
 	docBill: String,
 	docAduana: String,
-	docOperationCard: String,
-	docSISCONMP: String,
-	docVehicleListCheck: String,
-	docTeamCert: String,
-	docQualityCert: String,
-	technoVigency: Date,
-	operationCardVigency: Date,
 	observations: [String],
 	qrCodeDate: Date,
-	reasonDescription: String,
+	accessType: String,
 });
 
-SpecialPunctualHeavyVehicleSchema.pre('save', function (next) {
+PunctualMachinerySchema.pre('save', function (next) {
 	if (this.isNew) {
 		// const days = 3;
 		// this.maxAuthorizationDate = addDate(this.recepcionDate, days);
@@ -76,7 +57,7 @@ SpecialPunctualHeavyVehicleSchema.pre('save', function (next) {
 	next();
 });
 
-SpecialPunctualHeavyVehicleSchema.pre('save', async function (next) {
+PunctualMachinerySchema.pre('save', async function (next) {
 	if (this.isModified('status') && this.status === 'ACTIVO') {
 		const bodyEvent = {
 			radicado: this._id,
@@ -92,7 +73,4 @@ SpecialPunctualHeavyVehicleSchema.pre('save', async function (next) {
 	next();
 });
 
-export default model(
-	'specialpunctualheavy_vehicle',
-	SpecialPunctualHeavyVehicleSchema
-);
+export default model('punctual_machinery', PunctualMachinerySchema);

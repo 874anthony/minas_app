@@ -3,7 +3,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.SpecialPunctualHeavyVehicle = exports.PunctualHeavyVehicle = exports.PermanentHeavyVehicle = exports.PunctualLightVehicle = exports.PermanentLightVehicle = exports.VisitorVehicle = exports.SpecialWorkPerson = exports.VisitorPerson = exports.PunctualWorkPerson = exports.PermanentPersonModel = void 0;
+exports.PunctualMachinery = exports.PermanentMachinery = exports.SpecialPunctualHeavyVehicle = exports.PunctualHeavyVehicle = exports.PermanentHeavyVehicle = exports.PunctualLightVehicle = exports.PermanentLightVehicle = exports.VisitorVehicle = exports.SpecialWorkPerson = exports.VisitorPerson = exports.PunctualWorkPerson = exports.PermanentPersonModel = void 0;
+// Persons
 var permanentPersonModel_1 = __importDefault(require("./persons/permanentPersonModel"));
 exports.PermanentPersonModel = permanentPersonModel_1.default;
 var punctualWorkPersonModel_1 = __importDefault(require("./persons/punctualWorkPersonModel"));
@@ -12,6 +13,7 @@ var visitorPersonModel_1 = __importDefault(require("./persons/visitorPersonModel
 exports.VisitorPerson = visitorPersonModel_1.default;
 var specialWorkPersonModel_1 = __importDefault(require("./persons/specialWorkPersonModel"));
 exports.SpecialWorkPerson = specialWorkPersonModel_1.default;
+// Veh8icles
 var visitorlightVehicleModel_1 = __importDefault(require("./vehicles/light/visitorlightVehicleModel"));
 exports.VisitorVehicle = visitorlightVehicleModel_1.default;
 var permanentlightVehicleModel_1 = __importDefault(require("./vehicles/light/permanentlightVehicleModel"));
@@ -24,3 +26,8 @@ var punctualheavyVehicleModel_1 = __importDefault(require("./vehicles/heavy/punc
 exports.PunctualHeavyVehicle = punctualheavyVehicleModel_1.default;
 var specialpunctualheavyVehicleModel_1 = __importDefault(require("./vehicles/heavy/specialpunctualheavyVehicleModel"));
 exports.SpecialPunctualHeavyVehicle = specialpunctualheavyVehicleModel_1.default;
+// Machinery
+var permanentMachineryModel_1 = __importDefault(require("./machinery/permanentMachineryModel"));
+exports.PermanentMachinery = permanentMachineryModel_1.default;
+var punctualMachineryModel_1 = __importDefault(require("./machinery/punctualMachineryModel"));
+exports.PunctualMachinery = punctualMachineryModel_1.default;

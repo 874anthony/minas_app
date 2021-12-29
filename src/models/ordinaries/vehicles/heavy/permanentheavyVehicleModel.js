@@ -103,12 +103,12 @@ var PermanentHeavyVehicleSchema = new mongoose_1.Schema({
     operationCardVigency: Date,
     observations: [String],
     qrCodeDate: Date,
-    requestedTime: Date,
+    reasonDescription: String,
 });
 PermanentHeavyVehicleSchema.pre('save', function (next) {
     if (this.isNew) {
-        var days = 3;
-        this.maxAuthorizationDate = (0, date_1.addDate)(this.recepcionDate, days);
+        // const days = 3;
+        // this.maxAuthorizationDate = addDate(this.recepcionDate, days);
         this.accessType = ordinariesEnum_1.getModelByType[this.ordinaryType];
     }
     next();

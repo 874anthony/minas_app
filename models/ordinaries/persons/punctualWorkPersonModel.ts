@@ -81,7 +81,7 @@ const PunctualWorkPersonSchema = new Schema({
 	},
 	maxAuthorizationDate: Date,
 	qrCodeDate: Date,
-	requestedTime: Date,
+	reasonDescription: String,
 	ordinaryType: {
 		type: String,
 		default: 'punctualworkPerson',

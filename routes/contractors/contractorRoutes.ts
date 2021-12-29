@@ -3,16 +3,22 @@ import express from 'express';
 // Importing own controllers
 import * as contractorController from '../../controllers/contractor/contractorController';
 
+// Persons
 import permanentPersonRouter from '../ordinaries/persons/permanentPersonRoutes';
 import punctualworkPersonRouter from '../ordinaries/persons/punctualworkPersonRoutes';
 import specialworkPersonRouter from '../ordinaries/persons/specialworkPersonRoutes';
 import visitorPersonRouter from '../ordinaries/persons/visitorPersonRoutes';
+// Vehicles
 import visitorVehicleRouter from '../ordinaries/vehicles/light/visitorlightVehicleRoutes';
 import permanentLightVehicleRouter from '../ordinaries/vehicles/light/permanentlightVehicleRoutes';
 import permanentHeavyVehicleRouter from '../ordinaries/vehicles/heavy/permanentheavyVehicleRoutes';
 import punctualLightVehicleRouter from '../ordinaries/vehicles/light/punctuallightVehicleRoutes';
 import punctualHeavyVehicleRouter from '../ordinaries/vehicles/heavy/punctualheavyVehicleRoutes';
 import specialpunctualHeavyVehicleRouter from '../ordinaries/vehicles/heavy/specialpunctualheavyVehicleRoutes';
+// Machinery
+import permanentMachineryRouter from '../ordinaries/machinery/permanentMachineryRoutes';
+import punctualMachineryRouter from '../ordinaries/machinery/punctualMachineryRoutes';
+
 import ordinariesRouter from '../ordinaries/ordinariesRoutes';
 
 // Enabling the mergeParams to get access to the idCompany
@@ -73,14 +79,18 @@ router.use(
 	'/:idContractor/ordinaries-vehicle/special-punctual-heavy-vehicle',
 	specialpunctualHeavyVehicleRouter
 );
+router.use(
+	'/:idContractor/ordinaries-machinery/permanent-machinery',
+	permanentMachineryRouter
+);
+
+router.use(
+	'/:idContractor/ordinaries-machinery/punctual-machinery',
+	punctualMachineryRouter
+);
 
 // Custom routes
-router
-	.route('/pending-contractors')
-	.get(
-		contractorController.getPendingContractors,
-		contractorController.getAllContractors
-	);
+router.route('/all-contractors').get(contractorController.getAllContractors);
 
 // Routes with the id
 router

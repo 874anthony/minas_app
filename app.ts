@@ -67,38 +67,6 @@ app.use('/api/v1/user', userRouter);
 app.use('/api/v1/workflow', workflowRouter);
 app.use('/api/v1/events', eventRouter);
 app.use('/api/v1/ordinaries', ordinaryRouter);
-app.use('/api/v1/ordinaries-person/permanent-person', permanentPersonRouter);
-app.use(
-	'/api/v1/ordinaries-person/punctual-work-person',
-	punctualworkPersonRouter
-);
-app.use('/api/v1/ordinaries-person/visitor-person', visitorPersonRouter);
-app.use(
-	'/api/v1/ordinaries-person/special-work-person',
-	specialworkPersonRouter
-);
-// Vehicle starts here
-app.use('/api/v1/ordinaries-vehicle/visitor-vehicle', visitorVehicleRouter);
-app.use(
-	'/api/v1/ordinaries-vehicle/permanent-light-vehicle',
-	permanentLightVehicleRouter
-);
-app.use(
-	'/api/v1/ordinaries-vehicle/permanent-heavy-vehicle',
-	permanentHeavyVehicleRouter
-);
-app.use(
-	'/api/v1/ordinaries-vehicle/punctual-light-vehicle',
-	punctualLightVehicleRouter
-);
-app.use(
-	'/api/v1/ordinaries-vehicle/punctual-heavy-vehicle',
-	punctualHeavyVehicleRouter
-);
-app.use(
-	'/api/v1/ordinaries-vehicle/special-punctual-heavy-vehicle',
-	specialpunctualHeavyVehicleRouter
-);
 
 app.all('*', (req: Request, res: Response, next: NextFunction) => {
 	next(new HttpException(`Can't find ${req.originalUrl} on this server!`, 404));

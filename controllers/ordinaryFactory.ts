@@ -50,6 +50,7 @@ const uploadPerson = uploadOrdinaryPerson.fields([
 	{ name: 'docCraneOperator', maxCount: 1 },
 	{ name: 'docSafeworkHeights', maxCount: 1 },
 	{ name: 'docCompetenceCert', maxCount: 1 },
+	{ name: 'docSISCONMP', maxCount: 1 },
 	{ name: 'attached', maxCount: 20 },
 ]);
 
@@ -62,8 +63,6 @@ const uploadVehicle = uploadOrdinaryVehicle.fields([
 	{ name: 'docBill', maxCount: 1 },
 	{ name: 'docAduana', maxCount: 1 },
 	{ name: 'docOperationCard', maxCount: 1 },
-	{ name: 'docSISCONMP', maxCount: 1 },
-	{ name: 'docVehicleListCheck', maxCount: 1 },
 	{ name: 'docTeamCert', maxCount: 1 },
 	{ name: 'docQualityCert', maxCount: 1 },
 	{ name: 'attached', maxCount: 20 },
