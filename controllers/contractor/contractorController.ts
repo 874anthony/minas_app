@@ -93,16 +93,16 @@ const inactiveOrdsByContractor = catchAsync(
 	async (req: Request, res: Response, next: NextFunction) => {
 		const { idContractor } = req.params;
 
-		Object.values(ModelsOrdinary).forEach(async (Model) => {
+		const promises = Object.values(ModelsOrdinary).map(async (Model) => {
 			await Model.updateMany(
 				{
 					$and: [{ contractorID: idContractor }, { status: 'ACTIVO' }],
 				},
-				{
-					$set: { status: 'INACTIVO', qrCodeDate: null },
-				}
+				{ status: 'INACTIVO', qrCodeDate: null }
 			);
 		});
+
+		await Promise.all(promises);
 
 		await Contractor.findByIdAndUpdate(
 			idContractor,
@@ -124,16 +124,17 @@ const activeOrdsByContractor = catchAsync(
 	async (req: Request, res: Response, next: NextFunction) => {
 		const { idContractor } = req.params;
 
-		Object.values(ModelsOrdinary).forEach(async (Model) => {
+		const promises = Object.values(ModelsOrdinary).map(async (Model) => {
 			await Model.updateMany(
 				{
 					$and: [{ contractorID: idContractor }, { status: 'INACTIVO' }],
 				},
-				{
-					$set: { status: 'ACTIVO' },
-				}
+
+				{ status: 'ACTIVO' }
 			);
 		});
+
+		await Promise.all(promises);
 
 		await Contractor.findByIdAndUpdate(
 			idContractor,
@@ -155,9 +156,7 @@ const job = new CronJob(
 			{
 				docSocialSecurityAt: { $lte: Date.now() },
 			},
-			{
-				$set: { status: 'REVISION', docSocialSecurityAt: null },
-			}
+			{ status: 'REVISION', docSocialSecurityAt: null }
 		);
 	},
 	null

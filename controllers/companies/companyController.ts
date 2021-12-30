@@ -45,9 +45,7 @@ const job = new CronJob(
 			{
 				docSocialSecurityAt: { $lte: Date.now() },
 			},
-			{
-				$set: { status: 'REVISION', docSocialSecurityAt: null },
-			}
+			{ status: 'REVISION', docSocialSecurityAt: null }
 		);
 	},
 	null

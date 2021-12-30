@@ -99,9 +99,7 @@ var job = new cron_1.CronJob('0 1 * * *', function () { return __awaiter(void 0,
         switch (_a.label) {
             case 0: return [4 /*yield*/, companyModel_1.default.updateMany({
                     docSocialSecurityAt: { $lte: Date.now() },
-                }, {
-                    $set: { status: 'REVISION', docSocialSecurityAt: null },
-                })];
+                }, { status: 'REVISION', docSocialSecurityAt: null })];
             case 1:
                 _a.sent();
                 return [2 /*return*/];
