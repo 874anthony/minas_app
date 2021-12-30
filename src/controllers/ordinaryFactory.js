@@ -462,7 +462,7 @@ var inactiveOrdsByCompany = (0, catchAsync_1.default)(function (req, res, next) 
                     return __generator(this, function (_a) {
                         switch (_a.label) {
                             case 0: return [4 /*yield*/, Model.updateMany({
-                                    $match: { $and: [{ companyID: idCompany }, { status: 'ACTIVO' }] },
+                                    $and: [{ companyID: idCompany }, { status: 'ACTIVO' }],
                                 }, {
                                     $set: { status: 'INACTIVO', qrCodeDate: null },
                                 })];
@@ -494,7 +494,7 @@ var activeOrdsByCompany = (0, catchAsync_1.default)(function (req, res, next) { 
                     return __generator(this, function (_a) {
                         switch (_a.label) {
                             case 0: return [4 /*yield*/, Model.updateMany({
-                                    $match: { $and: [{ companyID: idCompany }, { status: 'INACTIVO' }] },
+                                    $and: [{ companyID: idCompany }, { status: 'INACTIVO' }],
                                 }, {
                                     $set: { status: 'ACTIVO' },
                                 })];

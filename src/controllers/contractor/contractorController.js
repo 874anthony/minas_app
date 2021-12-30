@@ -144,9 +144,7 @@ var inactiveOrdsByContractor = (0, catchAsync_1.default)(function (req, res, nex
                     return __generator(this, function (_a) {
                         switch (_a.label) {
                             case 0: return [4 /*yield*/, Model.updateMany({
-                                    $match: {
-                                        $and: [{ contractorID: idContractor }, { status: 'ACTIVO' }],
-                                    },
+                                    $and: [{ contractorID: idContractor }, { status: 'ACTIVO' }],
                                 }, {
                                     $set: { status: 'INACTIVO', qrCodeDate: null },
                                 })];
@@ -168,6 +166,8 @@ var inactiveOrdsByContractor = (0, catchAsync_1.default)(function (req, res, nex
     });
 }); });
 exports.inactiveOrdsByContractor = inactiveOrdsByContractor;
+// $match: {
+// }
 var activeOrdsByContractor = (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     var idContractor;
     return __generator(this, function (_a) {
@@ -178,9 +178,7 @@ var activeOrdsByContractor = (0, catchAsync_1.default)(function (req, res, next)
                     return __generator(this, function (_a) {
                         switch (_a.label) {
                             case 0: return [4 /*yield*/, Model.updateMany({
-                                    $match: {
-                                        $and: [{ contractorID: idContractor }, { status: 'INACTIVO' }],
-                                    },
+                                    $and: [{ contractorID: idContractor }, { status: 'INACTIVO' }],
                                 }, {
                                     $set: { status: 'ACTIVO' },
                                 })];

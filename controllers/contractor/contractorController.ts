@@ -96,9 +96,7 @@ const inactiveOrdsByContractor = catchAsync(
 		Object.values(ModelsOrdinary).forEach(async (Model) => {
 			await Model.updateMany(
 				{
-					$match: {
-						$and: [{ contractorID: idContractor }, { status: 'ACTIVO' }],
-					},
+					$and: [{ contractorID: idContractor }, { status: 'ACTIVO' }],
 				},
 				{
 					$set: { status: 'INACTIVO', qrCodeDate: null },
@@ -119,6 +117,9 @@ const inactiveOrdsByContractor = catchAsync(
 	}
 );
 
+// $match: {
+// }
+
 const activeOrdsByContractor = catchAsync(
 	async (req: Request, res: Response, next: NextFunction) => {
 		const { idContractor } = req.params;
@@ -126,9 +127,7 @@ const activeOrdsByContractor = catchAsync(
 		Object.values(ModelsOrdinary).forEach(async (Model) => {
 			await Model.updateMany(
 				{
-					$match: {
-						$and: [{ contractorID: idContractor }, { status: 'INACTIVO' }],
-					},
+					$and: [{ contractorID: idContractor }, { status: 'INACTIVO' }],
 				},
 				{
 					$set: { status: 'ACTIVO' },

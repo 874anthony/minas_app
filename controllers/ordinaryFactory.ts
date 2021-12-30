@@ -436,7 +436,7 @@ const inactiveOrdsByCompany = catchAsync(
 		Object.values(ModelsOrdinary).forEach(async (Model) => {
 			await Model.updateMany(
 				{
-					$match: { $and: [{ companyID: idCompany }, { status: 'ACTIVO' }] },
+					$and: [{ companyID: idCompany }, { status: 'ACTIVO' }],
 				},
 				{
 					$set: { status: 'INACTIVO', qrCodeDate: null },
@@ -464,7 +464,7 @@ const activeOrdsByCompany = catchAsync(
 		Object.values(ModelsOrdinary).forEach(async (Model) => {
 			await Model.updateMany(
 				{
-					$match: { $and: [{ companyID: idCompany }, { status: 'INACTIVO' }] },
+					$and: [{ companyID: idCompany }, { status: 'INACTIVO' }],
 				},
 				{
 					$set: { status: 'ACTIVO' },
