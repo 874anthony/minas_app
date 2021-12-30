@@ -106,6 +106,12 @@ const inactiveOrdsByContractor = catchAsync(
 			);
 		});
 
+		await Contractor.findByIdAndUpdate(
+			idContractor,
+			{ status: 'INACTIVO' },
+			{ new: true, validateBeforeSave: false }
+		);
+
 		res.status(200).json({
 			status: true,
 			message: 'Se ha inactivado a todos los ordinarios con éxito',
