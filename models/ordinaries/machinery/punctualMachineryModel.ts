@@ -45,6 +45,7 @@ const PunctualMachinerySchema = new Schema({
 	observations: [String],
 	qrCodeDate: Date,
 	accessType: String,
+	attached: [String],
 });
 
 PunctualMachinerySchema.pre('save', function (next) {

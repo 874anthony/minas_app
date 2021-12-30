@@ -45,6 +45,7 @@ const PermanentMachinerySchema = new Schema({
 	observations: [String],
 	qrCodeDate: Date,
 	accessType: String,
+	attached: [String],
 });
 
 PermanentMachinerySchema.pre('save', function (next) {
