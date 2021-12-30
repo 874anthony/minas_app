@@ -85,6 +85,7 @@ var PermanentMachinerySchema = new mongoose_1.Schema({
     observations: [String],
     qrCodeDate: Date,
     accessType: String,
+    attached: [String],
 });
 PermanentMachinerySchema.pre('save', function (next) {
     if (this.isNew) {

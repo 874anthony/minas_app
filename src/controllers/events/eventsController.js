@@ -40,36 +40,44 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getAllEvents = exports.getEventsByOrdinary = void 0;
+var ordinariesEnum_1 = require("../../interfaces/ordinaries/ordinariesEnum");
 var eventsModel_1 = __importDefault(require("../../models/events/eventsModel"));
 var apiFeatures_1 = __importDefault(require("../../utils/apiFeatures"));
 var catchAsync_1 = __importDefault(require("../../utils/catchAsync"));
-var httpException_1 = __importDefault(require("../../utils/httpException"));
 var getEventsByOrdinary = function (req, res, next) {
     req.query.radicado = req.params.idradicado;
     next();
 };
 exports.getEventsByOrdinary = getEventsByOrdinary;
 var getAllEvents = (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var features, events;
+    var eventsPopulated, events;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                features = new apiFeatures_1.default(eventsModel_1.default.find(), req.query)
-                    .filter()
-                    .sort()
-                    .limitFields()
-                    .paginate();
-                return [4 /*yield*/, features.query.populate([
-                        {
-                            path: 'radicado',
-                            select: '-__v',
-                        },
-                    ])];
+                eventsPopulated = Object.values(ordinariesEnum_1.ModelsOrdinary).map(function (Model) { return __awaiter(void 0, void 0, void 0, function () {
+                    var populateQuery, eventResult;
+                    return __generator(this, function (_a) {
+                        switch (_a.label) {
+                            case 0:
+                                populateQuery = new apiFeatures_1.default(eventsModel_1.default.find(), req.query)
+                                    .filter()
+                                    .limitFields()
+                                    .sort()
+                                    .paginate();
+                                return [4 /*yield*/, populateQuery.query.populate({
+                                        path: 'radicado',
+                                        select: '-__v',
+                                        model: Model,
+                                    })];
+                            case 1:
+                                eventResult = _a.sent();
+                                return [2 /*return*/, eventResult];
+                        }
+                    });
+                }); });
+                return [4 /*yield*/, Promise.all(eventsPopulated)];
             case 1:
                 events = _a.sent();
-                if (events.length === 0) {
-                    return [2 /*return*/, next(new httpException_1.default('No hay documentos con ese criterio de búsqueda!', 204))];
-                }
                 return [2 /*return*/, res.status(200).json({
                         status: true,
                         events: events,
