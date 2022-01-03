@@ -336,9 +336,7 @@ var updateOrdinary = function (Model) {
                     body['attached'] = arrayFilenames;
                     body['updatedAt'] = Date.now();
                     Object.keys(body).forEach(function (key) {
-                        if (key === 'observations' ||
-                            key === 'startDates' ||
-                            key === 'finishDates') {
+                        if (key === 'observations') {
                             ordinaryUpdated[key].push(body[key]);
                         }
                         else {
@@ -453,53 +451,61 @@ var getOrdById = (0, catchAsync_1.default)(function (req, res, next) { return __
 }); });
 exports.getOrdById = getOrdById;
 var inactiveOrdsByCompany = (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var idCompany;
-    return __generator(this, function (_a) {
-        idCompany = req.params.idCompany;
-        Object.values(ordinariesEnum_1.ModelsOrdinary).forEach(function (Model) { return __awaiter(void 0, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, Model.updateMany({
-                            $match: { $and: [{ companyID: idCompany }, { status: 'ACTIVO' }] },
-                        }, {
-                            $set: { status: 'INACTIVO', qrCodeDate: null },
-                        })];
-                    case 1:
-                        _a.sent();
-                        return [2 /*return*/];
-                }
-            });
-        }); });
-        res.status(200).json({
-            status: true,
-            message: 'Se ha inactivado a todos los ordinarios con éxito',
-        });
-        return [2 /*return*/];
-    });
-}); });
-exports.inactiveOrdsByCompany = inactiveOrdsByCompany;
-var activeOrdsByCompany = (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var idCompany;
+    var idCompany, promises;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 idCompany = req.params.idCompany;
-                Object.values(ordinariesEnum_1.ModelsOrdinary).forEach(function (Model) { return __awaiter(void 0, void 0, void 0, function () {
+                promises = Object.values(ordinariesEnum_1.ModelsOrdinary).map(function (Model) { return __awaiter(void 0, void 0, void 0, function () {
                     return __generator(this, function (_a) {
                         switch (_a.label) {
                             case 0: return [4 /*yield*/, Model.updateMany({
-                                    $match: { $and: [{ companyID: idCompany }, { status: 'INACTIVO' }] },
-                                }, {
-                                    $set: { status: 'ACTIVO' },
-                                })];
+                                    $and: [{ companyID: idCompany }, { status: 'ACTIVO' }],
+                                }, { status: 'INACTIVO', qrCodeDate: null })];
                             case 1:
                                 _a.sent();
                                 return [2 /*return*/];
                         }
                     });
                 }); });
-                return [4 /*yield*/, companyModel_1.default.findByIdAndUpdate(idCompany, { status: 'ACTIVO' }, { new: true, validateBeforeSave: false })];
+                return [4 /*yield*/, Promise.all(promises)];
             case 1:
+                _a.sent();
+                return [4 /*yield*/, companyModel_1.default.findByIdAndUpdate(idCompany, { status: 'INACTIVO' }, { new: true, validateBeforeSave: false })];
+            case 2:
+                _a.sent();
+                res.status(200).json({
+                    status: true,
+                    message: 'Se ha inactivado a todos los ordinarios con éxito',
+                });
+                return [2 /*return*/];
+        }
+    });
+}); });
+exports.inactiveOrdsByCompany = inactiveOrdsByCompany;
+var activeOrdsByCompany = (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var idCompany, promises;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                idCompany = req.params.idCompany;
+                promises = Object.values(ordinariesEnum_1.ModelsOrdinary).map(function (Model) { return __awaiter(void 0, void 0, void 0, function () {
+                    return __generator(this, function (_a) {
+                        switch (_a.label) {
+                            case 0: return [4 /*yield*/, Model.updateMany({
+                                    $and: [{ companyID: idCompany }, { status: 'INACTIVO' }],
+                                }, { status: 'ACTIVO' })];
+                            case 1:
+                                _a.sent();
+                                return [2 /*return*/];
+                        }
+                    });
+                }); });
+                return [4 /*yield*/, Promise.all(promises)];
+            case 1:
+                _a.sent();
+                return [4 /*yield*/, companyModel_1.default.findByIdAndUpdate(idCompany, { status: 'ACTIVO' }, { new: true, validateBeforeSave: false })];
+            case 2:
                 _a.sent();
                 res.status(200).json({
                     status: true,

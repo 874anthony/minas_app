@@ -322,11 +322,7 @@ const updateOrdinary = (Model) =>
 		body['updatedAt'] = Date.now();
 
 		Object.keys(body).forEach((key) => {
-			if (
-				key === 'observations' ||
-				key === 'startDates' ||
-				key === 'finishDates'
-			) {
+			if (key === 'observations') {
 				ordinaryUpdated[key].push(body[key]);
 			} else {
 				ordinaryUpdated[key] = body[key];
@@ -433,16 +429,22 @@ const inactiveOrdsByCompany = catchAsync(
 	async (req: Request, res: Response, next: NextFunction) => {
 		const { idCompany } = req.params;
 
-		Object.values(ModelsOrdinary).forEach(async (Model) => {
+		const promises = Object.values(ModelsOrdinary).map(async (Model) => {
 			await Model.updateMany(
 				{
-					$match: { $and: [{ companyID: idCompany }, { status: 'ACTIVO' }] },
+					$and: [{ companyID: idCompany }, { status: 'ACTIVO' }],
 				},
-				{
-					$set: { status: 'INACTIVO', qrCodeDate: null },
-				}
+				{ status: 'INACTIVO', qrCodeDate: null }
 			);
 		});
+
+		await Promise.all(promises);
+
+		await Company.findByIdAndUpdate(
+			idCompany,
+			{ status: 'INACTIVO' },
+			{ new: true, validateBeforeSave: false }
+		);
 
 		res.status(200).json({
 			status: true,
@@ -455,16 +457,16 @@ const activeOrdsByCompany = catchAsync(
 	async (req: Request, res: Response, next: NextFunction) => {
 		const { idCompany } = req.params;
 
-		Object.values(ModelsOrdinary).forEach(async (Model) => {
+		const promises = Object.values(ModelsOrdinary).map(async (Model) => {
 			await Model.updateMany(
 				{
-					$match: { $and: [{ companyID: idCompany }, { status: 'INACTIVO' }] },
+					$and: [{ companyID: idCompany }, { status: 'INACTIVO' }],
 				},
-				{
-					$set: { status: 'ACTIVO' },
-				}
+				{ status: 'ACTIVO' }
 			);
 		});
+
+		await Promise.all(promises);
 
 		await Company.findByIdAndUpdate(
 			idCompany,

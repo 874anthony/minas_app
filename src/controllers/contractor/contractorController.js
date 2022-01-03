@@ -135,57 +135,63 @@ exports.rejectContractor = rejectContractor;
 var getContractorNIT = companyFactory.getCompanyNIT(contractorModel_1.default);
 exports.getContractorNIT = getContractorNIT;
 var inactiveOrdsByContractor = (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var idContractor;
-    return __generator(this, function (_a) {
-        idContractor = req.params.idContractor;
-        Object.values(ordinariesEnum_1.ModelsOrdinary).forEach(function (Model) { return __awaiter(void 0, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, Model.updateMany({
-                            $match: {
-                                $and: [{ contractorID: idContractor }, { status: 'ACTIVO' }],
-                            },
-                        }, {
-                            $set: { status: 'INACTIVO', qrCodeDate: null },
-                        })];
-                    case 1:
-                        _a.sent();
-                        return [2 /*return*/];
-                }
-            });
-        }); });
-        res.status(200).json({
-            status: true,
-            message: 'Se ha inactivado a todos los ordinarios con éxito',
-        });
-        return [2 /*return*/];
-    });
-}); });
-exports.inactiveOrdsByContractor = inactiveOrdsByContractor;
-var activeOrdsByContractor = (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var idContractor;
+    var idContractor, promises;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 idContractor = req.params.idContractor;
-                Object.values(ordinariesEnum_1.ModelsOrdinary).forEach(function (Model) { return __awaiter(void 0, void 0, void 0, function () {
+                promises = Object.values(ordinariesEnum_1.ModelsOrdinary).map(function (Model) { return __awaiter(void 0, void 0, void 0, function () {
                     return __generator(this, function (_a) {
                         switch (_a.label) {
                             case 0: return [4 /*yield*/, Model.updateMany({
-                                    $match: {
-                                        $and: [{ contractorID: idContractor }, { status: 'INACTIVO' }],
-                                    },
-                                }, {
-                                    $set: { status: 'ACTIVO' },
-                                })];
+                                    $and: [{ contractorID: idContractor }, { status: 'ACTIVO' }],
+                                }, { status: 'INACTIVO', qrCodeDate: null })];
                             case 1:
                                 _a.sent();
                                 return [2 /*return*/];
                         }
                     });
                 }); });
-                return [4 /*yield*/, contractorModel_1.default.findByIdAndUpdate(idContractor, { status: 'ACTIVO' }, { new: true, validateBeforeSave: false })];
+                return [4 /*yield*/, Promise.all(promises)];
             case 1:
+                _a.sent();
+                return [4 /*yield*/, contractorModel_1.default.findByIdAndUpdate(idContractor, { status: 'INACTIVO' }, { new: true, validateBeforeSave: false })];
+            case 2:
+                _a.sent();
+                res.status(200).json({
+                    status: true,
+                    message: 'Se ha inactivado a todos los ordinarios con éxito',
+                });
+                return [2 /*return*/];
+        }
+    });
+}); });
+exports.inactiveOrdsByContractor = inactiveOrdsByContractor;
+// $match: {
+// }
+var activeOrdsByContractor = (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var idContractor, promises;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                idContractor = req.params.idContractor;
+                promises = Object.values(ordinariesEnum_1.ModelsOrdinary).map(function (Model) { return __awaiter(void 0, void 0, void 0, function () {
+                    return __generator(this, function (_a) {
+                        switch (_a.label) {
+                            case 0: return [4 /*yield*/, Model.updateMany({
+                                    $and: [{ contractorID: idContractor }, { status: 'INACTIVO' }],
+                                }, { status: 'ACTIVO' })];
+                            case 1:
+                                _a.sent();
+                                return [2 /*return*/];
+                        }
+                    });
+                }); });
+                return [4 /*yield*/, Promise.all(promises)];
+            case 1:
+                _a.sent();
+                return [4 /*yield*/, contractorModel_1.default.findByIdAndUpdate(idContractor, { status: 'ACTIVO' }, { new: true, validateBeforeSave: false })];
+            case 2:
                 _a.sent();
                 res.status(200).json({
                     status: true,
@@ -201,9 +207,7 @@ var job = new cron_1.CronJob('0 1 * * *', function () { return __awaiter(void 0,
         switch (_a.label) {
             case 0: return [4 /*yield*/, contractorModel_1.default.updateMany({
                     docSocialSecurityAt: { $lte: Date.now() },
-                }, {
-                    $set: { status: 'REVISION', docSocialSecurityAt: null },
-                })];
+                }, { status: 'REVISION', docSocialSecurityAt: null })];
             case 1:
                 _a.sent();
                 return [2 /*return*/];
