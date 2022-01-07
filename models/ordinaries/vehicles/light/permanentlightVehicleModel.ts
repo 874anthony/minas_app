@@ -50,7 +50,6 @@ const PermanentLightVehicleSchema = new Schema({
 	docTechno: String,
 	docInspectionVehicle: String,
 	docOperationCard: String,
-	docVehicleListCheck: String,
 
 	attached: [String],
 	soatVigency: Date,

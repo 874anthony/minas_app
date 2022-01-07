@@ -88,7 +88,6 @@ var SpecialPunctualHeavyVehicleSchema = new mongoose_1.Schema({
     docPropertyCard: String,
     docTechno: String,
     docOperationCard: String,
-    docVehicleListCheck: String,
     docInspectionVehicle: String,
     accessType: String,
     attached: [String],

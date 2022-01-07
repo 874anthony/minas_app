@@ -90,7 +90,6 @@ var PermanentHeavyVehicleSchema = new mongoose_1.Schema({
     docTechno: String,
     docInspectionVehicle: String,
     docOperationCard: String,
-    docVehicleListCheck: String,
     accessType: String,
     attached: [String],
     soatVigency: Date,

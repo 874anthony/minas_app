@@ -50,7 +50,6 @@ const PermanentHeavyVehicleSchema = new Schema({
 	docTechno: String,
 	docInspectionVehicle: String,
 	docOperationCard: String,
-	docVehicleListCheck: String,
 
 	accessType: String,
 	attached: [String],

@@ -90,7 +90,6 @@ var PermanentLightVehicleSchema = new mongoose_1.Schema({
     docTechno: String,
     docInspectionVehicle: String,
     docOperationCard: String,
-    docVehicleListCheck: String,
     attached: [String],
     soatVigency: Date,
     technoVigency: Date,
