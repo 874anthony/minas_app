@@ -307,7 +307,7 @@ var createOrdinary = function (Model, Roles, checkRoles, subsanarRoles) {
 exports.createOrdinary = createOrdinary;
 var updateOrdinary = function (Model) {
     return (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-        var id, ordinaryUpdated, body, arrayFilenames, workflowDoc_1, bodyEvent;
+        var id, ordinaryUpdated, body, arrayFilenames_1, workflowDoc_1, bodyEvent;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -319,21 +319,21 @@ var updateOrdinary = function (Model) {
                         return [2 /*return*/, next(new httpException_1.default('No hay un ordinario con ese ID, intente nuevamente!', 404))];
                     }
                     body = __assign({}, req.body);
-                    arrayFilenames = [];
                     if (req.files) {
+                        arrayFilenames_1 = [];
                         // Looping through the req.files object to set it to the body
                         Object.keys(req.files).forEach(function (el) {
                             if (el === 'attached') {
                                 Object.values(req.files[el]).forEach(function (el2, i) {
-                                    arrayFilenames.push(req.files[el][i].filename);
+                                    arrayFilenames_1.push(req.files[el][i].filename);
                                 });
                             }
                             else {
                                 body[el] = req.files[el][0].filename;
                             }
                         });
+                        body['attached'] = arrayFilenames_1;
                     }
-                    body['attached'] = arrayFilenames;
                     body['updatedAt'] = Date.now();
                     Object.keys(body).forEach(function (key) {
                         if (key === 'observations' ||

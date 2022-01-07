@@ -303,9 +303,8 @@ const updateOrdinary = (Model) =>
 		// Mutating the object req.body
 		const body = { ...req.body };
 
-		const arrayFilenames: Array<string> = [];
-
 		if (req.files) {
+			const arrayFilenames: Array<string> = [];
 			// Looping through the req.files object to set it to the body
 			Object.keys(req.files).forEach((el) => {
 				if (el === 'attached') {
@@ -316,9 +315,9 @@ const updateOrdinary = (Model) =>
 					body[el] = req.files![el][0].filename;
 				}
 			});
+			body['attached'] = arrayFilenames;
 		}
 
-		body['attached'] = arrayFilenames;
 		body['updatedAt'] = Date.now();
 
 		Object.keys(body).forEach((key) => {
