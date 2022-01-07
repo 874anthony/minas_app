@@ -31,6 +31,8 @@ var permanentheavyVehicleRoutes_1 = __importDefault(require("./routes/ordinaries
 var punctuallightVehicleRoutes_1 = __importDefault(require("./routes/ordinaries/vehicles/light/punctuallightVehicleRoutes"));
 var punctualheavyVehicleRoutes_1 = __importDefault(require("./routes/ordinaries/vehicles/heavy/punctualheavyVehicleRoutes"));
 var specialheavyVehicleRoutes_1 = __importDefault(require("./routes/ordinaries/vehicles/heavy/specialheavyVehicleRoutes"));
+var permanentMachineryRoutes_1 = __importDefault(require("./routes/ordinaries/machinery/permanentMachineryRoutes"));
+var punctualMachineryRoutes_1 = __importDefault(require("./routes/ordinaries/machinery/punctualMachineryRoutes"));
 var app = (0, express_1.default)();
 // To handle the CORS
 app.use((0, cors_1.default)());
@@ -70,6 +72,8 @@ app.use('/api/v1/ordinaries-vehicle/permanent-heavy-vehicle', permanentheavyVehi
 app.use('/api/v1/ordinaries-vehicle/punctual-light-vehicle', punctuallightVehicleRoutes_1.default);
 app.use('/api/v1/ordinaries-vehicle/punctual-heavy-vehicle', punctualheavyVehicleRoutes_1.default);
 app.use('/api/v1/ordinaries-vehicle/special-heavy-vehicle', specialheavyVehicleRoutes_1.default);
+app.use('/api/v1/ordinaries-machinery/permanent-machinery', permanentMachineryRoutes_1.default);
+app.use('/api/v1/ordinaries-machinery/punctual-machinery', punctualMachineryRoutes_1.default);
 app.all('*', function (req, res, next) {
     next(new httpException_1.default("Can't find " + req.originalUrl + " on this server!", 404));
 });

@@ -29,6 +29,9 @@ import permanentHeavyVehicleRouter from './routes/ordinaries/vehicles/heavy/perm
 import punctualLightVehicleRouter from './routes/ordinaries/vehicles/light/punctuallightVehicleRoutes';
 import punctualHeavyVehicleRouter from './routes/ordinaries/vehicles/heavy/punctualheavyVehicleRoutes';
 import specialHeavyVehicleRouter from './routes/ordinaries/vehicles/heavy/specialheavyVehicleRoutes';
+import permanentMachineryRouter from './routes/ordinaries/machinery/permanentMachineryRoutes';
+import punctualMachineryRouter from './routes/ordinaries/machinery/punctualMachineryRoutes';
+
 
 const app = express();
 
@@ -102,6 +105,14 @@ app.use(
 app.use(
 	'/api/v1/ordinaries-vehicle/special-heavy-vehicle',
 	specialHeavyVehicleRouter
+);
+app.use(
+	'/api/v1/ordinaries-machinery/permanent-machinery',
+	permanentMachineryRouter
+);
+app.use(
+	'/api/v1/ordinaries-machinery/punctual-machinery',
+	punctualMachineryRouter
 );
 
 app.all('*', (req: Request, res: Response, next: NextFunction) => {

@@ -336,9 +336,7 @@ var updateOrdinary = function (Model) {
                     }
                     body['updatedAt'] = Date.now();
                     Object.keys(body).forEach(function (key) {
-                        if (key === 'observations' ||
-                            key === 'startDates' ||
-                            key === 'finishDates') {
+                        if (key === 'observations') {
                             ordinaryUpdated[key].push(body[key]);
                         }
                         else {
