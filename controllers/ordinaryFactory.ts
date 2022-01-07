@@ -60,11 +60,11 @@ const uploadVehicle = uploadOrdinaryVehicle.fields([
 	{ name: 'docTechno', maxCount: 1 },
 	{ name: 'docOperationCard', maxCount: 1 },
 	{ name: 'docInspectionVehicle', maxCount: 1 },
-	{ name: 'docVehicleListCheck', maxCount: 1 },
 	{ name: 'docMachineCard', maxCount: 1 },
 	{ name: 'docBill', maxCount: 1 },
 	{ name: 'docAduana', maxCount: 1 },
 	{ name: 'attached', maxCount: 20 },
+	// { name: 'docVehicleListCheck', maxCount: 1 },
 ]);
 
 // AQUI TERMINA LOS UPLOADS MIDDLEWARES
