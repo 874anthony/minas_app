@@ -24,10 +24,6 @@ const SpecialWorkPersonSchema = new Schema({
 	gender: {
 		type: String,
 		required: true,
-		enum: {
-			values: ['Hombre', 'Mujer', 'Otro'],
-			message: 'El sexo debe ser alguno de los listados',
-		},
 	},
 	birthplace: {
 		type: String,
