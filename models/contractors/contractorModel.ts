@@ -6,9 +6,10 @@ import crypto from 'crypto';
 
 import { StatusCompany } from '../companies/companyModel';
 import { CompanyInterface } from '../companies/companyModel';
+import { ModelsOrdinary } from '../../interfaces/ordinaries/ordinariesEnum';
 
 export interface ContractorInterface extends Schema, CompanyInterface {
-	company: Schema.Types.ObjectId;
+	companyID: Schema.Types.ObjectId;
 }
 
 // Definying the schema
@@ -51,21 +52,15 @@ const ContractorSchema: Schema<ContractorInterface> = new Schema({
 		trim: true,
 	},
 	docComCam: {
-		required: true,
 		type: String,
 	},
 	docRUT: {
 		type: String,
-		required: true,
 	},
 	docLegalRepresentativeID: {
 		type: String,
-		required: true,
 	},
 	radicado: {
-		type: String,
-	},
-	password: {
 		type: String,
 	},
 	status: {
@@ -80,8 +75,12 @@ const ContractorSchema: Schema<ContractorInterface> = new Schema({
 	updatedAt: {
 		type: Date,
 	},
-	docSocialSecurity: [String],
-	finishDates: [Date],
+	docSocialSecurity: {
+		type: [Map],
+		of: String,
+	},
+	finishDates: Date,
+	docSocialSecurityAt: Date,
 	observations: [
 		{
 			type: String,
@@ -89,7 +88,7 @@ const ContractorSchema: Schema<ContractorInterface> = new Schema({
 			minlength: [5, 'Las observaciones deben tener al menos 5 letras'],
 		},
 	],
-	company: {
+	companyID: {
 		type: Schema.Types.ObjectId,
 		ref: 'company',
 		required: true,
@@ -141,5 +140,26 @@ ContractorSchema.methods.decryptPassword = async function (hashedPassword) {
 		process.env.PASSWORD_PHARAPRHASE!
 	).toString(CryptoJS.enc.Utf8);
 };
+
+ContractorSchema.pre('save', async function (next) {
+	if (this.isModified('status') && this.status === 'REVISION') {
+		const idContractor = this._id;
+
+		Object.values(ModelsOrdinary).forEach(async (Model) => {
+			await Model.updateMany(
+				{
+					$match: {
+						$and: [{ contractorID: idContractor }, { status: 'ACTIVO' }],
+					},
+				},
+				{
+					$set: { status: 'INACTIVO' },
+				}
+			);
+		});
+	}
+
+	next();
+});
 
 export default model<ContractorInterface>('contractor', ContractorSchema);

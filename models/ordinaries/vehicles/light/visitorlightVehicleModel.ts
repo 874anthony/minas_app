@@ -1,4 +1,7 @@
 import { Schema, model } from 'mongoose';
+import { addDate } from '../../../../utils/date';
+import { getModelByType } from '../../../../interfaces/ordinaries/ordinariesEnum';
+import Event from '../../../events/eventsModel';
 
 // Definying the schema
 const VisitorlightVehicleSchema = new Schema({
@@ -19,8 +22,8 @@ const VisitorlightVehicleSchema = new Schema({
 		ref: 'contractor',
 		required: false,
 	},
-	startDates: [Date],
-	finishDates: [Date],
+	startDates: Date,
+	finishDates: Date,
 	type: {
 		type: String,
 		required: true,
@@ -42,12 +45,45 @@ const VisitorlightVehicleSchema = new Schema({
 		type: String,
 		required: true,
 	},
-	soatVigency: Date,
 	docSoat: String,
-	docSISCONMP: String,
-	docVehicleListCheck: String,
+	docPropertyCard: String,
+	docTechno: String,
+
+	soatVigency: Date,
 	technoVigency: Date,
 	operationCardVigency: Date,
+
+	attached: [String],
+	observations: [String],
+	qrCodeDate: Date,
+	reasonDescription: String,
+	accessType: String,
+});
+
+VisitorlightVehicleSchema.pre('save', function (next) {
+	if (this.isNew) {
+		// const days = 3;
+		// this.maxAuthorizationDate = addDate(this.recepcionDate, days);
+
+		this.accessType = getModelByType[this.ordinaryType];
+	}
+	next();
+});
+
+VisitorlightVehicleSchema.pre('save', async function (next) {
+	if (this.isModified('status') && this.status === 'ACTIVO') {
+		const bodyEvent = {
+			radicado: this._id,
+			action: 'Actualización Registro',
+			description: 'Se aprobó el ingreso y se ha generado un código QR',
+		};
+
+		await Event.create(bodyEvent);
+
+		const qrCodeDays = 2;
+		this.qrCodeDate = addDate(Date.now(), qrCodeDays);
+	}
+	next();
 });
 
 export default model('visitor_vehicle', VisitorlightVehicleSchema);

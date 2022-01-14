@@ -22,16 +22,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.uploadPunctualLightVehicles = exports.updatePunctualLightVehicle = exports.createPunctualLightVehicle = void 0;
+exports.uploadPunctualLightVehicles = exports.getVehicleNumber = exports.updatePunctualLightVehicle = exports.createPunctualLightVehicle = void 0;
 // Importing own models
 var punctuallightVehicleModel_1 = __importDefault(require("../../../../models/ordinaries/vehicles/light/punctuallightVehicleModel"));
+var cronJob_1 = __importDefault(require("../../../../utils/cronJob"));
 var userModel_1 = require("../../../../models/users/userModel");
 // Importing the factory
 var ordinaryFactory = __importStar(require("../../../ordinaryFactory"));
 var uploadPunctualLightVehicles = ordinaryFactory.uploadVehicle;
 exports.uploadPunctualLightVehicles = uploadPunctualLightVehicles;
-// const getCitizenship =
-// 	ordinaryFactory.getOrdinaryCitizenship(PunctualLightVehicleModel);
+var getVehicleNumber = ordinaryFactory.getVehicleNumber(punctuallightVehicleModel_1.default);
+exports.getVehicleNumber = getVehicleNumber;
 var createPunctualLightVehicle = ordinaryFactory.createOrdinary(punctuallightVehicleModel_1.default, [userModel_1.UserRoles.AccessControl], {
     checkAccessControl: false,
 }, {
@@ -40,3 +41,6 @@ var createPunctualLightVehicle = ordinaryFactory.createOrdinary(punctuallightVeh
 exports.createPunctualLightVehicle = createPunctualLightVehicle;
 var updatePunctualLightVehicle = ordinaryFactory.updateOrdinary(punctuallightVehicleModel_1.default);
 exports.updatePunctualLightVehicle = updatePunctualLightVehicle;
+// Cron Job to verify if Date.now() > qrCodeDate
+var job = (0, cronJob_1.default)(punctuallightVehicleModel_1.default);
+job.start();

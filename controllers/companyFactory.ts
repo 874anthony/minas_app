@@ -6,7 +6,7 @@ import fs from 'fs';
 // Importing our utils to this controller
 import HttpException from '../utils/httpException';
 import catchAsync from '../utils/catchAsync';
-import sendEmail from '../utils/email';
+import Email from '../utils/email';
 import APIFeatures from '../utils/apiFeatures';
 
 // Importing own models to the controller
@@ -20,6 +20,7 @@ import TRD, { TrdInterface } from '../models/trd/trdModel';
 import { StatusCompany } from '../models/companies/companyModel';
 
 // Importing own interfaces
+import { months } from '../utils/date';
 import DtoCreateCompany from '../interfaces/company/post-createCompany';
 
 // ================================== MULTER CONFIGURATION TO HANDLE THE DOCUMENTS ===========================================
@@ -108,10 +109,7 @@ const uploadCompanyDocs = upload.fields([
 
 const findAll = (Model) =>
 	catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-		let filter = {};
-		if (req.params.idCompany) filter = { company: req.params.idCompany };
-
-		const features = new APIFeatures(Model.find(filter), req.query)
+		const features = new APIFeatures(Model.find(), req.query)
 			.filter()
 			.sort()
 			.limitFields()
@@ -158,12 +156,7 @@ const findOne = (Model, populateOptions?) =>
 
 const createOne = (Model) =>
 	catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-		if (
-			!req.files ||
-			!req.files['docComCam'] ||
-			!req.files['docRUT'] ||
-			!req.files['docLegalRepresentativeID']
-		) {
+		if (!req.files) {
 			return next(
 				new HttpException(
 					'No se han cargado todos los archivos, por favor inténtelo nuevamente',
@@ -173,9 +166,9 @@ const createOne = (Model) =>
 		}
 
 		// Primero verificar si hay una compañia top
-		if (req.body.company) {
+		if (req.body.companyID) {
 			try {
-				await Model.findById(req.body.company);
+				await Model.findById(req.body.companyID);
 			} catch (error) {
 				return next(
 					new HttpException(
@@ -186,13 +179,20 @@ const createOne = (Model) =>
 			}
 		}
 
-		const body: DtoCreateCompany = req.body;
+		const body: DtoCreateCompany = { ...req.body };
 
-		// Extracting the filenames from the files
-		body.docComCam = req.files['docComCam'][0].filename;
-		body.docRUT = req.files['docRUT'][0].filename;
-		body.docLegalRepresentativeID =
-			req.files['docLegalRepresentativeID'][0].filename;
+		// Looping through the req.files object to set it to the body
+		Object.keys(req.files).forEach(
+			(el) => (body[el] = req.files![el][0].filename)
+		);
+
+		if (body['docSocialSecurity']) {
+			body['docSocialSecurity'] = {
+				year: new Date().getFullYear().toString(),
+				month: months[new Date().getMonth()],
+				filename: req.files!['docSocialSecurity'][0].filename,
+			};
+		}
 
 		const companyCreated = await Model.create(body);
 
@@ -230,17 +230,34 @@ const updateOne = (Model) =>
 
 		body['updatedAt'] = Date.now();
 
-		Object.keys(body).forEach((key) => {
+		if (body['docSocialSecurity']) {
+			body['docSocialSecurity'] = {
+				year: new Date().getFullYear().toString(),
+				month: months[new Date().getMonth()],
+				filename: req.files!['docSocialSecurity'][0].filename,
+			};
+		}
+
+		Object.keys(body).forEach(async (key) => {
 			if (
 				key === 'observations' ||
-				key === 'docSocialSecurity' ||
-				key === 'finishDates'
+				key === 'finishDates' ||
+				key === 'docSocialSecurity'
 			) {
 				companyUpdated[key].push(body[key]);
 			} else {
 				companyUpdated[key] = body[key];
 			}
 		});
+
+		if (body['password']) {
+			const hashedPassword = await companyUpdated.hashPassword(
+				body['password']
+			);
+
+			// NOW SAVE THE PASSWORD
+			companyUpdated.password = hashedPassword;
+		}
 
 		await companyUpdated.save({ validateBeforeSave: false });
 
@@ -268,19 +285,17 @@ const rejectOne = (Model) =>
 			);
 		}
 
-		try {
-			await sendEmail({
-				email: companyMatched.email,
-				subject: 'Ha sido denegado su acceso a la Mina San Jorge!',
-				message: emailMessage,
-			});
-		} catch (error) {
-			return next(
-				new HttpException(
-					'Hubo un error al enviar el correo, por favor intente más tarde',
-					500
-				)
-			);
+		if (!req.body.isContractor) {
+			try {
+				await new Email(companyMatched).sendRejectCompany(emailMessage);
+			} catch (error) {
+				return next(
+					new HttpException(
+						'Hubo un error al enviar el correo, por favor intente más tarde',
+						500
+					)
+				);
+			}
 		}
 
 		await companyMatched.remove();
@@ -368,22 +383,23 @@ const acceptOne = (Model) =>
 
 		await companyMatched.save({ validateBeforeSave: false });
 
-		const emailMessage = `Ha sido aprobado su solicitud de acceso para la mina, la generación de su empresa se ha generado con el radicado: ${radicado}. Sus credenciales de accesos son las siguientes:
-		\nEl correo: el mismo con el que se registró\nSu contraseña: ${genPassword}\n\nSi tiene alguna duda, no dude en contactar con nosotros!`;
+		const companyCredentials = {
+			genPassword,
+			radicado,
+			email: companyMatched.email,
+		};
 
-		try {
-			await sendEmail({
-				email: companyMatched.email,
-				subject: 'Ha sido aprobado su acceso a la Mina San Jorge!',
-				message: emailMessage,
-			});
-		} catch (error) {
-			return next(
-				new HttpException(
-					'Hubo un error al enviar el correo, por favor intente más tarde',
-					500
-				)
-			);
+		if (!req.body.isContractor) {
+			try {
+				await new Email(companyMatched).sendWelcomeCompany(companyCredentials);
+			} catch (error) {
+				return next(
+					new HttpException(
+						'Hubo un error al enviar el correo, por favor intente más tarde',
+						500
+					)
+				);
+			}
 		}
 
 		// SENDING THE FINAL RESPONSE TO THE CLIENT

@@ -62,6 +62,8 @@ var apiFeatures_1 = __importDefault(require("../utils/apiFeatures"));
 var trdImportAll_1 = require("../models/trd/trdImportAll");
 var trdModel_1 = __importDefault(require("../models/trd/trdModel"));
 var companyModel_1 = require("../models/companies/companyModel");
+// Importing own interfaces
+var date_1 = require("../utils/date");
 // ================================== MULTER CONFIGURATION TO HANDLE THE DOCUMENTS ===========================================
 // Configuring first the type of the storage
 var multerStorage = multer_1.default.diskStorage({
@@ -138,14 +140,11 @@ var uploadCompanyDocs = upload.fields([
 exports.uploadCompanyDocs = uploadCompanyDocs;
 var findAll = function (Model) {
     return (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-        var filter, features, companies;
+        var features, companies;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    filter = {};
-                    if (req.params.idCompany)
-                        filter = { company: req.params.idCompany };
-                    features = new apiFeatures_1.default(Model.find(filter), req.query)
+                    features = new apiFeatures_1.default(Model.find(), req.query)
                         .filter()
                         .sort()
                         .limitFields()
@@ -202,17 +201,14 @@ var createOne = function (Model) {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    if (!req.files ||
-                        !req.files['docComCam'] ||
-                        !req.files['docRUT'] ||
-                        !req.files['docLegalRepresentativeID']) {
+                    if (!req.files) {
                         return [2 /*return*/, next(new httpException_1.default('No se han cargado todos los archivos, por favor inténtelo nuevamente', 404))];
                     }
-                    if (!req.body.company) return [3 /*break*/, 4];
+                    if (!req.body.companyID) return [3 /*break*/, 4];
                     _a.label = 1;
                 case 1:
                     _a.trys.push([1, 3, , 4]);
-                    return [4 /*yield*/, Model.findById(req.body.company)];
+                    return [4 /*yield*/, Model.findById(req.body.companyID)];
                 case 2:
                     _a.sent();
                     return [3 /*break*/, 4];
@@ -220,12 +216,16 @@ var createOne = function (Model) {
                     error_1 = _a.sent();
                     return [2 /*return*/, next(new httpException_1.default('No hay una compañía con ese ID, inténtelo nuevamente', 404))];
                 case 4:
-                    body = req.body;
-                    // Extracting the filenames from the files
-                    body.docComCam = req.files['docComCam'][0].filename;
-                    body.docRUT = req.files['docRUT'][0].filename;
-                    body.docLegalRepresentativeID =
-                        req.files['docLegalRepresentativeID'][0].filename;
+                    body = __assign({}, req.body);
+                    // Looping through the req.files object to set it to the body
+                    Object.keys(req.files).forEach(function (el) { return (body[el] = req.files[el][0].filename); });
+                    if (body['docSocialSecurity']) {
+                        body['docSocialSecurity'] = {
+                            year: new Date().getFullYear().toString(),
+                            month: date_1.months[new Date().getMonth()],
+                            filename: req.files['docSocialSecurity'][0].filename,
+                        };
+                    }
                     return [4 /*yield*/, Model.create(body)];
                 case 5:
                     companyCreated = _a.sent();
@@ -241,7 +241,7 @@ var createOne = function (Model) {
 exports.createOne = createOne;
 var updateOne = function (Model) {
     return (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-        var id, companyUpdated, body;
+        var id, companyUpdated, body, hashedPassword;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -258,18 +258,35 @@ var updateOne = function (Model) {
                         Object.keys(req.files).forEach(function (el) { return (body[el] = req.files[el][0].filename); });
                     }
                     body['updatedAt'] = Date.now();
-                    Object.keys(body).forEach(function (key) {
-                        if (key === 'observations' ||
-                            key === 'docSocialSecurity' ||
-                            key === 'finishDates') {
-                            companyUpdated[key].push(body[key]);
-                        }
-                        else {
-                            companyUpdated[key] = body[key];
-                        }
-                    });
-                    return [4 /*yield*/, companyUpdated.save({ validateBeforeSave: false })];
+                    if (body['docSocialSecurity']) {
+                        body['docSocialSecurity'] = {
+                            year: new Date().getFullYear().toString(),
+                            month: date_1.months[new Date().getMonth()],
+                            filename: req.files['docSocialSecurity'][0].filename,
+                        };
+                    }
+                    Object.keys(body).forEach(function (key) { return __awaiter(void 0, void 0, void 0, function () {
+                        return __generator(this, function (_a) {
+                            if (key === 'observations' ||
+                                key === 'finishDates' ||
+                                key === 'docSocialSecurity') {
+                                companyUpdated[key].push(body[key]);
+                            }
+                            else {
+                                companyUpdated[key] = body[key];
+                            }
+                            return [2 /*return*/];
+                        });
+                    }); });
+                    if (!body['password']) return [3 /*break*/, 3];
+                    return [4 /*yield*/, companyUpdated.hashPassword(body['password'])];
                 case 2:
+                    hashedPassword = _a.sent();
+                    // NOW SAVE THE PASSWORD
+                    companyUpdated.password = hashedPassword;
+                    _a.label = 3;
+                case 3: return [4 /*yield*/, companyUpdated.save({ validateBeforeSave: false })];
+                case 4:
                     _a.sent();
                     res.status(200).json({
                         status: true,
@@ -297,14 +314,11 @@ var rejectOne = function (Model) {
                     if (!companyMatched) {
                         return [2 /*return*/, next(new httpException_1.default('No existe una compañía con ese ID, inténtelo nuevamente', 404))];
                     }
+                    if (!!req.body.isContractor) return [3 /*break*/, 5];
                     _a.label = 2;
                 case 2:
                     _a.trys.push([2, 4, , 5]);
-                    return [4 /*yield*/, (0, email_1.default)({
-                            email: companyMatched.email,
-                            subject: 'Ha sido denegado su acceso a la Mina San Jorge!',
-                            message: emailMessage,
-                        })];
+                    return [4 /*yield*/, new email_1.default(companyMatched).sendRejectCompany(emailMessage)];
                 case 3:
                     _a.sent();
                     return [3 /*break*/, 5];
@@ -326,7 +340,7 @@ var rejectOne = function (Model) {
 exports.rejectOne = rejectOne;
 var acceptOne = function (Model) {
     return (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-        var id, body, companyMatched, dependency, serie, subserie, trd, year, dependencyCode, serieCode, subserieCode, consecutive, radicado, genPassword, hashedPassword, emailMessage, error_3;
+        var id, body, companyMatched, dependency, serie, subserie, trd, year, dependencyCode, serieCode, subserieCode, consecutive, radicado, genPassword, hashedPassword, companyCredentials, error_3;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -397,15 +411,16 @@ var acceptOne = function (Model) {
                     return [4 /*yield*/, companyMatched.save({ validateBeforeSave: false })];
                 case 11:
                     _a.sent();
-                    emailMessage = "Ha sido aprobado su solicitud de acceso para la mina, la generaci\u00F3n de su empresa se ha generado con el radicado: " + radicado + ". Sus credenciales de accesos son las siguientes:\n\t\t\nEl correo: el mismo con el que se registr\u00F3\nSu contrase\u00F1a: " + genPassword + "\n\nSi tiene alguna duda, no dude en contactar con nosotros!";
+                    companyCredentials = {
+                        genPassword: genPassword,
+                        radicado: radicado,
+                        email: companyMatched.email,
+                    };
+                    if (!!req.body.isContractor) return [3 /*break*/, 15];
                     _a.label = 12;
                 case 12:
                     _a.trys.push([12, 14, , 15]);
-                    return [4 /*yield*/, (0, email_1.default)({
-                            email: companyMatched.email,
-                            subject: 'Ha sido aprobado su acceso a la Mina San Jorge!',
-                            message: emailMessage,
-                        })];
+                    return [4 /*yield*/, new email_1.default(companyMatched).sendWelcomeCompany(companyCredentials)];
                 case 13:
                     _a.sent();
                     return [3 /*break*/, 15];

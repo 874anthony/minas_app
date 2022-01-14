@@ -13,6 +13,12 @@ router
 		visitorVehicleController.createVisitorVehicle
 	);
 
-router.route('/:id').put(visitorVehicleController.updateVisitorVehicle);
+router
+	.route('/:id')
+	.put(
+		visitorVehicleController.getVehicleNumber,
+		visitorVehicleController.uploadVisitorVehicles,
+		visitorVehicleController.updateVisitorVehicle
+	);
 
 export default router;

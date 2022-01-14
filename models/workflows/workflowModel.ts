@@ -3,26 +3,24 @@ import {
 	ModelsOrdinary,
 	StatusOrdinary,
 } from '../../interfaces/ordinaries/ordinariesEnum';
+import Event from '../events/eventsModel';
 
 export enum StatusWorkflow {
 	Blocked = 'BLOQUEADO',
 	Sanitation = 'SUBSANACION',
 	Pending = 'PENDIENTE',
-	InProcess = 'EN PROCESO',
+	Finished = 'FINALIZADO',
 }
 
 const WorkflowSchema: Schema = new Schema({
 	radicado: {
 		type: Schema.Types.ObjectId,
-		required: [true, 'Especifique el documento al que va a estar asociado'],
+		required: [true, 'Specify the document to be associated with'],
 		unique: true,
 	},
 	roles: {
 		type: [Schema.Types.ObjectId],
-		required: [
-			true,
-			'Especifique los usuarios que van a tener acceso a el documento',
-		],
+		required: [true, 'Specify users that are related to the document'],
 	},
 	checkAccessControl: {
 		type: Boolean,
@@ -66,6 +64,10 @@ const WorkflowSchema: Schema = new Schema({
 	ordinaryType: {
 		type: String,
 		required: true,
+	},
+	healingTimes: {
+		type: Number,
+		default: 0,
 	},
 	createdAt: {
 		type: Date,
@@ -120,23 +122,6 @@ WorkflowSchema.pre('save', async function (next) {
 
 // POST SAVE
 WorkflowSchema.post('save', async function (doc, next) {
-	if (!this.isModified('checkSSFF') || this.isNew) return next();
-
-	if (this.checkSSFF === false) {
-		const Model = getModel(this.ordinaryType);
-
-		const docMatched = await Model.findById(this.radicado);
-
-		docMatched.status = StatusOrdinary.Forbidden;
-		await docMatched.save({ validateBeforeSave: false });
-
-		await this.remove();
-	}
-
-	next();
-});
-
-WorkflowSchema.post('save', async function (doc, next) {
 	// HERE IS TO CHECK IF AT LEAST ONE CORRECT FIELD IS TRUE
 
 	const checkArray = getArray(this['_doc'], 'check');
@@ -144,6 +129,14 @@ WorkflowSchema.post('save', async function (doc, next) {
 
 	if (allTrues) {
 		const Model = getModel(this.ordinaryType);
+
+		const bodyEvent = {
+			radicado: this.radicado,
+			action: 'Actualización Trámite',
+			description: 'Se aprobó el registro por parte de los trámitadores',
+		};
+
+		await Event.create(bodyEvent);
 
 		const docMatched = await Model.findById(this.radicado);
 

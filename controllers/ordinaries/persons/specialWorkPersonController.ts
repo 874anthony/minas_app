@@ -1,6 +1,6 @@
 // Importing own models
 import SpecialWorkPersonModel from '../../../models/ordinaries/persons/specialWorkPersonModel';
-
+import CronJob from '../../../utils/cronJob';
 import { UserRoles } from '../../../models/users/userModel';
 
 // Importing the factory
@@ -30,6 +30,10 @@ const createSpecialWorkPerson = ordinaryFactory.createOrdinary(
 const updateSpecialWorkPerson = ordinaryFactory.updateOrdinary(
 	SpecialWorkPersonModel
 );
+
+// Cron Job to verify if Date.now() > qrCodeDate
+const job = CronJob(SpecialWorkPersonModel);
+job.start();
 
 export {
 	createSpecialWorkPerson,

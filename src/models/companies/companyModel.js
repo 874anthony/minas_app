@@ -44,10 +44,11 @@ var mongoose_1 = require("mongoose");
 var validator_1 = __importDefault(require("validator"));
 var crypto_js_1 = __importDefault(require("crypto-js"));
 var crypto_1 = __importDefault(require("crypto"));
+var ordinariesEnum_1 = require("../../interfaces/ordinaries/ordinariesEnum");
 var StatusCompany;
 (function (StatusCompany) {
     StatusCompany["Active"] = "ACTIVO";
-    StatusCompany["InProcess"] = "EN PROCESO";
+    StatusCompany["Revision"] = "REVISION";
     StatusCompany["Pending"] = "PENDIENTE";
     StatusCompany["Inactive"] = "INACTIVO";
     StatusCompany["Rejected"] = "RECHAZADO";
@@ -92,16 +93,13 @@ var CompanySchema = new mongoose_1.Schema({
         trim: true,
     },
     docComCam: {
-        required: true,
         type: String,
     },
     docRUT: {
         type: String,
-        required: true,
     },
     docLegalRepresentativeID: {
         type: String,
-        required: true,
     },
     radicado: {
         type: String,
@@ -123,8 +121,12 @@ var CompanySchema = new mongoose_1.Schema({
     updatedAt: {
         type: Date,
     },
-    docSocialSecurity: [String],
-    finishDates: [Date],
+    docSocialSecurity: {
+        type: [Map],
+        of: String,
+    },
+    docSocialSecurityAt: Date,
+    finishDates: Date,
     observations: [
         {
             type: String,
@@ -144,11 +146,6 @@ CompanySchema.virtual('contratistas', {
     foreignField: 'company',
     localField: '_id',
 });
-// UserSchema.methods.toJSON = function() {
-// var obj = this.toObject()
-// delete obj.passwordHash
-// return obj
-// }
 // ================================================== STATIC METHODS STARTS HERE ==================================================
 /**
  *
@@ -180,4 +177,31 @@ CompanySchema.methods.decryptPassword = function (hashedPassword) {
         });
     });
 };
+CompanySchema.pre('save', function (next) {
+    return __awaiter(this, void 0, void 0, function () {
+        var idCompany_1;
+        var _this = this;
+        return __generator(this, function (_a) {
+            if (this.isModified('status') && this.status === 'REVISION') {
+                idCompany_1 = this._id;
+                Object.values(ordinariesEnum_1.ModelsOrdinary).forEach(function (Model) { return __awaiter(_this, void 0, void 0, function () {
+                    return __generator(this, function (_a) {
+                        switch (_a.label) {
+                            case 0: return [4 /*yield*/, Model.updateMany({
+                                    $match: { $and: [{ companyID: idCompany_1 }, { status: 'ACTIVO' }] },
+                                }, {
+                                    $set: { status: 'INACTIVO' },
+                                })];
+                            case 1:
+                                _a.sent();
+                                return [2 /*return*/];
+                        }
+                    });
+                }); });
+            }
+            next();
+            return [2 /*return*/];
+        });
+    });
+});
 exports.default = (0, mongoose_1.model)('company', CompanySchema);

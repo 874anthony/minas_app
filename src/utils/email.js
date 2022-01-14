@@ -1,4 +1,15 @@
 "use strict";
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -39,32 +50,101 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+var ejs_1 = __importDefault(require("ejs"));
 var nodemailer_1 = __importDefault(require("nodemailer"));
-exports.default = (function (emailOptions) { return __awaiter(void 0, void 0, void 0, function () {
-    var transporter, mailOptions;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                transporter = nodemailer_1.default.createTransport({
-                    host: process.env.EMAIL_HOST,
-                    port: parseInt(process.env.EMAIL_PORT),
-                    auth: {
-                        user: process.env.EMAIL_USERNAME,
-                        pass: process.env.EMAIL_PASSWORD,
-                    },
-                });
-                mailOptions = {
-                    from: "Control de Acceso - Gecelca <" + process.env.EMAIL_FROM + ">",
-                    to: emailOptions.email,
-                    subject: emailOptions.subject,
-                    text: emailOptions.message,
-                };
-                // 3) Sending the email
-                return [4 /*yield*/, transporter.sendMail(mailOptions)];
-            case 1:
-                // 3) Sending the email
-                _a.sent();
-                return [2 /*return*/];
-        }
-    });
-}); });
+var html_to_text_1 = require("html-to-text");
+var Email = /** @class */ (function () {
+    function Email(user, url) {
+        this.to = user.email;
+        this.url = url;
+        this.from = "Control de Acceso - Gecelca <" + process.env.EMAIL_FROM + ">";
+    }
+    Email.prototype.newTransport = function () {
+        // if (process.env.NODE_ENV === 'production') {
+        // 	// Sendgrid - PRODUCTION
+        // 	return 1;
+        // }
+        // 1) Create a transporter
+        return nodemailer_1.default.createTransport({
+            host: process.env.EMAIL_HOST,
+            port: parseInt(process.env.EMAIL_PORT),
+            auth: {
+                user: process.env.EMAIL_USERNAME,
+                pass: process.env.EMAIL_PASSWORD,
+            },
+        });
+    };
+    Email.prototype.send = function (template, subject, data) {
+        return __awaiter(this, void 0, void 0, function () {
+            var html, mailOptions;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, ejs_1.default.renderFile(__dirname + "/../views/email/" + template + ".ejs", __assign({ url: this.url }, data))];
+                    case 1:
+                        html = _a.sent();
+                        mailOptions = {
+                            from: this.from,
+                            to: this.to,
+                            subject: subject,
+                            html: html,
+                            text: (0, html_to_text_1.htmlToText)(html),
+                            // TODO: make this dynamic
+                            attachments: [
+                                {
+                                    filename: 'image-2.png',
+                                    path: __dirname + "/../views/images/image-2.jfif",
+                                    cid: 'unique@gecelca-logo',
+                                },
+                            ],
+                        };
+                        // 3) Create the transport to send the email
+                        return [4 /*yield*/, this.newTransport().sendMail(mailOptions)];
+                    case 2:
+                        // 3) Create the transport to send the email
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    Email.prototype.sendWelcomeCompany = function (companyCredentials) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.send('welcomeCompany', 'Su acceso a la mina ha sido aprobado!', companyCredentials)];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    Email.prototype.sendRejectCompany = function (emailMessage) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.send('rejectedCompany', 'Su acceso a la mina ha sido denegado', {
+                            emailMessage: emailMessage,
+                        })];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    Email.prototype.sendOrdNotification = function (ordinaryOpts) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.send('ordNotification', 'Se ha generado un nuevo ordinario!', ordinaryOpts)];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    return Email;
+}());
+exports.default = Email;

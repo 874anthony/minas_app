@@ -8,4 +8,19 @@ function getLocalDate(date) {
 	return date.toLocaleString();
 }
 
-export { addDate, getLocalDate };
+const months: Array<string> = [
+	'Enero',
+	'Febrero',
+	'Marzo',
+	'Abril',
+	'Mayo',
+	'Junio',
+	'Julio',
+	'Agosto',
+	'Septiembre',
+	'Octubre',
+	'Noviembre',
+	'Diciembre',
+];
+
+export { addDate, getLocalDate, months };

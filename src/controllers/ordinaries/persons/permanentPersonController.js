@@ -25,6 +25,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.updatePermanentPerson = exports.getCitizenship = exports.uploadPermanentPersons = exports.createPermanentPerson = void 0;
 // Importing own models
 var permanentPersonModel_1 = __importDefault(require("../../../models/ordinaries/persons/permanentPersonModel"));
+var cronJob_1 = __importDefault(require("../../../utils/cronJob"));
 var userModel_1 = require("../../../models/users/userModel");
 // Importing the factory
 var ordinaryFactory = __importStar(require("../../ordinaryFactory"));
@@ -56,3 +57,6 @@ var createPermanentPerson = ordinaryFactory.createOrdinary(permanentPersonModel_
 exports.createPermanentPerson = createPermanentPerson;
 var updatePermanentPerson = ordinaryFactory.updateOrdinary(permanentPersonModel_1.default);
 exports.updatePermanentPerson = updatePermanentPerson;
+// Cron Job to verify if Date.now() > qrCodeDate
+var job = (0, cronJob_1.default)(permanentPersonModel_1.default);
+job.start();

@@ -15,6 +15,10 @@ router
 
 router
 	.route('/:id')
-	.put(permanentLightVehicleController.updatePermanentLightVehicle);
+	.put(
+		permanentLightVehicleController.getVehicleNumber,
+		permanentLightVehicleController.uploadPermanentLightVehicles,
+		permanentLightVehicleController.updatePermanentLightVehicle
+	);
 
 export default router;

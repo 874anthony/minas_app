@@ -14,6 +14,7 @@ import {
 // Importing own models
 import User, { UserRoles } from '../../models/users/userModel';
 import Workflow, { StatusWorkflow } from '../../models/workflows/workflowModel';
+import Event from '../../models/events/eventsModel';
 
 // Helpers methods
 const getKey = (field: string, user) => {
@@ -37,8 +38,31 @@ const ModelsPerRole = {
 		'permanentHeavyVehicle',
 		'punctualLightVehicle',
 		'punctualHeavyVehicle',
-		'specialpunctualHeavyVehicle',
+		'specialHeavyVehicle',
+		'permanentMachinery',
+		'punctualMachinery',
 	],
+	'Responsabilidad Social Empresarial': ['permanentPerson'],
+	'Seguridad y Salud en el Trabajo': [
+		'permanentPerson',
+		'specialworkPerson',
+		'permanentLightVehicle',
+		'permanentHeavyVehicle',
+		'specialHeavyVehicle',
+		'permanentMachinery',
+		'punctualMachinery',
+	],
+	'Seguridad Física': ['permanentPerson'],
+	Interventoría: [
+		'permanentPerson',
+		'specialworkPerson',
+		'permanentLightVehicle',
+		'permanentHeavyVehicle',
+		'specialHeavyVehicle',
+		'permanentMachinery',
+		'punctualMachinery',
+	],
+	'Gerencia Servicios Mineros': ['permanentPerson'],
 };
 // Helpers methods Ends HERE
 
@@ -81,6 +105,16 @@ const getAllOrdinariesType = catchAsync(
 					path: 'radicado',
 					select: '-__v',
 					model: Model,
+					populate: [
+						{
+							path: 'companyID',
+							select: 'businessName',
+						},
+						{
+							path: 'contractorID',
+							select: 'businessName',
+						},
+					],
 				});
 
 				return ordinaryResult;
@@ -125,9 +159,31 @@ const changeStatusOrdinary = catchAsync(
 			);
 		}
 
+		// To handle events
+		let action, description;
+
 		// Extracting the key given the value of the enum.
 		const checkKey = getKey('check', user);
 		const correctKey = getKey('correct', user);
+
+		if (checkKey === 'checkSSFF' && body.check === false) {
+			const Model = getModel(workflowDoc.ordinaryType);
+
+			const docMatched = await Model.findById(workflowDoc.radicado);
+
+			action = 'Actualización Tramitador - Rechazado';
+			description = `El registro ha sido anulado por ${user.role}`;
+
+			docMatched.status = StatusOrdinary.Rejected;
+			await docMatched.save({ validateBeforeSave: false });
+
+			await workflowDoc.remove();
+
+			return res.status(204).json({
+				status: true,
+				message: 'El proceso ha sido actualizado con éxito',
+			});
+		}
 
 		// Modify the status.
 		workflowDoc[checkKey] = body.check;
@@ -142,6 +198,22 @@ const changeStatusOrdinary = catchAsync(
 			await docMatched.save({ validateBeforeSave: false });
 		}
 
+		if (body.check === false && body.correct === true) {
+			action = 'Actualización Tramitador - Subsanar';
+			description = `Se mandado a subsanar por ${user.role}`;
+		} else if (body.check === true && body.correct === false) {
+			action = 'Actualización Tramitador - Aprobado';
+			description = `El registro ha pasado la aprobación de ${user.role}`;
+		}
+
+		const bodyEvent = {
+			radicado: workflowDoc.radicado,
+			action,
+			description,
+		};
+
+		await Event.create(bodyEvent);
+
 		await workflowDoc.save({ validateBeforeSave: false });
 
 		res
@@ -150,4 +222,49 @@ const changeStatusOrdinary = catchAsync(
 	}
 );
 
-export { checkRole, getAllOrdinariesType, changeStatusOrdinary };
+const getOneWorkflow = catchAsync(
+	async (req: Request, res: Response, next: NextFunction) => {
+		const id = req.params.id;
+
+		const workflowDoc = await Workflow.findOne({ radicado: id });
+
+		if (!workflowDoc)
+			return next(
+				new HttpException('No se ha encontrado un workflow con ese ID!', 404)
+			);
+
+		res.status(200).json({
+			status: true,
+			workflow: workflowDoc,
+		});
+	}
+);
+
+const getWorkflosAdmin = catchAsync(
+	async (req: Request, res: Response, next: NextFunction) => {
+		const features = new APIFeatures(Workflow.find(), req.query)
+			.filter()
+			.paginate()
+			.sort()
+			.limitFields();
+
+		const workflows = await features.query;
+
+		if (workflows.length === 0) {
+			return next(new HttpException('No hay documentos en trámite', 204));
+		}
+
+		res.status(200).json({
+			status: true,
+			workflows,
+		});
+	}
+);
+
+export {
+	checkRole,
+	getAllOrdinariesType,
+	changeStatusOrdinary,
+	getOneWorkflow,
+	getWorkflosAdmin,
+};

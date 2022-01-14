@@ -25,12 +25,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 // Importing 3rd-party packages
 var express_1 = __importDefault(require("express"));
 // Importing the controllers
-var specialpunctualHeavyVehicleController = __importStar(require("../../../../controllers/ordinaries/vehicles/heavy/specialpunctualheavyVehicleController"));
+var specialHeavyVehicleController = __importStar(require("../../../../controllers/ordinaries/vehicles/heavy/specialheavyVehicleController"));
 var router = express_1.default.Router({ mergeParams: true });
 router
     .route('/')
-    .post(specialpunctualHeavyVehicleController.uploadSpecialPunctualHeavyVehicles, specialpunctualHeavyVehicleController.createSpecialPunctualHeavyVehicle);
+    .post(specialHeavyVehicleController.uploadSpecialHeavyVehicles, specialHeavyVehicleController.createSpecialHeavyVehicle);
 router
     .route('/:id')
-    .put(specialpunctualHeavyVehicleController.updateSpecialPunctualHeavyVehicle);
+    .put(specialHeavyVehicleController.getVehicleNumber, specialHeavyVehicleController.uploadSpecialHeavyVehicles, specialHeavyVehicleController.updateSpecialHeavyVehicle);
 exports.default = router;

@@ -22,28 +22,29 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.changeStatusPermanent = exports.uploadPermanentPersons = exports.createPermanentPerson = void 0;
+exports.updatePermanentMachinery = exports.getVehicleNumber = exports.uploadPermanentMachinery = exports.createPermanentMachinery = void 0;
 // Importing own models
-var permanentPersonModel_1 = __importDefault(require("../../models/ordinaries/persons/permanentPersonModel"));
-var userModel_1 = require("../../models/users/userModel");
+var permanentMachineryModel_1 = __importDefault(require("../../../models/ordinaries/machinery/permanentMachineryModel"));
+var cronJob_1 = __importDefault(require("../../../utils/cronJob"));
+var userModel_1 = require("../../../models/users/userModel");
 // Importing the factory
-var ordinaryFactory = __importStar(require("../ordinaryFactory"));
-var uploadPermanentPersons = ordinaryFactory.uploadPermanentPerson;
-exports.uploadPermanentPersons = uploadPermanentPersons;
-var createPermanentPerson = ordinaryFactory.createOrdinay(permanentPersonModel_1.default, [userModel_1.UserRoles.AccessControl], {
+var ordinaryFactory = __importStar(require("../../ordinaryFactory"));
+var uploadPermanentMachinery = ordinaryFactory.uploadVehicle;
+exports.uploadPermanentMachinery = uploadPermanentMachinery;
+var getVehicleNumber = ordinaryFactory.getVehicleNumber(permanentMachineryModel_1.default);
+exports.getVehicleNumber = getVehicleNumber;
+var createPermanentMachinery = ordinaryFactory.createOrdinary(permanentMachineryModel_1.default, [userModel_1.UserRoles.AccessControl, userModel_1.UserRoles.SISO, userModel_1.UserRoles.Auditing], {
     checkAccessControl: false,
-    checkRSE: false,
-    checkSSFF: false,
     checkSISO: false,
     checkAuditing: false,
-    checkSMIN: false,
 }, {
     correctAccessControl: false,
-    correctRSE: false,
     correctSISO: false,
     correctAuditing: false,
-    correctSMIN: false,
 });
-exports.createPermanentPerson = createPermanentPerson;
-var changeStatusPermanent = ordinaryFactory.changeStatusOrdinary();
-exports.changeStatusPermanent = changeStatusPermanent;
+exports.createPermanentMachinery = createPermanentMachinery;
+var updatePermanentMachinery = ordinaryFactory.updateOrdinary(permanentMachineryModel_1.default);
+exports.updatePermanentMachinery = updatePermanentMachinery;
+// Cron Job to verify if Date.now() > qrCodeDate
+var job = (0, cronJob_1.default)(permanentMachineryModel_1.default);
+job.start();

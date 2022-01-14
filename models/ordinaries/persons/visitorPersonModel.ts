@@ -1,5 +1,7 @@
 import { Schema, model } from 'mongoose';
 import { addDate } from '../../../utils/date';
+import { getModelByType } from '../../../interfaces/ordinaries/ordinariesEnum';
+import Event from '../../events/eventsModel';
 
 // Definying the schema
 const VisitorPersonSchema = new Schema({
@@ -9,7 +11,6 @@ const VisitorPersonSchema = new Schema({
 		trim: true,
 		minlength: 3,
 	},
-
 	appointment: {
 		type: String,
 		required: true,
@@ -40,18 +41,12 @@ const VisitorPersonSchema = new Schema({
 	},
 	licenseCategory: {
 		type: String,
-		required: true,
-		maxlength: [3, 'La categoría solo puede tener 3 letras como máximo'],
 		trim: true,
 	},
-	docHealth: {
-		type: String,
-	},
+	docHealth: String,
 	docPension: String,
 	docARL: String,
-	docCitizenship: {
-		type: String,
-	},
+	docCitizenship: String,
 	docSocialSecurity: String,
 	radicado: {
 		type: String,
@@ -59,7 +54,6 @@ const VisitorPersonSchema = new Schema({
 	},
 	observations: [String],
 	medicalConceptDate: Date,
-
 	inductionDate: Date,
 	inductionVigency: Date,
 	companyID: {
@@ -71,8 +65,8 @@ const VisitorPersonSchema = new Schema({
 		ref: 'contractor',
 		required: false,
 	},
-	startDates: [Date],
-	finishDates: [Date],
+	startDates: Date,
+	finishDates: Date,
 	status: {
 		type: String,
 		default: 'PENDIENTE',
@@ -83,10 +77,13 @@ const VisitorPersonSchema = new Schema({
 		default: Date.now(),
 	},
 	maxAuthorizationDate: Date,
+	qrCodeDate: Date,
+	reasonDescription: String,
 	ordinaryType: {
 		type: String,
 		default: 'visitorPerson',
 	},
+	accessType: String,
 	licenseVigency: Date,
 	updatedAt: {
 		type: Date,
@@ -97,6 +94,24 @@ VisitorPersonSchema.pre('save', function (next) {
 	if (this.isNew) {
 		const days = 3;
 		this.maxAuthorizationDate = addDate(this.recepcionDate, days);
+
+		this.accessType = getModelByType[this.ordinaryType];
+	}
+	next();
+});
+
+VisitorPersonSchema.pre('save', async function (next) {
+	if (this.isModified('status') && this.status === 'ACTIVO') {
+		const bodyEvent = {
+			radicado: this._id,
+			action: 'Actualización Registro',
+			description: 'Se aprobó el ingreso y se ha generado un código QR',
+		};
+
+		await Event.create(bodyEvent);
+
+		const qrCodeDays = 2;
+		this.qrCodeDate = addDate(Date.now(), qrCodeDays);
 	}
 	next();
 });

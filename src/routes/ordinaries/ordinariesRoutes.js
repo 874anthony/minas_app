@@ -23,12 +23,24 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = __importDefault(require("express"));
+var contractorController_1 = require("../../controllers/contractor/contractorController");
 var ordinaryFactory = __importStar(require("../../controllers/ordinaryFactory"));
 var router = express_1.default.Router({ mergeParams: true });
 // Aliases routes
 router
     .route('/ordinaries-by-company')
     .get(ordinaryFactory.checkCompanyID, ordinaryFactory.getAllOrds);
+router
+    .route('/ordinaries-by-contractor/:idContractor')
+    .get(ordinaryFactory.checkContractorID, ordinaryFactory.getAllOrds);
+router.route('/inactivate-all').put(ordinaryFactory.inactiveOrdsByCompany);
+router.route('/activate-all').put(ordinaryFactory.activeOrdsByCompany);
+router.route('/inactivate-all-contractors').put(contractorController_1.inactiveOrdsByContractor);
+router.route('/activate-all-contractors').put(contractorController_1.activeOrdsByContractor);
+router.route('/generate-report-persons').get(ordinaryFactory.exportExcelPerson);
+router
+    .route('/generate-report-vehicles')
+    .get(ordinaryFactory.exportExcelVehicle);
 router.route('/').get(ordinaryFactory.getAllOrds);
 router.route('/:id').get(ordinaryFactory.getOrdById);
 exports.default = router;

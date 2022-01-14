@@ -32,5 +32,5 @@ router
     .post(punctualHeavyVehicleController.uploadPunctualHeavyVehicles, punctualHeavyVehicleController.createPunctualHeavyVehicle);
 router
     .route('/:id')
-    .put(punctualHeavyVehicleController.updatePunctualHeavyVehicle);
+    .put(punctualHeavyVehicleController.getVehicleNumber, punctualHeavyVehicleController.uploadPunctualHeavyVehicles, punctualHeavyVehicleController.updatePunctualHeavyVehicle);
 exports.default = router;

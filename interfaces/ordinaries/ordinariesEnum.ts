@@ -8,27 +8,65 @@ export enum Gender {
 
 export enum StatusOrdinary {
 	Active = 'ACTIVO',
-	InProcess = 'EN PROCESO',
+	Finished = 'FINALIZADO',
 	Pending = 'PENDIENTE',
 	Inactive = 'INACTIVO',
 	Rejected = 'RECHAZADO',
 	Sanitation = 'SUBSANAR',
-	Forbidden = 'PROHIBIDO',
 	Visa = 'POR VISAR',
 }
 
+export const getModelByType = {
+	permanentPerson: 'Persona permanente',
+	punctualworkPerson: 'Persona trabajo puntual',
+	specialworkPerson: 'Persona especial',
+	visitorPerson: 'Persona visitante',
+	visitorVehicle: 'Vehiculo visitante',
+	permanentLightVehicle: 'Vehiculo liviano permanente',
+	punctualLightVehicle: 'Vehiculo liviano puntual',
+	permanentHeavyVehicle: 'Vehiculo pesado permanente',
+	punctualHeavyVehicle: 'Vehiculo pesado puntual',
+	specialHeavyVehicle: ' Vehiculo especial',
+	permanentMachinery: ' Maquinaria pesada permanente',
+	punctualMachinery: ' Maquinaria pesada puntual',
+};
+
 export const ModelsOrdinary = {
+	// Personas
+	visitorPerson: ordinariesModels.VisitorPerson,
 	permanentPerson: ordinariesModels.PermanentPersonModel,
 	punctualworkPerson: ordinariesModels.PunctualWorkPerson,
 	specialworkPerson: ordinariesModels.SpecialWorkPerson,
-	visitorPerson: ordinariesModels.VisitorPerson,
+	// Vehiculos
 	visitorVehicle: ordinariesModels.VisitorVehicle,
 	permanentLightVehicle: ordinariesModels.PermanentLightVehicle,
 	punctualLightVehicle: ordinariesModels.PunctualLightVehicle,
 	permanentHeavyVehicle: ordinariesModels.PermanentHeavyVehicle,
 	punctualHeavyVehicle: ordinariesModels.PunctualHeavyVehicle,
-	specialpunctualHeavyVehicle: ordinariesModels.SpecialPunctualHeavyVehicle,
+	specialHeavyVehicle: ordinariesModels.SpecialHeavyVehicle,
+	// Machinery
+	permanentMachinery: ordinariesModels.PermanentMachinery,
+	punctualMachinery: ordinariesModels.PunctualMachinery,
 };
+
+export const PersonsOrdinary = {
+	permanentPerson: ordinariesModels.PermanentPersonModel,
+	punctualworkPerson: ordinariesModels.PunctualWorkPerson,
+	specialworkPerson: ordinariesModels.SpecialWorkPerson,
+	visitorPerson: ordinariesModels.VisitorPerson,
+};
+
+export const VehiclesOrdinary = {
+	visitorVehicle: ordinariesModels.VisitorVehicle,
+	permanentLightVehicle: ordinariesModels.PermanentLightVehicle,
+	punctualLightVehicle: ordinariesModels.PunctualLightVehicle,
+	permanentHeavyVehicle: ordinariesModels.PermanentHeavyVehicle,
+	punctualHeavyVehicle: ordinariesModels.PunctualHeavyVehicle,
+	specialHeavyVehicle: ordinariesModels.SpecialHeavyVehicle,
+	permanentMachinery: ordinariesModels.PermanentMachinery,
+	punctualMachinery: ordinariesModels.PunctualMachinery,
+};
+
 export interface StatusBody {
 	id: string;
 	checkAccessControl?: boolean;

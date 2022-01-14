@@ -35,29 +35,30 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.StatusWorkflow = void 0;
 var mongoose_1 = require("mongoose");
 var ordinariesEnum_1 = require("../../interfaces/ordinaries/ordinariesEnum");
+var eventsModel_1 = __importDefault(require("../events/eventsModel"));
 var StatusWorkflow;
 (function (StatusWorkflow) {
     StatusWorkflow["Blocked"] = "BLOQUEADO";
     StatusWorkflow["Sanitation"] = "SUBSANACION";
     StatusWorkflow["Pending"] = "PENDIENTE";
-    StatusWorkflow["InProcess"] = "EN PROCESO";
+    StatusWorkflow["Finished"] = "FINALIZADO";
 })(StatusWorkflow = exports.StatusWorkflow || (exports.StatusWorkflow = {}));
 var WorkflowSchema = new mongoose_1.Schema({
     radicado: {
         type: mongoose_1.Schema.Types.ObjectId,
-        required: [true, 'Especifique el documento al que va a estar asociado'],
+        required: [true, 'Specify the document to be associated with'],
         unique: true,
     },
     roles: {
         type: [mongoose_1.Schema.Types.ObjectId],
-        required: [
-            true,
-            'Especifique los usuarios que van a tener acceso a el documento',
-        ],
+        required: [true, 'Specify users that are related to the document'],
     },
     checkAccessControl: {
         type: Boolean,
@@ -101,6 +102,10 @@ var WorkflowSchema = new mongoose_1.Schema({
     ordinaryType: {
         type: String,
         required: true,
+    },
+    healingTimes: {
+        type: Number,
+        default: 0,
     },
     createdAt: {
         type: Date,
@@ -159,55 +164,35 @@ WorkflowSchema.pre('save', function (next) {
 // POST SAVE
 WorkflowSchema.post('save', function (doc, next) {
     return __awaiter(this, void 0, void 0, function () {
-        var Model, docMatched;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    if (!this.isModified('checkSSFF') || this.isNew)
-                        return [2 /*return*/, next()];
-                    if (!(this.checkSSFF === false)) return [3 /*break*/, 4];
-                    Model = getModel(this.ordinaryType);
-                    return [4 /*yield*/, Model.findById(this.radicado)];
-                case 1:
-                    docMatched = _a.sent();
-                    docMatched.status = ordinariesEnum_1.StatusOrdinary.Forbidden;
-                    return [4 /*yield*/, docMatched.save({ validateBeforeSave: false })];
-                case 2:
-                    _a.sent();
-                    return [4 /*yield*/, this.remove()];
-                case 3:
-                    _a.sent();
-                    _a.label = 4;
-                case 4:
-                    next();
-                    return [2 /*return*/];
-            }
-        });
-    });
-});
-WorkflowSchema.post('save', function (doc, next) {
-    return __awaiter(this, void 0, void 0, function () {
-        var checkArray, allTrues, Model, docMatched;
+        var checkArray, allTrues, Model, bodyEvent, docMatched;
         var _this = this;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     checkArray = getArray(this['_doc'], 'check');
                     allTrues = checkArray.every(function (value) { return _this[value] === true; });
-                    if (!allTrues) return [3 /*break*/, 4];
+                    if (!allTrues) return [3 /*break*/, 5];
                     Model = getModel(this.ordinaryType);
-                    return [4 /*yield*/, Model.findById(this.radicado)];
+                    bodyEvent = {
+                        radicado: this.radicado,
+                        action: 'Actualización Trámite',
+                        description: 'Se aprobó el registro por parte de los trámitadores',
+                    };
+                    return [4 /*yield*/, eventsModel_1.default.create(bodyEvent)];
                 case 1:
+                    _a.sent();
+                    return [4 /*yield*/, Model.findById(this.radicado)];
+                case 2:
                     docMatched = _a.sent();
                     docMatched.status = ordinariesEnum_1.StatusOrdinary.Visa;
                     return [4 /*yield*/, docMatched.save({ validateBeforeSave: false })];
-                case 2:
-                    _a.sent();
-                    return [4 /*yield*/, this.remove()];
                 case 3:
                     _a.sent();
-                    _a.label = 4;
+                    return [4 /*yield*/, this.remove()];
                 case 4:
+                    _a.sent();
+                    _a.label = 5;
+                case 5:
                     next();
                     return [2 /*return*/];
             }

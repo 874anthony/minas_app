@@ -25,6 +25,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.updatePunctualWorkPerson = exports.getCitizenship = exports.uploadPunctualWorkPersons = exports.createPunctualWorkPerson = void 0;
 // Importing own models
 var punctualWorkPersonModel_1 = __importDefault(require("../../../models/ordinaries/persons/punctualWorkPersonModel"));
+var cronJob_1 = __importDefault(require("../../../utils/cronJob"));
 var userModel_1 = require("../../../models/users/userModel");
 // Importing the factory
 var ordinaryFactory = __importStar(require("../../ordinaryFactory"));
@@ -40,3 +41,6 @@ var createPunctualWorkPerson = ordinaryFactory.createOrdinary(punctualWorkPerson
 exports.createPunctualWorkPerson = createPunctualWorkPerson;
 var updatePunctualWorkPerson = ordinaryFactory.updateOrdinary(punctualWorkPersonModel_1.default);
 exports.updatePunctualWorkPerson = updatePunctualWorkPerson;
+// Cron Job to verify if Date.now() > qrCodeDate
+var job = (0, cronJob_1.default)(punctualWorkPersonModel_1.default);
+job.start();

@@ -69,7 +69,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.changeStatusOrdinary = exports.getAllOrdinariesType = exports.checkRole = void 0;
+exports.getWorkflosAdmin = exports.getOneWorkflow = exports.changeStatusOrdinary = exports.getAllOrdinariesType = exports.checkRole = void 0;
 // // Importing our utils to this controller
 var httpException_1 = __importDefault(require("../../utils/httpException"));
 var catchAsync_1 = __importDefault(require("../../utils/catchAsync"));
@@ -78,6 +78,7 @@ var ordinariesEnum_1 = require("../../interfaces/ordinaries/ordinariesEnum");
 // Importing own models
 var userModel_1 = __importStar(require("../../models/users/userModel"));
 var workflowModel_1 = __importDefault(require("../../models/workflows/workflowModel"));
+var eventsModel_1 = __importDefault(require("../../models/events/eventsModel"));
 // Helpers methods
 var getKey = function (field, user) {
     return "" + field + Object.keys(userModel_1.UserRoles)[Object.values(userModel_1.UserRoles).indexOf(user.role)];
@@ -96,8 +97,31 @@ var ModelsPerRole = {
         'permanentHeavyVehicle',
         'punctualLightVehicle',
         'punctualHeavyVehicle',
-        'specialpunctualHeavyVehicle',
+        'specialHeavyVehicle',
+        'permanentMachinery',
+        'punctualMachinery',
     ],
+    'Responsabilidad Social Empresarial': ['permanentPerson'],
+    'Seguridad y Salud en el Trabajo': [
+        'permanentPerson',
+        'specialworkPerson',
+        'permanentLightVehicle',
+        'permanentHeavyVehicle',
+        'specialHeavyVehicle',
+        'permanentMachinery',
+        'punctualMachinery',
+    ],
+    'Seguridad Física': ['permanentPerson'],
+    Interventoría: [
+        'permanentPerson',
+        'specialworkPerson',
+        'permanentLightVehicle',
+        'permanentHeavyVehicle',
+        'specialHeavyVehicle',
+        'permanentMachinery',
+        'punctualMachinery',
+    ],
+    'Gerencia Servicios Mineros': ['permanentPerson'],
 };
 // Helpers methods Ends HERE
 // MIDDLEWARES STARTS HERE
@@ -137,6 +161,16 @@ var getAllOrdinariesType = (0, catchAsync_1.default)(function (req, res, next) {
                                         path: 'radicado',
                                         select: '-__v',
                                         model: Model,
+                                        populate: [
+                                            {
+                                                path: 'companyID',
+                                                select: 'businessName',
+                                            },
+                                            {
+                                                path: 'contractorID',
+                                                select: 'businessName',
+                                            },
+                                        ],
                                     })];
                             case 1:
                                 ordinaryResult = _a.sent();
@@ -157,7 +191,7 @@ var getAllOrdinariesType = (0, catchAsync_1.default)(function (req, res, next) {
 }); });
 exports.getAllOrdinariesType = getAllOrdinariesType;
 var changeStatusOrdinary = (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var id, body, userID, user, workflowDoc, checkKey, correctKey, Model, docMatched;
+    var id, body, userID, user, workflowDoc, action, description, checkKey, correctKey, Model, docMatched, Model, docMatched, bodyEvent;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -178,21 +212,57 @@ var changeStatusOrdinary = (0, catchAsync_1.default)(function (req, res, next) {
                 }
                 checkKey = getKey('check', user);
                 correctKey = getKey('correct', user);
-                // Modify the status.
-                workflowDoc[checkKey] = body.check;
-                workflowDoc[correctKey] = body.correct;
-                if (!req.body.observations) return [3 /*break*/, 5];
+                if (!(checkKey === 'checkSSFF' && body.check === false)) return [3 /*break*/, 6];
                 Model = getModel(workflowDoc.ordinaryType);
                 return [4 /*yield*/, Model.findById(workflowDoc.radicado)];
             case 3:
                 docMatched = _a.sent();
-                docMatched.observations.push(req.body.observations);
+                action = 'Actualización Tramitador - Rechazado';
+                description = "El registro ha sido anulado por " + user.role;
+                docMatched.status = ordinariesEnum_1.StatusOrdinary.Rejected;
                 return [4 /*yield*/, docMatched.save({ validateBeforeSave: false })];
             case 4:
                 _a.sent();
-                _a.label = 5;
-            case 5: return [4 /*yield*/, workflowDoc.save({ validateBeforeSave: false })];
+                return [4 /*yield*/, workflowDoc.remove()];
+            case 5:
+                _a.sent();
+                return [2 /*return*/, res.status(204).json({
+                        status: true,
+                        message: 'El proceso ha sido actualizado con éxito',
+                    })];
             case 6:
+                // Modify the status.
+                workflowDoc[checkKey] = body.check;
+                workflowDoc[correctKey] = body.correct;
+                if (!req.body.observations) return [3 /*break*/, 9];
+                Model = getModel(workflowDoc.ordinaryType);
+                return [4 /*yield*/, Model.findById(workflowDoc.radicado)];
+            case 7:
+                docMatched = _a.sent();
+                docMatched.observations.push(req.body.observations);
+                return [4 /*yield*/, docMatched.save({ validateBeforeSave: false })];
+            case 8:
+                _a.sent();
+                _a.label = 9;
+            case 9:
+                if (body.check === false && body.correct === true) {
+                    action = 'Actualización Tramitador - Subsanar';
+                    description = "Se mandado a subsanar por " + user.role;
+                }
+                else if (body.check === true && body.correct === false) {
+                    action = 'Actualización Tramitador - Aprobado';
+                    description = "El registro ha pasado la aprobaci\u00F3n de " + user.role;
+                }
+                bodyEvent = {
+                    radicado: workflowDoc.radicado,
+                    action: action,
+                    description: description,
+                };
+                return [4 /*yield*/, eventsModel_1.default.create(bodyEvent)];
+            case 10:
+                _a.sent();
+                return [4 /*yield*/, workflowDoc.save({ validateBeforeSave: false })];
+            case 11:
                 _a.sent();
                 res
                     .status(200)
@@ -202,3 +272,48 @@ var changeStatusOrdinary = (0, catchAsync_1.default)(function (req, res, next) {
     });
 }); });
 exports.changeStatusOrdinary = changeStatusOrdinary;
+var getOneWorkflow = (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var id, workflowDoc;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                id = req.params.id;
+                return [4 /*yield*/, workflowModel_1.default.findOne({ radicado: id })];
+            case 1:
+                workflowDoc = _a.sent();
+                if (!workflowDoc)
+                    return [2 /*return*/, next(new httpException_1.default('No se ha encontrado un workflow con ese ID!', 404))];
+                res.status(200).json({
+                    status: true,
+                    workflow: workflowDoc,
+                });
+                return [2 /*return*/];
+        }
+    });
+}); });
+exports.getOneWorkflow = getOneWorkflow;
+var getWorkflosAdmin = (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var features, workflows;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                features = new apiFeatures_1.default(workflowModel_1.default.find(), req.query)
+                    .filter()
+                    .paginate()
+                    .sort()
+                    .limitFields();
+                return [4 /*yield*/, features.query];
+            case 1:
+                workflows = _a.sent();
+                if (workflows.length === 0) {
+                    return [2 /*return*/, next(new httpException_1.default('No hay documentos en trámite', 204))];
+                }
+                res.status(200).json({
+                    status: true,
+                    workflows: workflows,
+                });
+                return [2 /*return*/];
+        }
+    });
+}); });
+exports.getWorkflosAdmin = getWorkflosAdmin;

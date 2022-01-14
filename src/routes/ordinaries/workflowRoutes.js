@@ -28,9 +28,13 @@ var authController = __importStar(require("../../controllers/auth/authController
 var workflowController = __importStar(require("../../controllers/workflow/workflowController"));
 var router = express_1.default.Router({ mergeParams: true });
 router
+    .route('/get-all-admin')
+    .get(authController.guardLogin, workflowController.getWorkflosAdmin);
+router
     .route('/')
     .get(authController.guardLogin, workflowController.checkRole, workflowController.getAllOrdinariesType);
 router
     .route('/:id')
+    .get(workflowController.getOneWorkflow)
     .patch(authController.guardLogin, workflowController.changeStatusOrdinary);
 exports.default = router;

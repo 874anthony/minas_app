@@ -22,16 +22,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.uploadPunctualHeavyVehicles = exports.updatePunctualHeavyVehicle = exports.createPunctualHeavyVehicle = void 0;
+exports.uploadPunctualHeavyVehicles = exports.getVehicleNumber = exports.updatePunctualHeavyVehicle = exports.createPunctualHeavyVehicle = void 0;
 // Importing own models
 var punctualheavyVehicleModel_1 = __importDefault(require("../../../../models/ordinaries/vehicles/heavy/punctualheavyVehicleModel"));
+var cronJob_1 = __importDefault(require("../../../../utils/cronJob"));
 var userModel_1 = require("../../../../models/users/userModel");
 // Importing the factory
 var ordinaryFactory = __importStar(require("../../../ordinaryFactory"));
 var uploadPunctualHeavyVehicles = ordinaryFactory.uploadVehicle;
 exports.uploadPunctualHeavyVehicles = uploadPunctualHeavyVehicles;
-// const getCitizenship =
-// 	ordinaryFactory.getOrdinaryCitizenship(PunctualHeavyVehicleModel);
+var getVehicleNumber = ordinaryFactory.getVehicleNumber(punctualheavyVehicleModel_1.default);
+exports.getVehicleNumber = getVehicleNumber;
 var createPunctualHeavyVehicle = ordinaryFactory.createOrdinary(punctualheavyVehicleModel_1.default, [userModel_1.UserRoles.AccessControl], {
     checkAccessControl: false,
 }, {
@@ -40,3 +41,6 @@ var createPunctualHeavyVehicle = ordinaryFactory.createOrdinary(punctualheavyVeh
 exports.createPunctualHeavyVehicle = createPunctualHeavyVehicle;
 var updatePunctualHeavyVehicle = ordinaryFactory.updateOrdinary(punctualheavyVehicleModel_1.default);
 exports.updatePunctualHeavyVehicle = updatePunctualHeavyVehicle;
+// Cron Job to verify if Date.now() > qrCodeDate
+var job = (0, cronJob_1.default)(punctualheavyVehicleModel_1.default);
+job.start();

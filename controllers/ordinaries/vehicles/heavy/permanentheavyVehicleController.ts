@@ -1,6 +1,6 @@
 // Importing own models
 import PermanentHeavyVehicleModel from '../../../../models/ordinaries/vehicles/heavy/permanentheavyVehicleModel';
-
+import CronJob from '../../../../utils/cronJob';
 import { UserRoles } from '../../../../models/users/userModel';
 
 // Importing the factory
@@ -8,8 +8,9 @@ import * as ordinaryFactory from '../../../ordinaryFactory';
 
 const uploadPermanentHeavyVehicles = ordinaryFactory.uploadVehicle;
 
-// const getCitizenship =
-// 	ordinaryFactory.getOrdinaryCitizenship(PermanentHeavyVehicleModel);
+const getVehicleNumber = ordinaryFactory.getVehicleNumber(
+	PermanentHeavyVehicleModel
+);
 
 const createPermanentHeavyVehicle = ordinaryFactory.createOrdinary(
 	PermanentHeavyVehicleModel,
@@ -30,9 +31,13 @@ const updatePermanentHeavyVehicle = ordinaryFactory.updateOrdinary(
 	PermanentHeavyVehicleModel
 );
 
+// Cron Job to verify if Date.now() > qrCodeDate
+const job = CronJob(PermanentHeavyVehicleModel);
+job.start();
+
 export {
 	createPermanentHeavyVehicle,
 	updatePermanentHeavyVehicle,
-	// getCitizenship,
+	getVehicleNumber,
 	uploadPermanentHeavyVehicles,
 };

@@ -1,5 +1,6 @@
 // Import 3rd-party packages
 import { NextFunction, Request, Response } from 'express';
+import { CronJob } from 'cron';
 
 // Own models
 import Company from '../../models/companies/companyModel';
@@ -36,6 +37,21 @@ const rejectCompany = factory.rejectOne(Company);
 const getCompanyNIT = factory.getCompanyNIT(Company);
 
 const loginCompany = login(Company);
+
+const job = new CronJob(
+	'0 1 * * *',
+	async () => {
+		await Company.updateMany(
+			{
+				docSocialSecurityAt: { $lte: Date.now() },
+			},
+			{ status: 'REVISION', docSocialSecurityAt: null }
+		);
+	},
+	null
+);
+
+job.start();
 
 export {
 	getAllCompanies,

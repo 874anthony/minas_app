@@ -30,5 +30,7 @@ var router = express_1.default.Router({ mergeParams: true });
 router
     .route('/')
     .post(visitorVehicleController.uploadVisitorVehicles, visitorVehicleController.createVisitorVehicle);
-router.route('/:id').put(visitorVehicleController.updateVisitorVehicle);
+router
+    .route('/:id')
+    .put(visitorVehicleController.getVehicleNumber, visitorVehicleController.uploadVisitorVehicles, visitorVehicleController.updateVisitorVehicle);
 exports.default = router;

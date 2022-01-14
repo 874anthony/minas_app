@@ -25,6 +25,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.updateSpecialWorkPerson = exports.getCitizenship = exports.uploadSpecialWorkPersons = exports.createSpecialWorkPerson = void 0;
 // Importing own models
 var specialWorkPersonModel_1 = __importDefault(require("../../../models/ordinaries/persons/specialWorkPersonModel"));
+var cronJob_1 = __importDefault(require("../../../utils/cronJob"));
 var userModel_1 = require("../../../models/users/userModel");
 // Importing the factory
 var ordinaryFactory = __importStar(require("../../ordinaryFactory"));
@@ -44,3 +45,6 @@ var createSpecialWorkPerson = ordinaryFactory.createOrdinary(specialWorkPersonMo
 exports.createSpecialWorkPerson = createSpecialWorkPerson;
 var updateSpecialWorkPerson = ordinaryFactory.updateOrdinary(specialWorkPersonModel_1.default);
 exports.updateSpecialWorkPerson = updateSpecialWorkPerson;
+// Cron Job to verify if Date.now() > qrCodeDate
+var job = (0, cronJob_1.default)(specialWorkPersonModel_1.default);
+job.start();

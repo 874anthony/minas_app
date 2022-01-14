@@ -69,18 +69,73 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.guardLogin = exports.loginUsers = exports.login = exports.createUserRole = void 0;
+exports.adminGuard = exports.isAllowedOrdinary = exports.guardLogin = exports.loginUsers = exports.login = exports.createUserRole = void 0;
 var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 // Importing our utils to this controller
 var httpException_1 = __importDefault(require("../../utils/httpException"));
 var catchAsync_1 = __importDefault(require("../../utils/catchAsync"));
 // Importing own models
 var userModel_1 = __importStar(require("../../models/users/userModel"));
+var ordinariesEnum_1 = require("../../interfaces/ordinaries/ordinariesEnum");
 var signToken = function (id) {
     return jsonwebtoken_1.default.sign({ id: id }, process.env.JWT_PRIVATE_KEY, {
         expiresIn: process.env.JWT_EXPIRES_IN,
     });
 };
+var isAllowedOrdinary = (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var _a, id, ordinaryType, currentOrdinary, ejsOpts;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
+            case 0:
+                _a = req.params, id = _a.id, ordinaryType = _a.ordinaryType;
+                if (!id || !ordinaryType)
+                    return [2 /*return*/, next(new httpException_1.default('No ha proporcinado el tipo de ordinario, intente nuevamente', 404))];
+                return [4 /*yield*/, ordinariesEnum_1.ModelsOrdinary[ordinaryType]
+                        .findById(id)
+                        .populate([
+                        {
+                            path: 'companyID',
+                            select: 'businessName',
+                        },
+                        {
+                            path: 'contractorID',
+                            select: 'businessName',
+                            populate: {
+                                path: 'companyID',
+                                select: 'businessName',
+                            },
+                        },
+                    ])];
+            case 1:
+                currentOrdinary = _b.sent();
+                ejsOpts = {
+                    status: "<li style=\"color: " + (currentOrdinary.status === 'INACTIVO' ? 'red' : 'green') + ";\"> " + currentOrdinary.status + " </li>",
+                    name: "" + (currentOrdinary.name !== undefined
+                        ? currentOrdinary.name
+                        : currentOrdinary.vehicleType),
+                    ordType: "" + currentOrdinary.accessType,
+                    number: "" + (currentOrdinary.citizenship !== undefined
+                        ? currentOrdinary.citizenship
+                        : currentOrdinary.vehicleNumber),
+                    type: "" + (currentOrdinary.gender !== undefined
+                        ? currentOrdinary.gender
+                        : currentOrdinary.type),
+                    occupation: "" + (currentOrdinary.appointment !== undefined
+                        ? currentOrdinary.appointment
+                        : currentOrdinary.serviceType),
+                    company: "" + (currentOrdinary.companyID !== undefined
+                        ? currentOrdinary['companyID'].businessName
+                        : currentOrdinary['contractorID'].companyID['businessName']),
+                    contractor: "" + (currentOrdinary.contractorID !== undefined
+                        ? currentOrdinary['contractorID'].businessName
+                        : 'Sin contratista'),
+                };
+                res.render(__dirname + "/../../views/pages/qrcode.ejs", ejsOpts);
+                return [2 /*return*/];
+        }
+    });
+}); });
+exports.isAllowedOrdinary = isAllowedOrdinary;
 var createUserRole = (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     var body, excludedField, newUser, token;
     return __generator(this, function (_a) {
@@ -133,6 +188,9 @@ var login = function (Model) {
                     if (_b) {
                         return [2 /*return*/, next(new httpException_1.default('Email o contraseña incorrectos!', 401))];
                     }
+                    if (user.status === false) {
+                        return [2 /*return*/, next(new httpException_1.default('Este usuario está inactivo. Contactar administrador', 401))];
+                    }
                     token = signToken(user._id);
                     res.status(200).json({
                         status: true,
@@ -177,3 +235,32 @@ var guardLogin = (0, catchAsync_1.default)(function (req, res, next) { return __
 exports.guardLogin = guardLogin;
 var loginUsers = login(userModel_1.default);
 exports.loginUsers = loginUsers;
+var adminGuard = (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var token, id, currentUser;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                if (req.headers.authorization &&
+                    req.headers.authorization.startsWith('Bearer')) {
+                    token = req.headers.authorization.split(' ')[1];
+                }
+                if (!token) {
+                    return [2 /*return*/, next(new httpException_1.default('No has iniciado sesión, por favor hazlo e intenta nuevamente', 401))];
+                }
+                jsonwebtoken_1.default.verify(token, process.env.JWT_PRIVATE_KEY, function (err, decoded) {
+                    id = decoded.id;
+                });
+                return [4 /*yield*/, userModel_1.default.findById(id)];
+            case 1:
+                currentUser = _a.sent();
+                if (!currentUser) {
+                    return [2 /*return*/, next(new httpException_1.default('El usuario con este token ya no existe!', 401))];
+                }
+                res.status(200).json({
+                    isAdmin: currentUser.role === userModel_1.UserRoles.Admin,
+                });
+                return [2 /*return*/];
+        }
+    });
+}); });
+exports.adminGuard = adminGuard;

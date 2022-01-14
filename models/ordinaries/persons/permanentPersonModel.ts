@@ -1,5 +1,7 @@
 import { Schema, model } from 'mongoose';
+import { getModelByType } from '../../../interfaces/ordinaries/ordinariesEnum';
 import { addDate } from '../../../utils/date';
+import Event from '../../events/eventsModel';
 
 // Definying the schema
 const PermanentPersonSchema = new Schema({
@@ -40,8 +42,6 @@ const PermanentPersonSchema = new Schema({
 	},
 	licenseCategory: {
 		type: String,
-		required: true,
-		maxlength: [3, 'La categoría solo puede tener 3 letras como máximo'],
 		trim: true,
 	},
 	docHealth: {
@@ -49,9 +49,7 @@ const PermanentPersonSchema = new Schema({
 	},
 	docPension: String,
 	docARL: String,
-	docCitizenship: {
-		type: String,
-	},
+	docCitizenship: String,
 	docSocialSecurity: String,
 	docMedicalFitness: String,
 	radicado: {
@@ -60,7 +58,6 @@ const PermanentPersonSchema = new Schema({
 	},
 	observations: [String],
 	medicalConceptDate: Date,
-
 	inductionDate: Date,
 	inductionVigency: Date,
 	companyID: {
@@ -72,8 +69,8 @@ const PermanentPersonSchema = new Schema({
 		ref: 'contractor',
 		required: false,
 	},
-	startDates: [Date],
-	finishDates: [Date],
+	startDates: Date,
+	finishDates: Date,
 	status: {
 		type: String,
 		default: 'PENDIENTE',
@@ -84,11 +81,14 @@ const PermanentPersonSchema = new Schema({
 		default: Date.now(),
 	},
 	maxAuthorizationDate: Date,
+	qrCodeDate: Date,
 	ordinaryType: {
 		type: String,
 		default: 'permanentPerson',
 	},
+	reasonDescription: String,
 	licenseVigency: Date,
+	accessType: String,
 	updatedAt: {
 		type: Date,
 	},
@@ -98,6 +98,24 @@ PermanentPersonSchema.pre('save', function (next) {
 	if (this.isNew) {
 		const days = 3;
 		this.maxAuthorizationDate = addDate(this.recepcionDate, days);
+
+		this.accessType = getModelByType[this.ordinaryType];
+	}
+	next();
+});
+
+PermanentPersonSchema.pre('save', async function (next) {
+	if (this.isModified('status') && this.status === 'ACTIVO') {
+		const bodyEvent = {
+			radicado: this._id,
+			action: 'Actualización Registro',
+			description: 'Se aprobó el ingreso y se ha generado un código QR',
+		};
+
+		await Event.create(bodyEvent);
+
+		const qrCodeDays = 3;
+		this.qrCodeDate = addDate(Date.now(), qrCodeDays);
 	}
 	next();
 });

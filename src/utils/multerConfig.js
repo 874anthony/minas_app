@@ -53,7 +53,12 @@ var multerStorageVehicle = multer_1.default.diskStorage({
     // Define the destination
     destination: function (req, file, callback) {
         var predicate;
-        predicate = req.body.vehicleNumber;
+        if (req.body.vehicleNumber === undefined) {
+            predicate = req['ordVehicleNumber'];
+        }
+        else {
+            predicate = req.body.vehicleNumber;
+        }
         var directory = "store/documents/ordinaries/vehicle/" + predicate;
         if (!fs_1.default.existsSync(directory)) {
             fs_1.default.mkdirSync(directory, { recursive: true });
@@ -62,7 +67,12 @@ var multerStorageVehicle = multer_1.default.diskStorage({
     },
     filename: function (req, file, callback) {
         var predicate;
-        predicate = req.body.vehicleNumber;
+        if (req.body.vehicleNumber === undefined) {
+            predicate = req['ordVehicleNumber'];
+        }
+        else {
+            predicate = req.body.vehicleNumber;
+        }
         // Extracting the extension.
         var extension = file.mimetype.split('/')[1];
         callback(null, "ordinary-" + predicate + "-" + Date.now() + "." + extension);

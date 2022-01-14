@@ -26,5 +26,6 @@ var express_1 = __importDefault(require("express"));
 // Importing own controllers
 var userController = __importStar(require("../../controllers/users/userController"));
 var router = express_1.default.Router();
-router.route('/').get(userController.getUsers);
+router.route('/').get(userController.getAllUsers);
+router.route('/:id').get(userController.getUser).put(userController.updateUser);
 exports.default = router;

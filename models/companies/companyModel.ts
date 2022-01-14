@@ -3,10 +3,11 @@ import validator from 'validator';
 
 import CryptoJS from 'crypto-js';
 import crypto from 'crypto';
+import { ModelsOrdinary } from '../../interfaces/ordinaries/ordinariesEnum';
 
 export enum StatusCompany {
 	Active = 'ACTIVO',
-	InProcess = 'EN PROCESO',
+	Revision = 'REVISION',
 	Pending = 'PENDIENTE',
 	Inactive = 'INACTIVO',
 	Rejected = 'RECHAZADO',
@@ -21,7 +22,7 @@ export interface CompanyInterface extends Schema {
 	docComCam: string;
 	docRUT: string;
 	docLegalRepresentativeID: string;
-	docSocialSecurity: string;
+	docSocialSecurity: any;
 	finishDates: Array<any>;
 	radicado: string;
 	password: string;
@@ -29,6 +30,7 @@ export interface CompanyInterface extends Schema {
 	observations: Array<string>;
 	createdAt: any;
 	updatedAt: any;
+	docSocialSecurityAt: any;
 	generatePassword: () => Promise<string>;
 	hashPassword: (genPassword: string) => Promise<string>;
 	decryptPassword: (hashedPassword: string) => Promise<string>;
@@ -75,16 +77,13 @@ const CompanySchema: Schema<CompanyInterface> = new Schema(
 			trim: true,
 		},
 		docComCam: {
-			required: true,
 			type: String,
 		},
 		docRUT: {
 			type: String,
-			required: true,
 		},
 		docLegalRepresentativeID: {
 			type: String,
-			required: true,
 		},
 		radicado: {
 			type: String,
@@ -106,8 +105,12 @@ const CompanySchema: Schema<CompanyInterface> = new Schema(
 		updatedAt: {
 			type: Date,
 		},
-		docSocialSecurity: [String],
-		finishDates: [Date],
+		docSocialSecurity: {
+			type: [Map],
+			of: String,
+		},
+		docSocialSecurityAt: Date,
+		finishDates: Date,
 		observations: [
 			{
 				type: String,
@@ -130,12 +133,6 @@ CompanySchema.virtual('contratistas', {
 	foreignField: 'company',
 	localField: '_id',
 });
-
-// UserSchema.methods.toJSON = function() {
-// var obj = this.toObject()
-// delete obj.passwordHash
-// return obj
-// }
 
 // ================================================== STATIC METHODS STARTS HERE ==================================================
 /**
@@ -165,5 +162,24 @@ CompanySchema.methods.decryptPassword = async function (hashedPassword) {
 		process.env.PASSWORD_PHARAPRHASE!
 	).toString(CryptoJS.enc.Utf8);
 };
+
+CompanySchema.pre('save', async function (next) {
+	if (this.isModified('status') && this.status === 'REVISION') {
+		const idCompany = this._id;
+
+		Object.values(ModelsOrdinary).forEach(async (Model) => {
+			await Model.updateMany(
+				{
+					$match: { $and: [{ companyID: idCompany }, { status: 'ACTIVO' }] },
+				},
+				{
+					$set: { status: 'INACTIVO' },
+				}
+			);
+		});
+	}
+
+	next();
+});
 
 export default model<CompanyInterface>('company', CompanySchema);

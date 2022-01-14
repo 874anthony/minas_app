@@ -1,11 +1,10 @@
 // Importing dependencies
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+import app from './app';
 
 // Import enviroment variables and parsing into the single process.env
 dotenv.config({ path: './config.env' });
-
-import app from './app';
 
 // Creating the DB instance
 const DB = process.env.DATABASE_URI!.replace(
@@ -17,7 +16,8 @@ const DB = process.env.DATABASE_URI!.replace(
 // TODO: Handle errors
 mongoose
 	.connect(DB, { dbName: 'minas_gecelca' })
-	.then(() => console.log('DB connected succesfully!'));
+	.then(() => console.log('DB connected succesfully!'))
+	.catch(console.log);
 
 const port = process.env.PORT || 3000;
 

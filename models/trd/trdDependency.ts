@@ -24,7 +24,7 @@ const TrdDependency = new Schema({
 	},
 	status: {
 		type: Boolean,
-		default: true,
+		default: false,
 	},
 	createdAt: {
 		type: Date,

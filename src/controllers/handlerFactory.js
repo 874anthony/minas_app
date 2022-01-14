@@ -39,7 +39,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.findOne = exports.findAll = exports.createOne = void 0;
+exports.updateOne = exports.findOne = exports.findAll = exports.createOne = void 0;
 // Importing the global handler error and the catchAsync
 var httpException_1 = __importDefault(require("../utils/httpException"));
 var catchAsync_1 = __importDefault(require("../utils/catchAsync"));
@@ -89,9 +89,7 @@ var findAll = function (Model) {
                     }
                     return [2 /*return*/, res.status(200).json({
                             status: true,
-                            data: {
-                                documents: documents,
-                            },
+                            documents: documents,
                         })];
             }
         });
@@ -127,3 +125,30 @@ var findOne = function (Model, populateOptions) {
     }); });
 };
 exports.findOne = findOne;
+var updateOne = function (Model) {
+    return (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+        var id, body, documentUpdated;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    id = req.params.id;
+                    body = req.body;
+                    return [4 /*yield*/, Model.findByIdAndUpdate(id, body, {
+                            new: true,
+                            validateBeforeSave: false,
+                        })];
+                case 1:
+                    documentUpdated = _a.sent();
+                    if (!documentUpdated)
+                        return [2 /*return*/, next(new httpException_1.default('No se ha podido actualizar el registro, intentelo nuevamente!', 404))];
+                    res.status(200).json({
+                        status: true,
+                        message: 'El registro fue actualizado con exito',
+                        documentUpdated: documentUpdated,
+                    });
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+};
+exports.updateOne = updateOne;

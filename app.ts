@@ -1,10 +1,12 @@
 import express, { NextFunction, Request, Response } from 'express';
 import cors from 'cors';
+import helmet from 'helmet';
 import morgan from 'morgan';
 import path from 'path';
 
 // TODO: Own Imports LATER BE REMOVED
 import HttpException from './utils/httpException';
+import globalErrorHandler from './controllers/errorController';
 
 // Own routes
 import companyRouter from './routes/company/companyRoutes';
@@ -13,7 +15,10 @@ import trdRouter from './routes/trd/trdRoutes';
 import authRouter from './routes/auth/authRoutes';
 import userRouter from './routes/users/userRoutes';
 import workflowRouter from './routes/ordinaries/workflowRoutes';
+import eventRouter from './routes/events/eventsRoutes';
 import ordinaryRouter from './routes/ordinaries/ordinariesRoutes';
+
+// Ordinaries
 import permanentPersonRouter from './routes/ordinaries/persons/permanentPersonRoutes';
 import punctualworkPersonRouter from './routes/ordinaries/persons/punctualworkPersonRoutes';
 import visitorPersonRouter from './routes/ordinaries/persons/visitorPersonRoutes';
@@ -23,12 +28,17 @@ import permanentLightVehicleRouter from './routes/ordinaries/vehicles/light/perm
 import permanentHeavyVehicleRouter from './routes/ordinaries/vehicles/heavy/permanentheavyVehicleRoutes';
 import punctualLightVehicleRouter from './routes/ordinaries/vehicles/light/punctuallightVehicleRoutes';
 import punctualHeavyVehicleRouter from './routes/ordinaries/vehicles/heavy/punctualheavyVehicleRoutes';
-import specialpunctualHeavyVehicleRouter from './routes/ordinaries/vehicles/heavy/specialpunctualheavyVehicleRoutes';
+import specialHeavyVehicleRouter from './routes/ordinaries/vehicles/heavy/specialheavyVehicleRoutes';
+import permanentMachineryRouter from './routes/ordinaries/machinery/permanentMachineryRoutes';
+import punctualMachineryRouter from './routes/ordinaries/machinery/punctualMachineryRoutes';
+
 
 const app = express();
 
 // To handle the CORS
 app.use(cors());
+// To sanitaze HTTP requests
+app.use(helmet());
 //  To recognize the incoming Request Object as a JSON Object.
 app.use(express.json({ limit: '50mb' }));
 //  To recognize the incoming Request Object as strings or arrays.
@@ -46,14 +56,12 @@ app.use(
 );
 
 app.use(
-	'/pdf-contractors',
-	express.static(path.join(__dirname, '../store/documents/contractors'))
-);
-
-app.use(
 	'/pdf-ordinaries',
 	express.static(path.join(__dirname, '../store/documents/ordinaries'))
 );
+
+app.set('view engine', 'ejs');
+app.set('views', `${__dirname}/views`);
 
 // Importing routes
 app.use('/api/v1/companies', companyRouter);
@@ -62,7 +70,10 @@ app.use('/api/v1/trd-management', trdRouter);
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/user', userRouter);
 app.use('/api/v1/workflow', workflowRouter);
+app.use('/api/v1/events', eventRouter);
 app.use('/api/v1/ordinaries', ordinaryRouter);
+
+// Ordinaries
 app.use('/api/v1/ordinaries-person/permanent-person', permanentPersonRouter);
 app.use(
 	'/api/v1/ordinaries-person/punctual-work-person',
@@ -92,27 +103,21 @@ app.use(
 	punctualHeavyVehicleRouter
 );
 app.use(
-	'/api/v1/ordinaries-vehicle/special-punctual-heavy-vehicle',
-	specialpunctualHeavyVehicleRouter
+	'/api/v1/ordinaries-vehicle/special-heavy-vehicle',
+	specialHeavyVehicleRouter
+);
+app.use(
+	'/api/v1/ordinaries-machinery/permanent-machinery',
+	permanentMachineryRouter
+);
+app.use(
+	'/api/v1/ordinaries-machinery/punctual-machinery',
+	punctualMachineryRouter
 );
 
-// Define the global error handler to pass next errors
-function globalErrorHandler(
-	err: HttpException,
-	req: Request,
-	res: Response,
-	next: NextFunction
-) {
-	const status = err.status || 500;
-	const message = err.message || 'Something went wrong';
-
-	return res.status(status).json({
-		error: err,
-		status,
-		message,
-		stack: err.stack,
-	});
-}
+app.all('*', (req: Request, res: Response, next: NextFunction) => {
+	next(new HttpException(`Can't find ${req.originalUrl} on this server!`, 404));
+});
 
 // Using the the global error handler
 app.use(globalErrorHandler);
