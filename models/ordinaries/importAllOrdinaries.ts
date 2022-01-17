@@ -2,7 +2,9 @@
 import PermanentPersonModel from './persons/permanentPersonModel';
 import PunctualWorkPerson from './persons/punctualWorkPersonModel';
 import VisitorPerson from './persons/visitorPersonModel';
+
 import SpecialWorkPerson from './persons/specialWorkPersonModel';
+
 // Veh8icles
 import VisitorVehicle from './vehicles/light/visitorlightVehicleModel';
 import PermanentLightVehicle from './vehicles/light/permanentlightVehicleModel';
