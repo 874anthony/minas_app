@@ -13,7 +13,7 @@ var visitorPersonModel_1 = __importDefault(require("./persons/visitorPersonModel
 exports.VisitorPerson = visitorPersonModel_1.default;
 var specialWorkPersonModel_1 = __importDefault(require("./persons/specialWorkPersonModel"));
 exports.SpecialWorkPerson = specialWorkPersonModel_1.default;
-// Veh8icles
+// Vehicles
 var visitorlightVehicleModel_1 = __importDefault(require("./vehicles/light/visitorlightVehicleModel"));
 exports.VisitorVehicle = visitorlightVehicleModel_1.default;
 var permanentlightVehicleModel_1 = __importDefault(require("./vehicles/light/permanentlightVehicleModel"));

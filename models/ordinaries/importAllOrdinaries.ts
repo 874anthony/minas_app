@@ -5,7 +5,7 @@ import VisitorPerson from './persons/visitorPersonModel';
 
 import SpecialWorkPerson from './persons/specialWorkPersonModel';
 
-// Veh8icles
+// Vehicles
 import VisitorVehicle from './vehicles/light/visitorlightVehicleModel';
 import PermanentLightVehicle from './vehicles/light/permanentlightVehicleModel';
 import PermanentHeavyVehicle from './vehicles/heavy/permanentheavyVehicleModel';
