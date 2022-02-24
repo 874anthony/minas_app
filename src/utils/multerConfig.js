@@ -19,7 +19,7 @@ var multerStorageOrdinary = multer_1.default.diskStorage({
         else {
             predicate = req.body.citizenship;
         }
-        var directory = "store/documents/ordinaries/person/" + predicate;
+        var directory = "store/documents/ordinaries/person/".concat(predicate);
         if (!fs_1.default.existsSync(directory)) {
             fs_1.default.mkdirSync(directory, { recursive: true });
         }
@@ -35,7 +35,7 @@ var multerStorageOrdinary = multer_1.default.diskStorage({
         }
         // Extracting the extension.
         var extension = file.mimetype.split('/')[1];
-        callback(null, "ordinary-" + predicate + "-" + Date.now() + "." + extension);
+        callback(null, "ordinary-".concat(predicate, "-").concat(Date.now(), ".").concat(extension));
     },
 });
 // Filtering for only PDF files
@@ -59,7 +59,7 @@ var multerStorageVehicle = multer_1.default.diskStorage({
         else {
             predicate = req.body.vehicleNumber;
         }
-        var directory = "store/documents/ordinaries/vehicle/" + predicate;
+        var directory = "store/documents/ordinaries/vehicle/".concat(predicate);
         if (!fs_1.default.existsSync(directory)) {
             fs_1.default.mkdirSync(directory, { recursive: true });
         }
@@ -75,7 +75,7 @@ var multerStorageVehicle = multer_1.default.diskStorage({
         }
         // Extracting the extension.
         var extension = file.mimetype.split('/')[1];
-        callback(null, "ordinary-" + predicate + "-" + Date.now() + "." + extension);
+        callback(null, "ordinary-".concat(predicate, "-").concat(Date.now(), ".").concat(extension));
     },
 });
 // Filtering for only PDF files

@@ -109,28 +109,28 @@ var isAllowedOrdinary = (0, catchAsync_1.default)(function (req, res, next) { re
             case 1:
                 currentOrdinary = _b.sent();
                 ejsOpts = {
-                    status: "<li style=\"color: " + (currentOrdinary.status === 'INACTIVO' ? 'red' : 'green') + ";\"> " + currentOrdinary.status + " </li>",
-                    name: "" + (currentOrdinary.name !== undefined
+                    status: "<li style=\"color: ".concat(currentOrdinary.status === 'INACTIVO' ? 'red' : 'green', ";\"> ").concat(currentOrdinary.status, " </li>"),
+                    name: "".concat(currentOrdinary.name !== undefined
                         ? currentOrdinary.name
                         : currentOrdinary.vehicleType),
-                    ordType: "" + currentOrdinary.accessType,
-                    number: "" + (currentOrdinary.citizenship !== undefined
+                    ordType: "".concat(currentOrdinary.accessType),
+                    number: "".concat(currentOrdinary.citizenship !== undefined
                         ? currentOrdinary.citizenship
                         : currentOrdinary.vehicleNumber),
-                    type: "" + (currentOrdinary.gender !== undefined
+                    type: "".concat(currentOrdinary.gender !== undefined
                         ? currentOrdinary.gender
                         : currentOrdinary.type),
-                    occupation: "" + (currentOrdinary.appointment !== undefined
+                    occupation: "".concat(currentOrdinary.appointment !== undefined
                         ? currentOrdinary.appointment
                         : currentOrdinary.serviceType),
-                    company: "" + (currentOrdinary.companyID !== undefined
+                    company: "".concat(currentOrdinary.companyID !== undefined
                         ? currentOrdinary['companyID'].businessName
                         : currentOrdinary['contractorID'].companyID['businessName']),
-                    contractor: "" + (currentOrdinary.contractorID !== undefined
+                    contractor: "".concat(currentOrdinary.contractorID !== undefined
                         ? currentOrdinary['contractorID'].businessName
                         : 'Sin contratista'),
                 };
-                res.render(__dirname + "/../../views/pages/qrcode.ejs", ejsOpts);
+                res.render("".concat(__dirname, "/../../views/pages/qrcode.ejs"), ejsOpts);
                 return [2 /*return*/];
         }
     });
@@ -155,7 +155,7 @@ var createUserRole = (0, catchAsync_1.default)(function (req, res, next) { retur
                 newUser.password = undefined;
                 res.status(200).json({
                     status: true,
-                    message: "El usuario con el rol: " + body.role + " fue creado con exito",
+                    message: "El usuario con el rol: ".concat(body.role, " fue creado con exito"),
                     token: token,
                     user: newUser,
                 });

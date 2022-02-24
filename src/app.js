@@ -50,7 +50,7 @@ if (process.env.NODE_ENV === 'development') {
 app.use('/pdf-companies', express_1.default.static(path_1.default.join(__dirname, '../store/documents/company')));
 app.use('/pdf-ordinaries', express_1.default.static(path_1.default.join(__dirname, '../store/documents/ordinaries')));
 app.set('view engine', 'ejs');
-app.set('views', __dirname + "/views");
+app.set('views', "".concat(__dirname, "/views"));
 // Importing routes
 app.use('/api/v1/companies', companyRoutes_1.default);
 app.use('/api/v1/contractors', contractorRoutes_1.default);
@@ -75,7 +75,7 @@ app.use('/api/v1/ordinaries-vehicle/special-heavy-vehicle', specialheavyVehicleR
 app.use('/api/v1/ordinaries-machinery/permanent-machinery', permanentMachineryRoutes_1.default);
 app.use('/api/v1/ordinaries-machinery/punctual-machinery', punctualMachineryRoutes_1.default);
 app.all('*', function (req, res, next) {
-    next(new httpException_1.default("Can't find " + req.originalUrl + " on this server!", 404));
+    next(new httpException_1.default("Can't find ".concat(req.originalUrl, " on this server!"), 404));
 });
 // Using the the global error handler
 app.use(errorController_1.default);

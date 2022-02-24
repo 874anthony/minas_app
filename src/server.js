@@ -19,5 +19,5 @@ mongoose_1.default
     .catch(console.log);
 var port = process.env.PORT || 3000;
 app_1.default.listen(port, function () {
-    console.log("Server inizialited, app is running on " + port);
+    console.log("Server inizialited, app is running on ".concat(port));
 });

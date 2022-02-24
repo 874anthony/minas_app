@@ -208,7 +208,7 @@ var createOrdinary = function (Model, Roles, checkRoles, subsanarRoles) {
                     dependencyCode = dependency.dependencyCode;
                     consecutive = trdOrdinary.getConsecutive() + 1;
                     consecutive = ('000000' + consecutive).slice(-6);
-                    radicado = "" + year + dependencyCode + consecutive + "9";
+                    radicado = "".concat(year).concat(dependencyCode).concat(consecutive, "9");
                     // INCREMENT THE CONSECUTIVE
                     trdOrdinary.consecutive = trdOrdinary.getConsecutive() + 1;
                     return [4 /*yield*/, trdOrdinary.save({ validateBeforeSave: false })];
@@ -524,12 +524,12 @@ var exportExcelPerson = (0, catchAsync_1.default)(function (req, res, next) { re
             case 0:
                 workbook = new exceljs_1.default.Workbook();
                 sheet = workbook.addWorksheet('PERSONAL');
-                path = __dirname + "/../../store/reports";
+                path = "".concat(__dirname, "/../../store/reports");
                 if (!fs_1.default.existsSync(path)) {
                     fs_1.default.mkdirSync(path, { recursive: true });
                 }
                 extension = 'xlsx';
-                predicate = "ordinaries-person-" + Date.now() + "." + extension;
+                predicate = "ordinaries-person-".concat(Date.now(), ".").concat(extension);
                 sheet.columns = [
                     { header: 'Registro', key: 'radicado', width: 20 },
                     { header: 'ESTADO', key: 'status', width: 20 },
@@ -627,7 +627,7 @@ var exportExcelPerson = (0, catchAsync_1.default)(function (req, res, next) { re
                 _b.label = 2;
             case 2:
                 _b.trys.push([2, 4, , 5]);
-                return [4 /*yield*/, workbook.xlsx.writeFile(path + "/" + predicate)];
+                return [4 /*yield*/, workbook.xlsx.writeFile("".concat(path, "/").concat(predicate))];
             case 3:
                 _b.sent();
                 return [3 /*break*/, 5];
@@ -635,7 +635,7 @@ var exportExcelPerson = (0, catchAsync_1.default)(function (req, res, next) { re
                 error_3 = _b.sent();
                 return [2 /*return*/, next(new httpException_1.default('Something went wrong', 500))];
             case 5:
-                res.download(path + "/" + predicate);
+                res.download("".concat(path, "/").concat(predicate));
                 return [2 /*return*/];
         }
     });
@@ -649,12 +649,12 @@ var exportExcelVehicle = (0, catchAsync_1.default)(function (req, res, next) { r
             case 0:
                 workbook = new exceljs_1.default.Workbook();
                 sheet = workbook.addWorksheet('VEHICULOS');
-                path = __dirname + "/../../store/reports";
+                path = "".concat(__dirname, "/../../store/reports");
                 if (!fs_1.default.existsSync(path)) {
                     fs_1.default.mkdirSync(path, { recursive: true });
                 }
                 extension = 'xlsx';
-                predicate = "ordinaries-vehicles-" + Date.now() + "." + extension;
+                predicate = "ordinaries-vehicles-".concat(Date.now(), ".").concat(extension);
                 sheet.columns = [
                     { header: 'Registro', key: 'radicado', width: 20 },
                     { header: 'ESTADO', key: 'status', width: 20 },
@@ -749,7 +749,7 @@ var exportExcelVehicle = (0, catchAsync_1.default)(function (req, res, next) { r
                 _b.label = 2;
             case 2:
                 _b.trys.push([2, 4, , 5]);
-                return [4 /*yield*/, workbook.xlsx.writeFile(path + "/" + predicate)];
+                return [4 /*yield*/, workbook.xlsx.writeFile("".concat(path, "/").concat(predicate))];
             case 3:
                 _b.sent();
                 return [3 /*break*/, 5];
@@ -757,7 +757,7 @@ var exportExcelVehicle = (0, catchAsync_1.default)(function (req, res, next) { r
                 error_4 = _b.sent();
                 return [2 /*return*/, next(new httpException_1.default('Something went wrong', 500))];
             case 5:
-                res.download(path + "/" + predicate);
+                res.download("".concat(path, "/").concat(predicate));
                 return [2 /*return*/];
         }
     });

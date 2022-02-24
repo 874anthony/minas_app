@@ -30,7 +30,7 @@ var APIFeatures = /** @class */ (function () {
         // I parse to string the query object, so I can use the replace method, so I can replace with dollar sign
         // And then again, parse to an object so I can pass it to the Model.find
         var queryString = JSON.stringify(queryObject);
-        queryString = queryString.replace(/\b(gte|gt|lte|lt)\b/g, function (matchedOperator) { return "$" + matchedOperator; });
+        queryString = queryString.replace(/\b(gte|gt|lte|lt)\b/g, function (matchedOperator) { return "$".concat(matchedOperator); });
         this.query = this.query.find(JSON.parse(queryString));
         return this;
     };
