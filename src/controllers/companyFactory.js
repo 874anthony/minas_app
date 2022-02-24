@@ -76,7 +76,7 @@ var multerStorage = multer_1.default.diskStorage({
         else {
             predicate = req.body.nit;
         }
-        var directory = "store/documents/company/" + predicate;
+        var directory = "store/documents/company/".concat(predicate);
         if (!fs_1.default.existsSync(directory)) {
             fs_1.default.mkdirSync(directory, { recursive: true });
         }
@@ -92,7 +92,7 @@ var multerStorage = multer_1.default.diskStorage({
         }
         // Extracting the extension.
         var extension = file.mimetype.split('/')[1];
-        callback(null, "company-" + predicate + "-" + Date.now() + "." + extension);
+        callback(null, "company-".concat(predicate, "-").concat(Date.now(), ".").concat(extension));
     },
 });
 // Filtering for only PDF files
@@ -388,7 +388,7 @@ var acceptOne = function (Model) {
                     subserieCode = subserie.subSerieCode;
                     consecutive = trd.getConsecutive() + 1;
                     consecutive = ('00000' + consecutive).slice(-5);
-                    radicado = "" + year + dependencyCode + serieCode + subserieCode + consecutive + "E";
+                    radicado = "".concat(year).concat(dependencyCode).concat(serieCode).concat(subserieCode).concat(consecutive, "E");
                     // INCREMENT THE CONSECUTIVE
                     trd.consecutive = trd.getConsecutive() + 1;
                     return [4 /*yield*/, trd.save({ validateBeforeSave: false })];

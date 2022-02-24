@@ -81,7 +81,7 @@ var workflowModel_1 = __importDefault(require("../../models/workflows/workflowMo
 var eventsModel_1 = __importDefault(require("../../models/events/eventsModel"));
 // Helpers methods
 var getKey = function (field, user) {
-    return "" + field + Object.keys(userModel_1.UserRoles)[Object.values(userModel_1.UserRoles).indexOf(user.role)];
+    return "".concat(field).concat(Object.keys(userModel_1.UserRoles)[Object.values(userModel_1.UserRoles).indexOf(user.role)]);
 };
 var getModel = function (ordinaryType) {
     return ordinariesEnum_1.ModelsOrdinary[ordinaryType];
@@ -218,7 +218,7 @@ var changeStatusOrdinary = (0, catchAsync_1.default)(function (req, res, next) {
             case 3:
                 docMatched = _a.sent();
                 action = 'Actualización Tramitador - Rechazado';
-                description = "El registro ha sido anulado por " + user.role;
+                description = "El registro ha sido anulado por ".concat(user.role);
                 docMatched.status = ordinariesEnum_1.StatusOrdinary.Rejected;
                 return [4 /*yield*/, docMatched.save({ validateBeforeSave: false })];
             case 4:
@@ -247,11 +247,11 @@ var changeStatusOrdinary = (0, catchAsync_1.default)(function (req, res, next) {
             case 9:
                 if (body.check === false && body.correct === true) {
                     action = 'Actualización Tramitador - Subsanar';
-                    description = "Se mandado a subsanar por " + user.role;
+                    description = "Se mandado a subsanar por ".concat(user.role);
                 }
                 else if (body.check === true && body.correct === false) {
                     action = 'Actualización Tramitador - Aprobado';
-                    description = "El registro ha pasado la aprobaci\u00F3n de " + user.role;
+                    description = "El registro ha pasado la aprobaci\u00F3n de ".concat(user.role);
                 }
                 bodyEvent = {
                     radicado: workflowDoc.radicado,

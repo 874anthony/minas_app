@@ -16,17 +16,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var httpException_1 = __importDefault(require("../utils/httpException"));
 var handleCastErrorDB = function (err) {
-    var message = "Invalid " + err.path + ": " + err.value + ".";
+    var message = "Invalid ".concat(err.path, ": ").concat(err.value, ".");
     return new httpException_1.default(message, 400);
 };
 var handleDuplicateFieldsDB = function (err) {
     var value = err.message.match(/(["'])(\\?.)*?\1/)[0];
-    var message = "Duplicate field value: " + value + ". Please use another value!";
+    var message = "Duplicate field value: ".concat(value, ". Please use another value!");
     return new httpException_1.default(message, 400);
 };
 var handleValidationErrorDB = function (err) {
     var errors = Object.values(err.errors).map(function (el) { return el.message; });
-    var message = "Invalid input data: " + errors.join('. ');
+    var message = "Invalid input data: ".concat(errors.join('. '));
     return new httpException_1.default(message, 400);
 };
 var handleJWTError = function () {

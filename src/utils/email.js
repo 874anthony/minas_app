@@ -57,7 +57,7 @@ var Email = /** @class */ (function () {
     function Email(user, url) {
         this.to = user.email;
         this.url = url;
-        this.from = "Control de Acceso - Gecelca <" + process.env.EMAIL_FROM + ">";
+        this.from = "Control de Acceso - Gecelca <".concat(process.env.EMAIL_FROM, ">");
     }
     Email.prototype.newTransport = function () {
         // if (process.env.NODE_ENV === 'production') {
@@ -79,7 +79,7 @@ var Email = /** @class */ (function () {
             var html, mailOptions;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, ejs_1.default.renderFile(__dirname + "/../views/email/" + template + ".ejs", __assign({ url: this.url }, data))];
+                    case 0: return [4 /*yield*/, ejs_1.default.renderFile("".concat(__dirname, "/../views/email/").concat(template, ".ejs"), __assign({ url: this.url }, data))];
                     case 1:
                         html = _a.sent();
                         mailOptions = {
@@ -92,7 +92,7 @@ var Email = /** @class */ (function () {
                             attachments: [
                                 {
                                     filename: 'image-2.png',
-                                    path: __dirname + "/../views/images/image-2.jfif",
+                                    path: "".concat(__dirname, "/../views/images/image-2.jfif"),
                                     cid: 'unique@gecelca-logo',
                                 },
                             ],
