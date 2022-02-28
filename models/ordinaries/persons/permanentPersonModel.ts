@@ -51,7 +51,10 @@ const PermanentPersonSchema = new Schema({
 	docARL: String,
 	docCitizenship: String,
 	docSocialSecurity: String,
-	docMedicalFitness: String,
+	docMedicalFitness: {
+		type: String,
+		required: true
+	},
 	radicado: {
 		type: String,
 		default: 'Sin radicado',

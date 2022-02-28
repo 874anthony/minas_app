@@ -31,7 +31,7 @@ const WorkflowSchema: Schema = new Schema({
 	checkSSFF: {
 		type: Boolean,
 	},
-	checkSISO: {
+	checkSST: {
 		type: Boolean,
 	},
 	checkAuditing: {
@@ -46,7 +46,7 @@ const WorkflowSchema: Schema = new Schema({
 	correctRSE: {
 		type: Boolean,
 	},
-	correctSISO: {
+	correctSST: {
 		type: Boolean,
 	},
 	correctSMIN: {

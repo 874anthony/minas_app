@@ -37,21 +37,21 @@ var createPermanentPerson = ordinaryFactory.createOrdinary(permanentPersonModel_
     userModel_1.UserRoles.AccessControl,
     userModel_1.UserRoles.Auditing,
     userModel_1.UserRoles.RSE,
-    userModel_1.UserRoles.SISO,
+    userModel_1.UserRoles.SST,
     userModel_1.UserRoles.SMIN,
     userModel_1.UserRoles.SSFF,
 ], {
     checkAccessControl: false,
     checkAuditing: false,
     checkRSE: false,
-    checkSISO: false,
+    checkSST: false,
     checkSMIN: false,
     checkSSFF: false,
 }, {
     correctAccessControl: false,
     correctAuditing: false,
     correctRSE: false,
-    correctSISO: false,
+    correctSST: false,
     correctSMIN: false,
 });
 exports.createPermanentPerson = createPermanentPerson;

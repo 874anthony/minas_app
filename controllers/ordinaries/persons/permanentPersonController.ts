@@ -16,7 +16,7 @@ const createPermanentPerson = ordinaryFactory.createOrdinary(
 		UserRoles.AccessControl,
 		UserRoles.Auditing,
 		UserRoles.RSE,
-		UserRoles.SISO,
+		UserRoles.SST,
 		UserRoles.SMIN,
 		UserRoles.SSFF,
 	],
@@ -24,7 +24,7 @@ const createPermanentPerson = ordinaryFactory.createOrdinary(
 		checkAccessControl: false,
 		checkAuditing: false,
 		checkRSE: false,
-		checkSISO: false,
+		checkSST: false,
 		checkSMIN: false,
 		checkSSFF: false,
 	},
@@ -32,7 +32,7 @@ const createPermanentPerson = ordinaryFactory.createOrdinary(
 		correctAccessControl: false,
 		correctAuditing: false,
 		correctRSE: false,
-		correctSISO: false,
+		correctSST: false,
 		correctSMIN: false,
 	}
 );

@@ -33,13 +33,13 @@ var uploadPermanentLightVehicles = ordinaryFactory.uploadVehicle;
 exports.uploadPermanentLightVehicles = uploadPermanentLightVehicles;
 var getVehicleNumber = ordinaryFactory.getVehicleNumber(permanentlightVehicleModel_1.default);
 exports.getVehicleNumber = getVehicleNumber;
-var createPermanentLightVehicle = ordinaryFactory.createOrdinary(permanentlightVehicleModel_1.default, [userModel_1.UserRoles.AccessControl, userModel_1.UserRoles.SISO, userModel_1.UserRoles.Auditing], {
+var createPermanentLightVehicle = ordinaryFactory.createOrdinary(permanentlightVehicleModel_1.default, [userModel_1.UserRoles.AccessControl, userModel_1.UserRoles.SST, userModel_1.UserRoles.Auditing], {
     checkAccessControl: false,
-    checkSISO: false,
+    checkSST: false,
     checkAuditing: false,
 }, {
     correctAccessControl: false,
-    correctSISO: false,
+    correctSST: false,
     correcAuditing: false,
 });
 exports.createPermanentLightVehicle = createPermanentLightVehicle;

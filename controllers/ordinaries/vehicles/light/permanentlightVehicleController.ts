@@ -14,15 +14,15 @@ const getVehicleNumber = ordinaryFactory.getVehicleNumber(
 
 const createPermanentLightVehicle = ordinaryFactory.createOrdinary(
 	PermanentLightVehicleModel,
-	[UserRoles.AccessControl, UserRoles.SISO, UserRoles.Auditing],
+	[UserRoles.AccessControl, UserRoles.SST, UserRoles.Auditing],
 	{
 		checkAccessControl: false,
-		checkSISO: false,
+		checkSST: false,
 		checkAuditing: false,
 	},
 	{
 		correctAccessControl: false,
-		correctSISO: false,
+		correctSST: false,
 		correcAuditing: false,
 	}
 );

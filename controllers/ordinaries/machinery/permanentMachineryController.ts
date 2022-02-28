@@ -12,15 +12,15 @@ const getVehicleNumber = ordinaryFactory.getVehicleNumber(PermanentMachinery);
 
 const createPermanentMachinery = ordinaryFactory.createOrdinary(
 	PermanentMachinery,
-	[UserRoles.AccessControl, UserRoles.SISO, UserRoles.Auditing],
+	[UserRoles.AccessControl, UserRoles.SST, UserRoles.Auditing],
 	{
 		checkAccessControl: false,
-		checkSISO: false,
+		checkSST: false,
 		checkAuditing: false,
 	},
 	{
 		correctAccessControl: false,
-		correctSISO: false,
+		correctSST: false,
 		correctAuditing: false,
 	}
 );

@@ -33,13 +33,13 @@ var uploadSpecialHeavyVehicles = ordinaryFactory.uploadVehicle;
 exports.uploadSpecialHeavyVehicles = uploadSpecialHeavyVehicles;
 var getVehicleNumber = ordinaryFactory.getVehicleNumber(specialheavyVehicleModel_1.default);
 exports.getVehicleNumber = getVehicleNumber;
-var createSpecialHeavyVehicle = ordinaryFactory.createOrdinary(specialheavyVehicleModel_1.default, [userModel_1.UserRoles.AccessControl, userModel_1.UserRoles.SISO, userModel_1.UserRoles.Auditing], {
+var createSpecialHeavyVehicle = ordinaryFactory.createOrdinary(specialheavyVehicleModel_1.default, [userModel_1.UserRoles.AccessControl, userModel_1.UserRoles.SST, userModel_1.UserRoles.Auditing], {
     checkAccessControl: false,
-    checkSISO: false,
+    checkSST: false,
     checkAuditing: false,
 }, {
     correctAccessControl: false,
-    correctSISO: false,
+    correctSST: false,
     correctAuditing: false,
 });
 exports.createSpecialHeavyVehicle = createSpecialHeavyVehicle;

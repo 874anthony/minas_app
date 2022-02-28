@@ -15,12 +15,6 @@ export default class Email {
 	}
 
 	newTransport() {
-		// if (process.env.NODE_ENV === 'production') {
-		// 	// Sendgrid - PRODUCTION
-		// 	return 1;
-		// }
-
-		// 1) Create a transporter
 		return nodemailer.createTransport({
 			host: process.env.EMAIL_HOST,
 			port: parseInt(process.env.EMAIL_PORT!),
@@ -62,22 +56,24 @@ export default class Email {
 	async sendWelcomeCompany(companyCredentials: Object) {
 		await this.send(
 			'welcomeCompany',
-			'Su acceso a la mina ha sido aprobado!',
+			'*Email header to be modified*',
 			companyCredentials
 		);
 	}
 
 	async sendRejectCompany(emailMessage: String) {
-		await this.send('rejectedCompany', 'Su acceso a la mina ha sido denegado', {
-			emailMessage,
-		});
+		await this.send(
+			'rejectedCompany',
+			'*Email header to be modified*',
+			{ emailMessage }
+		);
 	}
 
-	async sendOrdNotification(ordinaryOpts: Object) {
+	async sendOrdNotification(options: Object) {
 		await this.send(
 			'ordNotification',
-			'Se ha generado un nuevo ordinario!',
-			ordinaryOpts
+			'*Email header to be modified*',
+			options
 		);
 	}
 }

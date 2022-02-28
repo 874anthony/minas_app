@@ -393,6 +393,7 @@ const acceptOne = (Model) =>
 			try {
 				await new Email(companyMatched).sendWelcomeCompany(companyCredentials);
 			} catch (error) {
+				console.log({error})
 				return next(
 					new HttpException(
 						'Hubo un error al enviar el correo, por favor intente más tarde',

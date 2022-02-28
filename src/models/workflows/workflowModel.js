@@ -69,7 +69,7 @@ var WorkflowSchema = new mongoose_1.Schema({
     checkSSFF: {
         type: Boolean,
     },
-    checkSISO: {
+    checkSST: {
         type: Boolean,
     },
     checkAuditing: {
@@ -84,7 +84,7 @@ var WorkflowSchema = new mongoose_1.Schema({
     correctRSE: {
         type: Boolean,
     },
-    correctSISO: {
+    correctSST: {
         type: Boolean,
     },
     correctSMIN: {

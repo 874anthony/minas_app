@@ -33,13 +33,13 @@ var uploadSpecialWorkPersons = ordinaryFactory.uploadPerson;
 exports.uploadSpecialWorkPersons = uploadSpecialWorkPersons;
 var getCitizenship = ordinaryFactory.getOrdinaryCitizenship(specialWorkPersonModel_1.default);
 exports.getCitizenship = getCitizenship;
-var createSpecialWorkPerson = ordinaryFactory.createOrdinary(specialWorkPersonModel_1.default, [userModel_1.UserRoles.AccessControl, userModel_1.UserRoles.SISO, userModel_1.UserRoles.Auditing], {
+var createSpecialWorkPerson = ordinaryFactory.createOrdinary(specialWorkPersonModel_1.default, [userModel_1.UserRoles.AccessControl, userModel_1.UserRoles.SST, userModel_1.UserRoles.Auditing], {
     checkAccessControl: false,
-    checkSISO: false,
+    checkSST: false,
     checkAuditing: false,
 }, {
     correctAccessControl: false,
-    correctSISO: false,
+    correctSST: false,
     correctAuditing: false,
 });
 exports.createSpecialWorkPerson = createSpecialWorkPerson;
