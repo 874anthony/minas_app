@@ -38,13 +38,14 @@ var multerStorageOrdinary = multer_1.default.diskStorage({
         callback(null, "ordinary-".concat(predicate, "-").concat(Date.now(), ".").concat(extension));
     },
 });
-// Filtering for only PDF files
+// Filtering for only PDF and images files
 var multerFilterOrdinary = function (req, file, callback) {
-    if (file.mimetype.split('/')[1] === 'pdf') {
+    var extension = file.mimetype.split('/')[1];
+    if (['pdf', 'jpg', 'jpeg', 'png']) {
         callback(null, true);
     }
     else {
-        callback(new httpException_1.default('No es un pdf, por favor, solo suba archivos PDF', 404), false);
+        callback(new httpException_1.default('El formato del archivo es incorrecto.', 404), false);
     }
 };
 // ======================================= VEHICLE MULTER STARTS HERE ===========================================

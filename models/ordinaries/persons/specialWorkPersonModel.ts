@@ -38,6 +38,7 @@ const SpecialWorkPersonSchema = new Schema({
 		type: String,
 		trim: true,
 	},
+	docPicture: String,
 	docHealth: String,
 	docPension: String,
 	docARL: String,
@@ -45,7 +46,6 @@ const SpecialWorkPersonSchema = new Schema({
 	docSocialSecurity: String,
 	docMedicalFitness: String,
 	docCV: String,
-
 	docDrivingLicense: String,
 	docPsycho: String,
 	docDefDrivingLicense: String,

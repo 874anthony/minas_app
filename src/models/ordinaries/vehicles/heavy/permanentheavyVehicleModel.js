@@ -63,7 +63,7 @@ var PermanentHeavyVehicleSchema = new mongoose_1.Schema({
         required: false,
     },
     startDates: Date,
-    finishDates: Date,
+    // finishDates: Date,
     type: {
         type: String,
         required: true,

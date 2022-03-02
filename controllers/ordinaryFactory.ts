@@ -36,6 +36,7 @@ import Company from '../models/companies/companyModel';
 // const uploadAttached = uploadOrdinaryPerson.single()
 
 const uploadPerson = uploadOrdinaryPerson.fields([
+	{ name: 'docPicture', maxCount: 1 },
 	{ name: 'docHealth', maxCount: 1 },
 	{ name: 'docPension', maxCount: 1 },
 	{ name: 'docARL', maxCount: 1 },

@@ -72,6 +72,7 @@ var companyModel_1 = __importDefault(require("../models/companies/companyModel")
 // UPLOADS MIDDLEWARES
 // const uploadAttached = uploadOrdinaryPerson.single()
 var uploadPerson = multerConfig_1.uploadOrdinaryPerson.fields([
+    { name: 'docPicture', maxCount: 1 },
     { name: 'docHealth', maxCount: 1 },
     { name: 'docPension', maxCount: 1 },
     { name: 'docARL', maxCount: 1 },

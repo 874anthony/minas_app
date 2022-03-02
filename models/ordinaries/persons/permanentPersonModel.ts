@@ -11,7 +11,6 @@ const PermanentPersonSchema = new Schema({
 		trim: true,
 		minlength: 3,
 	},
-
 	appointment: {
 		type: String,
 		required: true,
@@ -44,9 +43,8 @@ const PermanentPersonSchema = new Schema({
 		type: String,
 		trim: true,
 	},
-	docHealth: {
-		type: String,
-	},
+	docPicture: String,
+	docHealth: String,
 	docPension: String,
 	docARL: String,
 	docCitizenship: String,
@@ -73,7 +71,7 @@ const PermanentPersonSchema = new Schema({
 		required: false,
 	},
 	startDates: Date,
-	finishDates: Date,
+	// finishDates: Date,
 	status: {
 		type: String,
 		default: 'PENDIENTE',

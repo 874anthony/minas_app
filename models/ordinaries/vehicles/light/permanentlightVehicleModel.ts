@@ -23,7 +23,7 @@ const PermanentLightVehicleSchema = new Schema({
 		required: false,
 	},
 	startDates: Date,
-	finishDates: Date,
+	// finishDates: Date,
 	type: {
 		type: String,
 		required: true,

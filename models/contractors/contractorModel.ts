@@ -21,7 +21,7 @@ const ContractorSchema: Schema<ContractorInterface> = new Schema({
 		minlength: 3,
 	},
 	nit: {
-		type: Number,
+		type: String,
 		unique: true,
 		required: true,
 		min: 7,

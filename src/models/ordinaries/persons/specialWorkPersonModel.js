@@ -78,6 +78,7 @@ var SpecialWorkPersonSchema = new mongoose_1.Schema({
         type: String,
         trim: true,
     },
+    docPicture: String,
     docHealth: String,
     docPension: String,
     docARL: String,

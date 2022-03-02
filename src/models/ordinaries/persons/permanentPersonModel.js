@@ -83,9 +83,8 @@ var PermanentPersonSchema = new mongoose_1.Schema({
         type: String,
         trim: true,
     },
-    docHealth: {
-        type: String,
-    },
+    docPicture: String,
+    docHealth: String,
     docPension: String,
     docARL: String,
     docCitizenship: String,
@@ -112,7 +111,7 @@ var PermanentPersonSchema = new mongoose_1.Schema({
         required: false,
     },
     startDates: Date,
-    finishDates: Date,
+    // finishDates: Date,
     status: {
         type: String,
         default: 'PENDIENTE',

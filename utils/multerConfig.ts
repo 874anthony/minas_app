@@ -41,17 +41,18 @@ const multerStorageOrdinary = multer.diskStorage({
 	},
 });
 
-// Filtering for only PDF files
+// Filtering for only PDF and images files
 const multerFilterOrdinary = (
 	req: Request,
 	file: Express.Multer.File,
 	callback: any
 ) => {
-	if (file.mimetype.split('/')[1] === 'pdf') {
+	const extension = file.mimetype.split('/')[1]
+	if (['pdf', 'jpg', 'jpeg', 'png']) {
 		callback(null, true);
 	} else {
 		callback(
-			new HttpException('No es un pdf, por favor, solo suba archivos PDF', 404),
+			new HttpException('El formato del archivo es incorrecto.', 404),
 			false
 		);
 	}

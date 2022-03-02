@@ -44,9 +44,8 @@ const PunctualWorkPersonSchema = new Schema({
 		type: String,
 		trim: true,
 	},
-	docHealth: {
-		type: String,
-	},
+	docPicture: String,
+	docHealth: String,
 	docPension: String,
 	docARL: String,
 	docCitizenship: String,
