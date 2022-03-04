@@ -34,7 +34,7 @@ const isAllowedOrdinary = catchAsync(
 				)
 			);
 
-		const currentOrdinary = await ModelsOrdinary[ordinaryType]
+		const data = await ModelsOrdinary[ordinaryType]
 			.findById(id)
 			.populate([
 				{
@@ -51,44 +51,26 @@ const isAllowedOrdinary = catchAsync(
 				},
 			]);
 
-		let ejsOpts: Object = {
-			status: `<li style="color: ${
-				currentOrdinary.status === 'INACTIVO' ? 'red' : 'green'
-			};"> ${currentOrdinary.status} </li>`,
-			name: `${
-				currentOrdinary.name !== undefined
-					? currentOrdinary.name
-					: currentOrdinary.vehicleType
-			}`,
-			ordType: `${currentOrdinary.accessType}`,
-			number: `${
-				currentOrdinary.citizenship !== undefined
-					? currentOrdinary.citizenship
-					: currentOrdinary.vehicleNumber
-			}`,
-			type: `${
-				currentOrdinary.gender !== undefined
-					? currentOrdinary.gender
-					: currentOrdinary.type
-			}`,
-			occupation: `${
-				currentOrdinary.appointment !== undefined
-					? currentOrdinary.appointment
-					: currentOrdinary.serviceType
-			}`,
-			company: `${
-				currentOrdinary.companyID !== undefined
-					? currentOrdinary['companyID'].businessName
-					: currentOrdinary['contractorID'].companyID['businessName']
-			}`,
-			contractor: `${
-				currentOrdinary.contractorID !== undefined
-					? currentOrdinary['contractorID'].businessName
-					: 'Sin contratista'
-			}`,
-		};
+		const getPicture = (picture: string, data: any) => {
+			const group = data.citizenship ? 'person' : 'vehicle';
+			const id = data.citizenship || data.vehicleNumber;
+			return `/pdf-ordinaries/person/${id}/${picture}`;
+		}
 
-		res.render(`${__dirname}/../../views/pages/qrcode.ejs`, ejsOpts);
+		res.render(
+			`${__dirname}/../../views/pages/qrcode.ejs`,
+			{
+				picture: getPicture(data.docPicture, data),
+				status: `<li style="color: ${data.status === 'INACTIVO' ? 'red' : 'green'};">${data.status} </li>`,
+				name: data.name || data.vehicleType,
+				ordType: `${data.accessType}`,
+				number: data.citizenship || data.vehicleNumber,
+				type: data.gender || data.type,
+				occupation: data.appointment || data.serviceType,
+				company: data['companyID']?.businessName || data['contractorID'].companyID['businessName'],
+				contractor: data['contractorID']?.businessName || 'N/A',
+			}
+		);
 	}
 );
 

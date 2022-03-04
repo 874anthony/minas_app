@@ -83,9 +83,10 @@ var signToken = function (id) {
     });
 };
 var isAllowedOrdinary = (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, id, ordinaryType, currentOrdinary, ejsOpts;
-    return __generator(this, function (_b) {
-        switch (_b.label) {
+    var _a, id, ordinaryType, data, getPicture;
+    var _b, _c;
+    return __generator(this, function (_d) {
+        switch (_d.label) {
             case 0:
                 _a = req.params, id = _a.id, ordinaryType = _a.ordinaryType;
                 if (!id || !ordinaryType)
@@ -107,30 +108,23 @@ var isAllowedOrdinary = (0, catchAsync_1.default)(function (req, res, next) { re
                         },
                     ])];
             case 1:
-                currentOrdinary = _b.sent();
-                ejsOpts = {
-                    status: "<li style=\"color: ".concat(currentOrdinary.status === 'INACTIVO' ? 'red' : 'green', ";\"> ").concat(currentOrdinary.status, " </li>"),
-                    name: "".concat(currentOrdinary.name !== undefined
-                        ? currentOrdinary.name
-                        : currentOrdinary.vehicleType),
-                    ordType: "".concat(currentOrdinary.accessType),
-                    number: "".concat(currentOrdinary.citizenship !== undefined
-                        ? currentOrdinary.citizenship
-                        : currentOrdinary.vehicleNumber),
-                    type: "".concat(currentOrdinary.gender !== undefined
-                        ? currentOrdinary.gender
-                        : currentOrdinary.type),
-                    occupation: "".concat(currentOrdinary.appointment !== undefined
-                        ? currentOrdinary.appointment
-                        : currentOrdinary.serviceType),
-                    company: "".concat(currentOrdinary.companyID !== undefined
-                        ? currentOrdinary['companyID'].businessName
-                        : currentOrdinary['contractorID'].companyID['businessName']),
-                    contractor: "".concat(currentOrdinary.contractorID !== undefined
-                        ? currentOrdinary['contractorID'].businessName
-                        : 'Sin contratista'),
+                data = _d.sent();
+                getPicture = function (picture, data) {
+                    var group = data.citizenship ? 'person' : 'vehicle';
+                    var id = data.citizenship || data.vehicleNumber;
+                    return "/pdf-ordinaries/person/".concat(id, "/").concat(picture);
                 };
-                res.render("".concat(__dirname, "/../../views/pages/qrcode.ejs"), ejsOpts);
+                res.render("".concat(__dirname, "/../../views/pages/qrcode.ejs"), {
+                    picture: getPicture(data.docPicture, data),
+                    status: "<li style=\"color: ".concat(data.status === 'INACTIVO' ? 'red' : 'green', ";\">").concat(data.status, " </li>"),
+                    name: data.name || data.vehicleType,
+                    ordType: "".concat(data.accessType),
+                    number: data.citizenship || data.vehicleNumber,
+                    type: data.gender || data.type,
+                    occupation: data.appointment || data.serviceType,
+                    company: ((_b = data['companyID']) === null || _b === void 0 ? void 0 : _b.businessName) || data['contractorID'].companyID['businessName'],
+                    contractor: ((_c = data['contractorID']) === null || _c === void 0 ? void 0 : _c.businessName) || 'N/A',
+                });
                 return [2 /*return*/];
         }
     });

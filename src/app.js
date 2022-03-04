@@ -49,6 +49,8 @@ if (process.env.NODE_ENV === 'development') {
 // Defining the static files
 app.use('/pdf-companies', express_1.default.static(path_1.default.join(__dirname, '../store/documents/company')));
 app.use('/pdf-ordinaries', express_1.default.static(path_1.default.join(__dirname, '../store/documents/ordinaries')));
+// to access images from views folder (email and other stuff)
+app.use(express_1.default.static(__dirname + '/views'));
 app.set('view engine', 'ejs');
 app.set('views', "".concat(__dirname, "/views"));
 // Importing routes
