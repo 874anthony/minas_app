@@ -45,19 +45,17 @@ const SpecialPunctualHeavyVehicleSchema = new Schema({
 		type: String,
 		required: true,
 	},
+	docPicture: String,
 	docSoat: String,
 	docPropertyCard: String,
 	docTechno: String,
 	docOperationCard: String,
 	docInspectionVehicle: String,
-
 	accessType: String,
 	attached: [String],
-
 	soatVigency: Date,
 	technoVigency: Date,
 	operationCardVigency: Date,
-
 	observations: [String],
 	qrCodeDate: Date,
 	reasonDescription: String,

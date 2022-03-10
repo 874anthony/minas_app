@@ -56,6 +56,7 @@ const uploadPerson = uploadOrdinaryPerson.fields([
 ]);
 
 const uploadVehicle = uploadOrdinaryVehicle.fields([
+	{ name: 'docPicture', maxCount: 1 },
 	{ name: 'docSoat', maxCount: 1 },
 	{ name: 'docPropertyCard', maxCount: 1 },
 	{ name: 'docTechno', maxCount: 1 },

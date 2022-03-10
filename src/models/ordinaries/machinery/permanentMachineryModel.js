@@ -74,6 +74,7 @@ var PermanentMachinerySchema = new mongoose_1.Schema({
         unique: true,
     },
     reasonDescription: String,
+    docPicture: String,
     ordinaryType: {
         type: String,
         default: 'permanentMachinery',

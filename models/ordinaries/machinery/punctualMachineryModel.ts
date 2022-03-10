@@ -38,6 +38,7 @@ const PunctualMachinerySchema = new Schema({
 		type: String,
 		default: 'punctualMachinery',
 	},
+	docPicture: String,
 	docInspectionVehicle: String,
 	docMachineCard: String,
 	docBill: String,

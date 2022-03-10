@@ -34,6 +34,7 @@ const PermanentMachinerySchema = new Schema({
 		unique: true,
 	},
 	reasonDescription: String,
+	docPicture: String,
 	ordinaryType: {
 		type: String,
 		default: 'permanentMachinery',

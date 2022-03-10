@@ -112,7 +112,7 @@ var isAllowedOrdinary = (0, catchAsync_1.default)(function (req, res, next) { re
                 getPicture = function (picture, data) {
                     var group = data.citizenship ? 'person' : 'vehicle';
                     var id = data.citizenship || data.vehicleNumber;
-                    return "/pdf-ordinaries/person/".concat(id, "/").concat(picture);
+                    return "/pdf-ordinaries/".concat(group, "/").concat(id, "/").concat(picture);
                 };
                 res.render("".concat(__dirname, "/../../views/pages/qrcode.ejs"), {
                     picture: getPicture(data.docPicture, data),

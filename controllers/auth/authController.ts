@@ -54,7 +54,7 @@ const isAllowedOrdinary = catchAsync(
 		const getPicture = (picture: string, data: any) => {
 			const group = data.citizenship ? 'person' : 'vehicle';
 			const id = data.citizenship || data.vehicleNumber;
-			return `/pdf-ordinaries/person/${id}/${picture}`;
+			return `/pdf-ordinaries/${group}/${id}/${picture}`;
 		}
 
 		res.render(

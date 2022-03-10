@@ -45,6 +45,7 @@ const PunctualHeavyVehicleSchema = new Schema({
 		type: String,
 		required: true,
 	},
+	docPicture: String,
 	docSoat: String,
 	docTechno: String,
 	docPropertyCard: String,

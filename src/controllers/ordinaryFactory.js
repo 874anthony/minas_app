@@ -92,6 +92,7 @@ var uploadPerson = multerConfig_1.uploadOrdinaryPerson.fields([
 ]);
 exports.uploadPerson = uploadPerson;
 var uploadVehicle = multerConfig_1.uploadOrdinaryVehicle.fields([
+    { name: 'docPicture', maxCount: 1 },
     { name: 'docSoat', maxCount: 1 },
     { name: 'docPropertyCard', maxCount: 1 },
     { name: 'docTechno', maxCount: 1 },

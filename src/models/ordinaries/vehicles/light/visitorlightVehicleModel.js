@@ -85,6 +85,7 @@ var VisitorlightVehicleSchema = new mongoose_1.Schema({
         type: String,
         required: true,
     },
+    docPicture: String,
     docSoat: String,
     docPropertyCard: String,
     docTechno: String,

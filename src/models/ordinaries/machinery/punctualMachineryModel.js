@@ -78,6 +78,7 @@ var PunctualMachinerySchema = new mongoose_1.Schema({
         type: String,
         default: 'punctualMachinery',
     },
+    docPicture: String,
     docInspectionVehicle: String,
     docMachineCard: String,
     docBill: String,
