@@ -163,7 +163,7 @@ exports.checkContractorID = checkContractorID;
 // AQUI TERMINA LOS MIDDLEWARES
 var createOrdinary = function (Model, Roles, checkRoles, subsanarRoles) {
     return (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-        var body, arrayFilenames, dependency, trdOrdinary, year, dependencyCode, consecutive, radicado, newOrdinaryPerson, bodyEvent, usersPromises, usersArray, usersID, ordinaryOpts, bodyWorkflow, error_1;
+        var body, arrayFilenames, dependency, trdOrdinary, year, dependencyCode, consecutive, radicado, getOrdinary, ordinary, bodyEvent, usersPromises, usersArray, usersID, ordinaryOpts, bodyWorkflow, onflow, error_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -223,14 +223,39 @@ var createOrdinary = function (Model, Roles, checkRoles, subsanarRoles) {
                     else if (req.params.idContractor) {
                         body.contractorID = req.params.idContractor;
                     }
-                    return [4 /*yield*/, Model.create(body)];
+                    getOrdinary = function () { return __awaiter(void 0, void 0, void 0, function () {
+                        var citizenship, exists, query, status_1;
+                        return __generator(this, function (_a) {
+                            switch (_a.label) {
+                                case 0:
+                                    citizenship = body.citizenship;
+                                    if (!citizenship) return [3 /*break*/, 6];
+                                    return [4 /*yield*/, Model.exists({ citizenship: citizenship })];
+                                case 1:
+                                    exists = _a.sent();
+                                    if (!exists) return [3 /*break*/, 4];
+                                    return [4 /*yield*/, Model.findOne({ citizenship: citizenship })];
+                                case 2:
+                                    query = _a.sent();
+                                    if (!(query.ordinaryType === 'permanentPerson')) return [3 /*break*/, 4];
+                                    status_1 = query.status;
+                                    if (!(status_1 === ordinariesEnum_1.StatusOrdinary.Forbidden)) return [3 /*break*/, 4];
+                                    return [4 /*yield*/, Model.findOne({ citizenship: citizenship })];
+                                case 3: return [2 /*return*/, _a.sent()];
+                                case 4: return [4 /*yield*/, Model.create(body)];
+                                case 5: return [2 /*return*/, _a.sent()];
+                                case 6: return [2 /*return*/];
+                            }
+                        });
+                    }); };
+                    return [4 /*yield*/, getOrdinary()];
                 case 6:
-                    newOrdinaryPerson = _a.sent();
-                    if (!newOrdinaryPerson) {
+                    ordinary = _a.sent();
+                    if (!ordinary) {
                         return [2 /*return*/, next(new httpException_1.default('No se ha podido crear el ordinario, intente nuevamente', 404))];
                     }
                     bodyEvent = {
-                        radicado: newOrdinaryPerson._id,
+                        radicado: ordinary._id,
                         action: 'Envío de formulario',
                         description: 'Se generó el nuevo tipo de ingreso',
                     };
@@ -260,7 +285,7 @@ var createOrdinary = function (Model, Roles, checkRoles, subsanarRoles) {
                     usersID = [];
                     ordinaryOpts = {
                         radicado: radicado,
-                        ordinaryType: ordinariesEnum_1.getModelByType[newOrdinaryPerson.ordinaryType],
+                        ordinaryType: ordinariesEnum_1.getModelByType[ordinary.ordinaryType],
                     };
                     usersArray.forEach(function (ArrayPerRole) {
                         ArrayPerRole.forEach(function (element) { return __awaiter(void 0, void 0, void 0, function () {
@@ -284,22 +309,28 @@ var createOrdinary = function (Model, Roles, checkRoles, subsanarRoles) {
                             });
                         }); });
                     });
-                    bodyWorkflow = __assign(__assign({ radicado: newOrdinaryPerson._id, ordinaryType: newOrdinaryPerson.ordinaryType, roles: usersID, observations: req.body.observations }, checkRoles), subsanarRoles);
+                    bodyWorkflow = __assign(__assign({ radicado: ordinary._id, ordinaryType: ordinary.ordinaryType, roles: usersID, observations: req.body.observations }, checkRoles), subsanarRoles);
                     _a.label = 9;
                 case 9:
-                    _a.trys.push([9, 11, , 12]);
-                    return [4 /*yield*/, workflowModel_1.default.create(bodyWorkflow)];
+                    _a.trys.push([9, 13, , 14]);
+                    return [4 /*yield*/, workflowModel_1.default.exists({ radicado: ordinary._id })];
                 case 10:
-                    _a.sent();
-                    return [3 /*break*/, 12];
+                    onflow = _a.sent();
+                    if (!!onflow) return [3 /*break*/, 12];
+                    bodyWorkflow.forbidden = ordinary.status === ordinariesEnum_1.StatusOrdinary.Forbidden;
+                    return [4 /*yield*/, workflowModel_1.default.create(bodyWorkflow)];
                 case 11:
+                    _a.sent();
+                    _a.label = 12;
+                case 12: return [3 /*break*/, 14];
+                case 13:
                     error_1 = _a.sent();
                     return [2 /*return*/, next(new httpException_1.default('No se ha asignado correctamente el workflow, por favor vuelva a intentar', 500))];
-                case 12:
+                case 14:
                     res.status(200).json({
                         status: true,
                         message: 'Se ha creado el ordinario con éxito',
-                        ordinary: newOrdinaryPerson,
+                        ordinary: ordinary
                     });
                     return [2 /*return*/];
             }

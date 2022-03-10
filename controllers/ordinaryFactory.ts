@@ -205,9 +205,26 @@ const createOrdinary = (
 			body.contractorID = req.params.idContractor;
 		}
 
-		const newOrdinaryPerson = await Model.create(body);
+		const getOrdinary = async () => {
+			const { citizenship } = body;
+			if (citizenship) {
+				const exists = await Model.exists({ citizenship });
+				if (exists) {
+					const query = await Model.findOne({ citizenship });
+					if (query.ordinaryType === 'permanentPerson') {
+						const { status } = query;
+						if (status === StatusOrdinary.Forbidden) {
+							return await Model.findOne({ citizenship });
+						}
+					}
+				}
+				return await Model.create(body);
+			}
+		};
 
-		if (!newOrdinaryPerson) {
+		const ordinary = await getOrdinary();
+
+		if (!ordinary) {
 			return next(
 				new HttpException(
 					'No se ha podido crear el ordinario, intente nuevamente',
@@ -217,7 +234,7 @@ const createOrdinary = (
 		}
 
 		const bodyEvent = {
-			radicado: newOrdinaryPerson._id,
+			radicado: ordinary._id,
 			action: 'Envío de formulario',
 			description: 'Se generó el nuevo tipo de ingreso',
 		};
@@ -240,7 +257,7 @@ const createOrdinary = (
 		const usersID: any = [];
 		const ordinaryOpts = {
 			radicado,
-			ordinaryType: getModelByType[newOrdinaryPerson.ordinaryType],
+			ordinaryType: getModelByType[ordinary.ordinaryType],
 		};
 
 		usersArray.forEach((ArrayPerRole: Array<any>) => {
@@ -260,9 +277,9 @@ const createOrdinary = (
 			});
 		});
 
-		const bodyWorkflow = {
-			radicado: newOrdinaryPerson._id,
-			ordinaryType: newOrdinaryPerson.ordinaryType,
+		const bodyWorkflow: any = {
+			radicado: ordinary._id,
+			ordinaryType: ordinary.ordinaryType,
 			roles: usersID,
 			observations: req.body.observations,
 			...checkRoles,
@@ -270,7 +287,11 @@ const createOrdinary = (
 		};
 
 		try {
-			await Workflow.create(bodyWorkflow);
+			const onflow = await Workflow.exists({ radicado: ordinary._id });
+			if (!onflow) {
+				bodyWorkflow.forbidden = ordinary.status === StatusOrdinary.Forbidden;
+				await Workflow.create(bodyWorkflow);
+			}
 		} catch (error) {
 			return next(
 				new HttpException(
@@ -283,7 +304,7 @@ const createOrdinary = (
 		res.status(200).json({
 			status: true,
 			message: 'Se ha creado el ordinario con éxito',
-			ordinary: newOrdinaryPerson,
+			ordinary
 		});
 	});
 

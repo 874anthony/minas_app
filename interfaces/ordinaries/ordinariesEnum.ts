@@ -14,6 +14,7 @@ export enum StatusOrdinary {
 	Rejected = 'RECHAZADO',
 	Sanitation = 'SUBSANAR',
 	Visa = 'POR VISAR',
+	Forbidden = 'PROHIBIDO',
 }
 
 export const getModelByType = {
