@@ -32,8 +32,7 @@ const updateSpecialHeavyVehicle = ordinaryFactory.updateOrdinary(
 );
 
 // Cron Job to verify if Date.now() > qrCodeDate
-const job = CronJob(SpecialHeavyVehicleModel);
-job.start();
+CronJob(SpecialHeavyVehicleModel).start();
 
 export {
 	createSpecialHeavyVehicle,

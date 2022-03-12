@@ -1,4 +1,5 @@
 import { Schema, model } from 'mongoose';
+import { autoDecline } from '../../../utils/cronJob';
 import { addDate } from '../../../utils/date';
 import Event from '../../events/eventsModel';
 
@@ -51,19 +52,15 @@ const SpecialWorkPersonSchema = new Schema({
 	docDefDrivingLicense: String,
 	docDrivingTest: String,
 	docCraneOperator: String,
-
 	docSafeworkHeights: String,
 	docCompetenceCert: String,
-
 	docSISCONMP: String,
-
 	radicado: {
 		type: String,
 		default: 'Sin radicado',
 	},
 	observations: [String],
 	medicalConceptDate: Date,
-
 	inductionDate: Date,
 	inductionVigency: Date,
 	companyID: {
@@ -115,13 +112,13 @@ SpecialWorkPersonSchema.pre('save', async function (next) {
 			action: 'Actualización Registro',
 			description: 'Se aprobó el ingreso y se ha generado un código QR',
 		};
-
 		await Event.create(bodyEvent);
-
 		const qrCodeDays = 3;
 		this.qrCodeDate = addDate(Date.now(), qrCodeDays);
 	}
 	next();
 });
+
+SpecialWorkPersonSchema.post('save', autoDecline);
 
 export default model('specialwork_person', SpecialWorkPersonSchema);

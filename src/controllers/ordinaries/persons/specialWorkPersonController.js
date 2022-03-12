@@ -46,5 +46,4 @@ exports.createSpecialWorkPerson = createSpecialWorkPerson;
 var updateSpecialWorkPerson = ordinaryFactory.updateOrdinary(specialWorkPersonModel_1.default);
 exports.updateSpecialWorkPerson = updateSpecialWorkPerson;
 // Cron Job to verify if Date.now() > qrCodeDate
-var job = (0, cronJob_1.default)(specialWorkPersonModel_1.default);
-job.start();
+(0, cronJob_1.default)(specialWorkPersonModel_1.default).start();

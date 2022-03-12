@@ -42,5 +42,4 @@ exports.createPunctualLightVehicle = createPunctualLightVehicle;
 var updatePunctualLightVehicle = ordinaryFactory.updateOrdinary(punctuallightVehicleModel_1.default);
 exports.updatePunctualLightVehicle = updatePunctualLightVehicle;
 // Cron Job to verify if Date.now() > qrCodeDate
-var job = (0, cronJob_1.default)(punctuallightVehicleModel_1.default);
-job.start();
+(0, cronJob_1.default)(punctuallightVehicleModel_1.default).start();

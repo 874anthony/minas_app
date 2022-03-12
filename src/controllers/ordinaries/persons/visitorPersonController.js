@@ -42,5 +42,4 @@ exports.createVisitorPerson = createVisitorPerson;
 var updateVisitorPerson = ordinaryFactory.updateOrdinary(visitorPersonModel_1.default);
 exports.updateVisitorPerson = updateVisitorPerson;
 // Cron Job to verify if Date.now() > qrCodeDate
-var job = (0, cronJob_1.default)(visitorPersonModel_1.default);
-job.start();
+(0, cronJob_1.default)(visitorPersonModel_1.default).start();

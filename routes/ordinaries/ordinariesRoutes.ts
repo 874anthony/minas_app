@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Response } from 'express';
 import {
 	activeOrdsByContractor,
 	inactiveOrdsByContractor,
@@ -30,5 +30,9 @@ router
 router.route('/').get(ordinaryFactory.getAllOrds);
 
 router.route('/:id').get(ordinaryFactory.getOrdById);
+
+router.post('/:id/extension', (req: any, res: any) => {
+	return res.send('Extension');
+});
 
 export default router;

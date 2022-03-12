@@ -15,9 +15,9 @@ const getCitizenship = ordinaryFactory.getOrdinaryCitizenship(PermanentPerson);
 const createPermanentPerson = async (req: any, res: any, next: NextFunction) => {
 	let roles = [
 		UserRoles.AccessControl,
-		UserRoles.Auditing,
+		// UserRoles.Auditing,
 		UserRoles.RSE,
-		UserRoles.SST,
+		// UserRoles.SST,
 		UserRoles.SMIN,
 		UserRoles.SSFF
 	];
@@ -54,8 +54,7 @@ const createPermanentPerson = async (req: any, res: any, next: NextFunction) => 
 const updatePermanentPerson = ordinaryFactory.updateOrdinary(PermanentPerson);
 
 // Cron Job to verify if Date.now() > qrCodeDate
-const job = CronJob(PermanentPerson);
-job.start();
+CronJob(PermanentPerson).start();
 
 export {
 	createPermanentPerson,

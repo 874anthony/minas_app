@@ -229,7 +229,7 @@ var createOrdinary = function (Model, Roles, checkRoles, subsanarRoles) {
                             switch (_a.label) {
                                 case 0:
                                     citizenship = body.citizenship;
-                                    if (!citizenship) return [3 /*break*/, 6];
+                                    if (!citizenship) return [3 /*break*/, 4];
                                     return [4 /*yield*/, Model.exists({ citizenship: citizenship })];
                                 case 1:
                                     exists = _a.sent();
@@ -244,7 +244,6 @@ var createOrdinary = function (Model, Roles, checkRoles, subsanarRoles) {
                                 case 3: return [2 /*return*/, _a.sent()];
                                 case 4: return [4 /*yield*/, Model.create(body)];
                                 case 5: return [2 /*return*/, _a.sent()];
-                                case 6: return [2 /*return*/];
                             }
                         });
                     }); };

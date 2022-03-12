@@ -12,9 +12,14 @@ const getVehicleNumber = ordinaryFactory.getVehicleNumber(
 	PermanentHeavyVehicleModel
 );
 
+// validar si es permanentes en general o permanentes especiales.
 const createPermanentHeavyVehicle = ordinaryFactory.createOrdinary(
 	PermanentHeavyVehicleModel,
-	[UserRoles.AccessControl, UserRoles.SST, UserRoles.Auditing],
+	[
+		UserRoles.AccessControl,
+		UserRoles.SST,
+		UserRoles.Auditing
+	],
 	{
 		checkAccessControl: false,
 		checkSST: false,

@@ -77,9 +77,9 @@ var createPermanentPerson = function (req, res, next) { return __awaiter(void 0,
             case 0:
                 roles = [
                     userModel_1.UserRoles.AccessControl,
-                    userModel_1.UserRoles.Auditing,
+                    // UserRoles.Auditing,
                     userModel_1.UserRoles.RSE,
-                    userModel_1.UserRoles.SST,
+                    // UserRoles.SST,
                     userModel_1.UserRoles.SMIN,
                     userModel_1.UserRoles.SSFF
                 ];
@@ -115,5 +115,4 @@ exports.createPermanentPerson = createPermanentPerson;
 var updatePermanentPerson = ordinaryFactory.updateOrdinary(permanentPersonModel_1.default);
 exports.updatePermanentPerson = updatePermanentPerson;
 // Cron Job to verify if Date.now() > qrCodeDate
-var job = (0, cronJob_1.default)(permanentPersonModel_1.default);
-job.start();
+(0, cronJob_1.default)(permanentPersonModel_1.default).start();

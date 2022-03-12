@@ -42,5 +42,4 @@ exports.createPunctualWorkPerson = createPunctualWorkPerson;
 var updatePunctualWorkPerson = ordinaryFactory.updateOrdinary(punctualWorkPersonModel_1.default);
 exports.updatePunctualWorkPerson = updatePunctualWorkPerson;
 // Cron Job to verify if Date.now() > qrCodeDate
-var job = (0, cronJob_1.default)(punctualWorkPersonModel_1.default);
-job.start();
+(0, cronJob_1.default)(punctualWorkPersonModel_1.default).start();

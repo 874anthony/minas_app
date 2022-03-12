@@ -42,6 +42,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var mongoose_1 = require("mongoose");
 var date_1 = require("../../../../utils/date");
 var eventsModel_1 = __importDefault(require("../../../events/eventsModel"));
+var cronJob_1 = require("../../../../utils/cronJob");
 // Definying the schema
 var SpecialPunctualHeavyVehicleSchema = new mongoose_1.Schema({
     radicado: {
@@ -131,4 +132,5 @@ SpecialPunctualHeavyVehicleSchema.pre('save', function (next) {
         });
     });
 });
+SpecialPunctualHeavyVehicleSchema.post('save', cronJob_1.autoDecline);
 exports.default = (0, mongoose_1.model)('specialheavy_vehicle', SpecialPunctualHeavyVehicleSchema);

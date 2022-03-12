@@ -32,8 +32,7 @@ const updateSpecialWorkPerson = ordinaryFactory.updateOrdinary(
 );
 
 // Cron Job to verify if Date.now() > qrCodeDate
-const job = CronJob(SpecialWorkPersonModel);
-job.start();
+CronJob(SpecialWorkPersonModel).start();
 
 export {
 	createSpecialWorkPerson,

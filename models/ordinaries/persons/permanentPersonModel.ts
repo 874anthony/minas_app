@@ -1,5 +1,6 @@
 import { Schema, model } from 'mongoose';
 import { getModelByType } from '../../../interfaces/ordinaries/ordinariesEnum';
+import { autoDecline } from '../../../utils/cronJob';
 import { addDate } from '../../../utils/date';
 import Event from '../../events/eventsModel';
 
@@ -99,7 +100,6 @@ PermanentPersonSchema.pre('save', function (next) {
 	if (this.isNew) {
 		const days = 3;
 		this.maxAuthorizationDate = addDate(this.recepcionDate, days);
-
 		this.accessType = getModelByType[this.ordinaryType];
 	}
 	next();
@@ -112,13 +112,13 @@ PermanentPersonSchema.pre('save', async function (next) {
 			action: 'Actualización Registro',
 			description: 'Se aprobó el ingreso y se ha generado un código QR',
 		};
-
 		await Event.create(bodyEvent);
-
 		const qrCodeDays = 3;
 		this.qrCodeDate = addDate(Date.now(), qrCodeDays);
 	}
 	next();
 });
+
+PermanentPersonSchema.post('save', autoDecline);
 
 export default model('permanent_person', PermanentPersonSchema);

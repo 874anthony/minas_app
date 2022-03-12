@@ -218,8 +218,8 @@ const createOrdinary = (
 						}
 					}
 				}
-				return await Model.create(body);
 			}
+			return await Model.create(body);
 		};
 
 		const ordinary = await getOrdinary();
@@ -389,13 +389,12 @@ const getAllOrds = catchAsync(
 	async (req: Request, res: Response, next: NextFunction) => {
 		const ordinariesPromises = Object.values(ModelsOrdinary).map(
 			async (Model) => {
-				let featuresQuery = new APIFeatures(Model.find(), req.query)
+				const featuresQuery = new APIFeatures(Model.find(), req.query)
 					.filter()
 					.limitFields()
 					.paginate()
 					.sort();
-
-				let ordinaryResult = await featuresQuery.query.populate([
+				const ordinaryResult = await featuresQuery.query.populate([
 					{
 						path: 'companyID',
 						select: 'businessName',
@@ -405,7 +404,6 @@ const getAllOrds = catchAsync(
 						select: 'businessName',
 					},
 				]);
-
 				return ordinaryResult;
 			}
 		);

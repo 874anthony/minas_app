@@ -1,5 +1,6 @@
 import { Schema, model } from 'mongoose';
 import { getModelByType } from '../../../../interfaces/ordinaries/ordinariesEnum';
+import { autoDecline } from '../../../../utils/cronJob';
 import { addDate } from '../../../../utils/date';
 import Event from '../../../events/eventsModel';
 
@@ -89,5 +90,7 @@ PermanentHeavyVehicleSchema.pre('save', async function (next) {
 	}
 	next();
 });
+
+PermanentHeavyVehicleSchema.post('save', autoDecline);
 
 export default model('permanentheavy_vehicle', PermanentHeavyVehicleSchema);

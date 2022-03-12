@@ -2,6 +2,7 @@ import { Schema, model } from 'mongoose';
 import { addDate } from '../../../../utils/date';
 import { getModelByType } from '../../../../interfaces/ordinaries/ordinariesEnum';
 import Event from '../../../events/eventsModel';
+import { autoDecline } from '../../../../utils/cronJob';
 
 // Definying the schema
 const SpecialPunctualHeavyVehicleSchema = new Schema({
@@ -84,5 +85,7 @@ SpecialPunctualHeavyVehicleSchema.pre('save', async function (next) {
 	}
 	next();
 });
+
+SpecialPunctualHeavyVehicleSchema.post('save', autoDecline);
 
 export default model('specialheavy_vehicle', SpecialPunctualHeavyVehicleSchema);

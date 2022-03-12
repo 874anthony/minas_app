@@ -28,8 +28,7 @@ const updatePunctualWorkPerson = ordinaryFactory.updateOrdinary(
 );
 
 // Cron Job to verify if Date.now() > qrCodeDate
-const job = CronJob(PunctualWorkPersonModel);
-job.start();
+CronJob(PunctualWorkPersonModel).start();
 
 export {
 	createPunctualWorkPerson,

@@ -41,6 +41,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var mongoose_1 = require("mongoose");
 var ordinariesEnum_1 = require("../../../../interfaces/ordinaries/ordinariesEnum");
+var cronJob_1 = require("../../../../utils/cronJob");
 var date_1 = require("../../../../utils/date");
 var eventsModel_1 = __importDefault(require("../../../events/eventsModel"));
 // Definying the schema
@@ -133,4 +134,5 @@ PermanentHeavyVehicleSchema.pre('save', function (next) {
         });
     });
 });
+PermanentHeavyVehicleSchema.post('save', cronJob_1.autoDecline);
 exports.default = (0, mongoose_1.model)('permanentheavy_vehicle', PermanentHeavyVehicleSchema);

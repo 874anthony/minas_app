@@ -12,7 +12,11 @@ const getVehicleNumber = ordinaryFactory.getVehicleNumber(PunctualMachinery);
 
 const createPunctualMachinery = ordinaryFactory.createOrdinary(
 	PunctualMachinery,
-	[UserRoles.AccessControl, UserRoles.SST, UserRoles.Auditing],
+	[
+		UserRoles.AccessControl,
+		UserRoles.SST,
+		UserRoles.Auditing
+],
 	{
 		checkAccessControl: false,
 		checkSST: false,

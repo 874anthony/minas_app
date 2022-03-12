@@ -33,7 +33,11 @@ var uploadPunctualMachinery = ordinaryFactory.uploadVehicle;
 exports.uploadPunctualMachinery = uploadPunctualMachinery;
 var getVehicleNumber = ordinaryFactory.getVehicleNumber(punctualMachineryModel_1.default);
 exports.getVehicleNumber = getVehicleNumber;
-var createPunctualMachinery = ordinaryFactory.createOrdinary(punctualMachineryModel_1.default, [userModel_1.UserRoles.AccessControl, userModel_1.UserRoles.SST, userModel_1.UserRoles.Auditing], {
+var createPunctualMachinery = ordinaryFactory.createOrdinary(punctualMachineryModel_1.default, [
+    userModel_1.UserRoles.AccessControl,
+    userModel_1.UserRoles.SST,
+    userModel_1.UserRoles.Auditing
+], {
     checkAccessControl: false,
     checkSST: false,
     checkAuditing: false,

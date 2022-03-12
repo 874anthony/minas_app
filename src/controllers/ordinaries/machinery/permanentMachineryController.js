@@ -33,7 +33,12 @@ var uploadPermanentMachinery = ordinaryFactory.uploadVehicle;
 exports.uploadPermanentMachinery = uploadPermanentMachinery;
 var getVehicleNumber = ordinaryFactory.getVehicleNumber(permanentMachineryModel_1.default);
 exports.getVehicleNumber = getVehicleNumber;
-var createPermanentMachinery = ordinaryFactory.createOrdinary(permanentMachineryModel_1.default, [userModel_1.UserRoles.AccessControl, userModel_1.UserRoles.SST, userModel_1.UserRoles.Auditing], {
+// validar si es permanentes en general o permanentes especiales.
+var createPermanentMachinery = ordinaryFactory.createOrdinary(permanentMachineryModel_1.default, [
+    userModel_1.UserRoles.AccessControl,
+    userModel_1.UserRoles.SST,
+    userModel_1.UserRoles.Auditing
+], {
     checkAccessControl: false,
     checkSST: false,
     checkAuditing: false,

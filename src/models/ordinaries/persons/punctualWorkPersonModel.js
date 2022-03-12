@@ -43,6 +43,7 @@ var mongoose_1 = require("mongoose");
 var date_1 = require("../../../utils/date");
 var ordinariesEnum_1 = require("../../../interfaces/ordinaries/ordinariesEnum");
 var eventsModel_1 = __importDefault(require("../../events/eventsModel"));
+var cronJob_1 = require("../../../utils/cronJob");
 // Definying the schema
 var PunctualWorkPersonSchema = new mongoose_1.Schema({
     name: {
@@ -163,4 +164,5 @@ PunctualWorkPersonSchema.pre('save', function (next) {
         });
     });
 });
+PunctualWorkPersonSchema.post('save', cronJob_1.autoDecline);
 exports.default = (0, mongoose_1.model)('punctualwork_person', PunctualWorkPersonSchema);

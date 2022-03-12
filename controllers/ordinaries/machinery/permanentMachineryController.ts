@@ -10,9 +10,14 @@ const uploadPermanentMachinery = ordinaryFactory.uploadVehicle;
 
 const getVehicleNumber = ordinaryFactory.getVehicleNumber(PermanentMachinery);
 
+// validar si es permanentes en general o permanentes especiales.
 const createPermanentMachinery = ordinaryFactory.createOrdinary(
 	PermanentMachinery,
-	[UserRoles.AccessControl, UserRoles.SST, UserRoles.Auditing],
+	[
+		UserRoles.AccessControl,
+		UserRoles.SST,
+		UserRoles.Auditing
+	],
 	{
 		checkAccessControl: false,
 		checkSST: false,

@@ -46,5 +46,4 @@ exports.createSpecialHeavyVehicle = createSpecialHeavyVehicle;
 var updateSpecialHeavyVehicle = ordinaryFactory.updateOrdinary(specialheavyVehicleModel_1.default);
 exports.updateSpecialHeavyVehicle = updateSpecialHeavyVehicle;
 // Cron Job to verify if Date.now() > qrCodeDate
-var job = (0, cronJob_1.default)(specialheavyVehicleModel_1.default);
-job.start();
+(0, cronJob_1.default)(specialheavyVehicleModel_1.default).start();
