@@ -31,8 +31,10 @@ router.route('/').get(ordinaryFactory.getAllOrds);
 
 router.route('/:id').get(ordinaryFactory.getOrdById);
 
-router.post('/:id/extension', (req: any, res: any) => {
-	return res.send('Extension');
+router.post('/:id/auth-extension', (req, res) => {
+	const { id } = req.params;
+	const { date } = req.body;
+	return res.send('Extension requested.');
 });
 
 export default router;

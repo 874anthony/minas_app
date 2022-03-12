@@ -43,7 +43,9 @@ router
     .get(ordinaryFactory.exportExcelVehicle);
 router.route('/').get(ordinaryFactory.getAllOrds);
 router.route('/:id').get(ordinaryFactory.getOrdById);
-router.post('/:id/extension', function (req, res) {
-    return res.send('Extension');
+router.post('/:id/auth-extension', function (req, res) {
+    var id = req.params.id;
+    var date = req.body.date;
+    return res.send('Extension requested.');
 });
 exports.default = router;
