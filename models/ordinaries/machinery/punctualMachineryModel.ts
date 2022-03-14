@@ -72,6 +72,4 @@ PunctualMachinerySchema.pre('save', async function (next) {
 	next();
 });
 
-
-
 export default model('punctual_machinery', PunctualMachinerySchema);

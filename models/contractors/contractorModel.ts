@@ -1,19 +1,12 @@
 import { Schema, model } from 'mongoose';
 import validator from 'validator';
-
 import CryptoJS from 'crypto-js';
 import crypto from 'crypto';
-
 import { StatusCompany } from '../companies/companyModel';
-import { CompanyInterface } from '../companies/companyModel';
 import { ModelsOrdinary } from '../../interfaces/ordinaries/ordinariesEnum';
 
-export interface ContractorInterface extends Schema, CompanyInterface {
-	companyID: Schema.Types.ObjectId;
-}
-
 // Definying the schema
-const ContractorSchema: Schema<ContractorInterface> = new Schema({
+const ContractorSchema: Schema = new Schema({
 	businessName: {
 		type: String,
 		required: true,
@@ -162,4 +155,4 @@ ContractorSchema.pre('save', async function (next) {
 	next();
 });
 
-export default model<ContractorInterface>('contractor', ContractorSchema);
+export default model('contractor', ContractorSchema);

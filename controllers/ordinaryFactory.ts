@@ -29,6 +29,7 @@ import Workflow from '../models/workflows/workflowModel';
 import Event from '../models/events/eventsModel';
 import TRDOrdinary from '../models/trd/trdOrdinary';
 import Company from '../models/companies/companyModel';
+import contractorModel from '../models/contractors/contractorModel';
 
 // ================================================ Endpoints starts here =========================================
 
@@ -387,25 +388,20 @@ const updateOrdinary = (Model) =>
 
 const getAllOrds = catchAsync(
 	async (req: Request, res: Response, next: NextFunction) => {
+		const { companyID } = req.query;
+		const subcontractors = await contractorModel.find({ companyID });
 		const ordinariesPromises = Object.values(ModelsOrdinary).map(
-			async (Model) => {
-				const featuresQuery = new APIFeatures(Model.find(), req.query)
-					.filter()
-					.limitFields()
-					.paginate()
-					.sort();
-				const ordinaryResult = await featuresQuery.query.populate([
-					{
-						path: 'companyID',
-						select: 'businessName',
-					},
-					{
-						path: 'contractorID',
-						select: 'businessName',
-					},
-				]);
-				return ordinaryResult;
-			}
+			async (Model) => (
+				Model.find({
+					$or: [
+						{ companyID },
+						{ contractorID: { $in: subcontractors } },
+					]
+				}).populate([
+					{ path: 'companyID', select: 'businessName' },
+					{ path: 'contractorID', select: 'businessName' },
+				])
+			)
 		);
 
 		const ordinaries = await Promise.all(ordinariesPromises);

@@ -68,6 +68,7 @@ var workflowModel_1 = __importDefault(require("../models/workflows/workflowModel
 var eventsModel_1 = __importDefault(require("../models/events/eventsModel"));
 var trdOrdinary_1 = __importDefault(require("../models/trd/trdOrdinary"));
 var companyModel_1 = __importDefault(require("../models/companies/companyModel"));
+var contractorModel_1 = __importDefault(require("../models/contractors/contractorModel"));
 // ================================================ Endpoints starts here =========================================
 // UPLOADS MIDDLEWARES
 // const uploadAttached = uploadOrdinaryPerson.single()
@@ -416,38 +417,29 @@ var updateOrdinary = function (Model) {
 };
 exports.updateOrdinary = updateOrdinary;
 var getAllOrds = (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var ordinariesPromises, ordinaries;
+    var companyID, subcontractors, ordinariesPromises, ordinaries;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
+                companyID = req.query.companyID;
+                return [4 /*yield*/, contractorModel_1.default.find({ companyID: companyID })];
+            case 1:
+                subcontractors = _a.sent();
                 ordinariesPromises = Object.values(ordinariesEnum_1.ModelsOrdinary).map(function (Model) { return __awaiter(void 0, void 0, void 0, function () {
-                    var featuresQuery, ordinaryResult;
                     return __generator(this, function (_a) {
-                        switch (_a.label) {
-                            case 0:
-                                featuresQuery = new apiFeatures_1.default(Model.find(), req.query)
-                                    .filter()
-                                    .limitFields()
-                                    .paginate()
-                                    .sort();
-                                return [4 /*yield*/, featuresQuery.query.populate([
-                                        {
-                                            path: 'companyID',
-                                            select: 'businessName',
-                                        },
-                                        {
-                                            path: 'contractorID',
-                                            select: 'businessName',
-                                        },
-                                    ])];
-                            case 1:
-                                ordinaryResult = _a.sent();
-                                return [2 /*return*/, ordinaryResult];
-                        }
+                        return [2 /*return*/, (Model.find({
+                                $or: [
+                                    { companyID: companyID },
+                                    { contractorID: { $in: subcontractors } },
+                                ]
+                            }).populate([
+                                { path: 'companyID', select: 'businessName' },
+                                { path: 'contractorID', select: 'businessName' },
+                            ]))];
                     });
                 }); });
                 return [4 /*yield*/, Promise.all(ordinariesPromises)];
-            case 1:
+            case 2:
                 ordinaries = _a.sent();
                 res.status(200).json({
                     status: true,
