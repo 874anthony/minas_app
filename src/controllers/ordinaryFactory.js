@@ -417,29 +417,40 @@ var updateOrdinary = function (Model) {
 };
 exports.updateOrdinary = updateOrdinary;
 var getAllOrds = (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var companyID, subcontractors, ordinariesPromises, ordinaries;
+    var params, companyID, subcontractors, ordinariesPromises, ordinaries;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                companyID = req.query.companyID;
+                params = req.query;
+                if (!params.companyID) return [3 /*break*/, 2];
+                companyID = params.companyID;
                 return [4 /*yield*/, contractorModel_1.default.find({ companyID: companyID })];
             case 1:
                 subcontractors = _a.sent();
+                params = {
+                    $or: [
+                        { companyID: companyID },
+                        { contractorID: { $in: subcontractors } },
+                    ]
+                };
+                _a.label = 2;
+            case 2:
                 ordinariesPromises = Object.values(ordinariesEnum_1.ModelsOrdinary).map(function (Model) { return __awaiter(void 0, void 0, void 0, function () {
+                    var feature;
                     return __generator(this, function (_a) {
-                        return [2 /*return*/, (Model.find({
-                                $or: [
-                                    { companyID: companyID },
-                                    { contractorID: { $in: subcontractors } },
-                                ]
-                            }).populate([
+                        feature = new apiFeatures_1.default(Model.find(), params)
+                            .filter()
+                            .sort()
+                            .limitFields()
+                            .paginate();
+                        return [2 /*return*/, feature.query.populate([
                                 { path: 'companyID', select: 'businessName' },
                                 { path: 'contractorID', select: 'businessName' },
-                            ]))];
+                            ])];
                     });
                 }); });
                 return [4 /*yield*/, Promise.all(ordinariesPromises)];
-            case 2:
+            case 3:
                 ordinaries = _a.sent();
                 res.status(200).json({
                     status: true,

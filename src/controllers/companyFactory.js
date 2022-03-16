@@ -426,7 +426,6 @@ var acceptOne = function (Model) {
                     return [3 /*break*/, 15];
                 case 14:
                     error_3 = _a.sent();
-                    console.log({ error: error_3 });
                     return [2 /*return*/, next(new httpException_1.default('Hubo un error al enviar el correo, por favor intente más tarde', 500))];
                 case 15: 
                 // SENDING THE FINAL RESPONSE TO THE CLIENT

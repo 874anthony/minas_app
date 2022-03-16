@@ -11,7 +11,7 @@ export default class Email {
 	constructor(user, url?: string) {
 		this.to = user.email;
 		this.url = url;
-		this.from = `Control de Acceso - Gecelca <${process.env.EMAIL_FROM}>`;
+		this.from = `Mina Las Palmeras - Gecelca <${process.env.EMAIL_USERNAME}>`;
 	}
 
 	newTransport() {
@@ -56,7 +56,7 @@ export default class Email {
 	async sendWelcomeCompany(companyCredentials: Object) {
 		await this.send(
 			'welcomeCompany',
-			'*Email header to be modified*',
+			'¡BIENVENIDO A LA MINA LAS PALMERAS!',
 			companyCredentials
 		);
 	}
@@ -64,7 +64,7 @@ export default class Email {
 	async sendRejectCompany(emailMessage: String) {
 		await this.send(
 			'rejectedCompany',
-			'*Email header to be modified*',
+			'HA SIDO RECHAZADO PARA ACCEDER A LA MINA LAS PALMERAS',
 			{ emailMessage }
 		);
 	}
@@ -72,7 +72,7 @@ export default class Email {
 	async sendOrdNotification(options: Object) {
 		await this.send(
 			'ordNotification',
-			'*Email header to be modified*',
+			'NUEVO TIPO DE INGRESO REGISTRADO',
 			options
 		);
 	}

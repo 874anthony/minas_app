@@ -388,20 +388,29 @@ const updateOrdinary = (Model) =>
 
 const getAllOrds = catchAsync(
 	async (req: Request, res: Response, next: NextFunction) => {
-		const { companyID } = req.query;
-		const subcontractors = await contractorModel.find({ companyID });
+		let params = req.query;
+		if (params.companyID) {
+			const { companyID } = params;
+			const subcontractors = await contractorModel.find({ companyID });
+			params = {
+				$or: [
+					{ companyID },
+					{ contractorID: { $in: subcontractors } },
+				]
+			};
+		}
 		const ordinariesPromises = Object.values(ModelsOrdinary).map(
-			async (Model) => (
-				Model.find({
-					$or: [
-						{ companyID },
-						{ contractorID: { $in: subcontractors } },
-					]
-				}).populate([
+			async (Model) => {
+				const feature = new APIFeatures(Model.find(), params)
+					.filter()
+					.sort()
+					.limitFields()
+					.paginate();
+				return feature.query.populate([
 					{ path: 'companyID', select: 'businessName' },
 					{ path: 'contractorID', select: 'businessName' },
-				])
-			)
+				]);
+			}
 		);
 
 		const ordinaries = await Promise.all(ordinariesPromises);
