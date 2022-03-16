@@ -2,6 +2,7 @@ import { Schema, model } from 'mongoose';
 import { addDate } from '../../../../utils/date';
 import { getModelByType } from '../../../../interfaces/ordinaries/ordinariesEnum';
 import Event from '../../../events/eventsModel';
+import { autoDecline } from '../../../../utils/cronJob';
 
 // Definying the schema
 const VisitorlightVehicleSchema = new Schema({
@@ -45,6 +46,7 @@ const VisitorlightVehicleSchema = new Schema({
 		type: String,
 		required: true,
 	},
+	docPicture: String,
 	docSoat: String,
 	docPropertyCard: String,
 	docTechno: String,
@@ -77,13 +79,13 @@ VisitorlightVehicleSchema.pre('save', async function (next) {
 			action: 'Actualización Registro',
 			description: 'Se aprobó el ingreso y se ha generado un código QR',
 		};
-
 		await Event.create(bodyEvent);
-
 		const qrCodeDays = 2;
 		this.qrCodeDate = addDate(Date.now(), qrCodeDays);
 	}
 	next();
 });
+
+VisitorlightVehicleSchema.post('save', autoDecline);
 
 export default model('visitor_vehicle', VisitorlightVehicleSchema);

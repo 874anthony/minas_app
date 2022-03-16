@@ -14,15 +14,15 @@ const getVehicleNumber = ordinaryFactory.getVehicleNumber(
 
 const createSpecialHeavyVehicle = ordinaryFactory.createOrdinary(
 	SpecialHeavyVehicleModel,
-	[UserRoles.AccessControl, UserRoles.SISO, UserRoles.Auditing],
+	[UserRoles.AccessControl, UserRoles.SST, UserRoles.Auditing],
 	{
 		checkAccessControl: false,
-		checkSISO: false,
+		checkSST: false,
 		checkAuditing: false,
 	},
 	{
 		correctAccessControl: false,
-		correctSISO: false,
+		correctSST: false,
 		correctAuditing: false,
 	}
 );
@@ -32,8 +32,7 @@ const updateSpecialHeavyVehicle = ordinaryFactory.updateOrdinary(
 );
 
 // Cron Job to verify if Date.now() > qrCodeDate
-const job = CronJob(SpecialHeavyVehicleModel);
-job.start();
+CronJob(SpecialHeavyVehicleModel).start();
 
 export {
 	createSpecialHeavyVehicle,

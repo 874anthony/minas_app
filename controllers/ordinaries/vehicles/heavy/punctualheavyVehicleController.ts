@@ -14,7 +14,9 @@ const getVehicleNumber = ordinaryFactory.getVehicleNumber(
 
 const createPunctualHeavyVehicle = ordinaryFactory.createOrdinary(
 	PunctualHeavyVehicleModel,
-	[UserRoles.AccessControl],
+	[
+		UserRoles.AccessControl,
+	],
 	{
 		checkAccessControl: false,
 	},

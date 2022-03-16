@@ -60,6 +60,9 @@ app.use(
 	express.static(path.join(__dirname, '../store/documents/ordinaries'))
 );
 
+// to access images from views folder (email and other stuff)
+app.use(express.static(__dirname + '/views'));
+
 app.set('view engine', 'ejs');
 app.set('views', `${__dirname}/views`);
 

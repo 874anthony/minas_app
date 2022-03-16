@@ -6,14 +6,13 @@ import app from './app';
 // Import enviroment variables and parsing into the single process.env
 dotenv.config({ path: './config.env' });
 
-// Creating the DB instance
-const DB = process.env.DATABASE_URI!.replace(
-	'<password>',
-	process.env.MONGODB_PASSWORD!
-);
+const username = process.env.MONGODB_USERNAME!;
+const password = process.env.MONGODB_PASSWORD!;
+const DB = process.env.DATABASE_URI!
+	.replace('<username>', username)
+	.replace('<password>', password);
 
 // Connecting to the DB itself
-// TODO: Handle errors
 mongoose
 	.connect(DB, { dbName: 'minas_gecelca' })
 	.then(() => console.log('DB connected succesfully!'))

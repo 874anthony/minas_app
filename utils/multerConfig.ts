@@ -5,6 +5,8 @@ import HttpException from '../utils/httpException';
 import multer from 'multer';
 import fs from 'fs';
 
+const ALLOWED_EXTENSIONS = ['pdf', 'jpg', 'jpeg', 'png'];
+
 // ================================== MULTER CONFIGURATION TO HANDLE THE DOCUMENTS ===========================================
 // Configuring first the type of the storage
 const multerStorageOrdinary = multer.diskStorage({
@@ -41,17 +43,18 @@ const multerStorageOrdinary = multer.diskStorage({
 	},
 });
 
-// Filtering for only PDF files
+// Filtering for only PDF and images files
 const multerFilterOrdinary = (
 	req: Request,
 	file: Express.Multer.File,
 	callback: any
 ) => {
-	if (file.mimetype.split('/')[1] === 'pdf') {
+	const extension = file.mimetype.split('/')[1]
+	if (ALLOWED_EXTENSIONS.includes(extension)) {
 		callback(null, true);
 	} else {
 		callback(
-			new HttpException('No es un pdf, por favor, solo suba archivos PDF', 404),
+			new HttpException('El formato del archivo es incorrecto.', 404),
 			false
 		);
 	}
@@ -100,11 +103,12 @@ const multerFilterVehicle = (
 	file: Express.Multer.File,
 	callback: any
 ) => {
-	if (file.mimetype.split('/')[1] === 'pdf') {
+	const extension = file.mimetype.split('/')[1]
+	if (ALLOWED_EXTENSIONS.includes(extension)) {
 		callback(null, true);
 	} else {
 		callback(
-			new HttpException('No es un pdf, por favor, solo suba archivos PDF', 404),
+			new HttpException('El formato del archivo es incorrecto.', 404),
 			false
 		);
 	}

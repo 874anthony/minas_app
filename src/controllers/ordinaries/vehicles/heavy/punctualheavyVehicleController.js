@@ -33,7 +33,9 @@ var uploadPunctualHeavyVehicles = ordinaryFactory.uploadVehicle;
 exports.uploadPunctualHeavyVehicles = uploadPunctualHeavyVehicles;
 var getVehicleNumber = ordinaryFactory.getVehicleNumber(punctualheavyVehicleModel_1.default);
 exports.getVehicleNumber = getVehicleNumber;
-var createPunctualHeavyVehicle = ordinaryFactory.createOrdinary(punctualheavyVehicleModel_1.default, [userModel_1.UserRoles.AccessControl], {
+var createPunctualHeavyVehicle = ordinaryFactory.createOrdinary(punctualheavyVehicleModel_1.default, [
+    userModel_1.UserRoles.AccessControl,
+], {
     checkAccessControl: false,
 }, {
     correctAccessControl: false,

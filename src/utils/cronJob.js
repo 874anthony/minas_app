@@ -36,7 +36,9 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.autoDecline = void 0;
 var cron_1 = require("cron");
+var ordinariesEnum_1 = require("../interfaces/ordinaries/ordinariesEnum");
 exports.default = (function (Model) {
     return new cron_1.CronJob('0 1 * * *', function () {
         return __awaiter(this, void 0, void 0, function () {
@@ -51,3 +53,26 @@ exports.default = (function (Model) {
         });
     }, null);
 });
+// Rechaza luego de dos dias (lunes a viernes) sin respuesta.
+function autoDecline(ordinary) {
+    var _this = this;
+    var _id = ordinary._id, ordinaryType = ordinary.ordinaryType;
+    var model = ordinariesEnum_1.ModelsOrdinary[ordinaryType];
+    new cron_1.CronJob('0 0 */2 * 1-5', function () { return __awaiter(_this, void 0, void 0, function () {
+        var status;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, model.findById(_id)];
+                case 1:
+                    status = (_a.sent()).status;
+                    if (!(status === ordinariesEnum_1.StatusOrdinary.Pending)) return [3 /*break*/, 3];
+                    return [4 /*yield*/, model.updateOne({ _id: _id }, { $set: { status: 'RECHAZADO' } })];
+                case 2:
+                    _a.sent();
+                    _a.label = 3;
+                case 3: return [2 /*return*/];
+            }
+        });
+    }); }).start();
+}
+exports.autoDecline = autoDecline;

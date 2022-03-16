@@ -41,6 +41,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var mongoose_1 = require("mongoose");
 var ordinariesEnum_1 = require("../../../interfaces/ordinaries/ordinariesEnum");
+var cronJob_1 = require("../../../utils/cronJob");
 var date_1 = require("../../../utils/date");
 var eventsModel_1 = __importDefault(require("../../events/eventsModel"));
 // Definying the schema
@@ -83,14 +84,16 @@ var PermanentPersonSchema = new mongoose_1.Schema({
         type: String,
         trim: true,
     },
-    docHealth: {
-        type: String,
-    },
+    docPicture: String,
+    docHealth: String,
     docPension: String,
     docARL: String,
     docCitizenship: String,
     docSocialSecurity: String,
-    docMedicalFitness: String,
+    docMedicalFitness: {
+        type: String,
+        required: true
+    },
     radicado: {
         type: String,
         default: 'Sin radicado',
@@ -109,7 +112,7 @@ var PermanentPersonSchema = new mongoose_1.Schema({
         required: false,
     },
     startDates: Date,
-    finishDates: Date,
+    // finishDates: Date,
     status: {
         type: String,
         default: 'PENDIENTE',
@@ -165,4 +168,5 @@ PermanentPersonSchema.pre('save', function (next) {
         });
     });
 });
+PermanentPersonSchema.post('save', cronJob_1.autoDecline);
 exports.default = (0, mongoose_1.model)('permanent_person', PermanentPersonSchema);

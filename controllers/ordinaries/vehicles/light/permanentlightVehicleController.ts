@@ -12,17 +12,22 @@ const getVehicleNumber = ordinaryFactory.getVehicleNumber(
 	PermanentLightVehicleModel
 );
 
+// validar si es permanentes en general o permanentes especiales.
 const createPermanentLightVehicle = ordinaryFactory.createOrdinary(
 	PermanentLightVehicleModel,
-	[UserRoles.AccessControl, UserRoles.SISO, UserRoles.Auditing],
+	[
+		UserRoles.AccessControl,
+		UserRoles.SST,
+		UserRoles.Auditing
+	],
 	{
 		checkAccessControl: false,
-		checkSISO: false,
+		checkSST: false,
 		checkAuditing: false,
 	},
 	{
 		correctAccessControl: false,
-		correctSISO: false,
+		correctSST: false,
 		correcAuditing: false,
 	}
 );
@@ -32,8 +37,7 @@ const updatePermanentLightVehicle = ordinaryFactory.updateOrdinary(
 );
 
 // Cron Job to verify if Date.now() > qrCodeDate
-const job = CronJob(PermanentLightVehicleModel);
-job.start();
+CronJob(PermanentLightVehicleModel).start();
 
 export {
 	createPermanentLightVehicle,

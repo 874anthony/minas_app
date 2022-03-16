@@ -19,7 +19,7 @@ export enum UserRoles {
 	AccessControl = 'Control de Acceso',
 	RSE = 'Responsabilidad Social Empresarial',
 	SSFF = 'Seguridad Física',
-	SISO = 'Seguridad y Salud en el Trabajo',
+	SST = 'Seguridad y Salud en el Trabajo',
 	Auditing = 'Interventoría',
 	SMIN = 'Gerencia Servicios Mineros',
 	Admin = 'Administrador',

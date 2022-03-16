@@ -48,7 +48,7 @@ var UserRoles;
     UserRoles["AccessControl"] = "Control de Acceso";
     UserRoles["RSE"] = "Responsabilidad Social Empresarial";
     UserRoles["SSFF"] = "Seguridad F\u00EDsica";
-    UserRoles["SISO"] = "Seguridad y Salud en el Trabajo";
+    UserRoles["SST"] = "Seguridad y Salud en el Trabajo";
     UserRoles["Auditing"] = "Interventor\u00EDa";
     UserRoles["SMIN"] = "Gerencia Servicios Mineros";
     UserRoles["Admin"] = "Administrador";

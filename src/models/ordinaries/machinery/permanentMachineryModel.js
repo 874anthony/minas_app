@@ -43,6 +43,7 @@ var mongoose_1 = require("mongoose");
 var date_1 = require("../../../utils/date");
 var ordinariesEnum_1 = require("../../../interfaces/ordinaries/ordinariesEnum");
 var eventsModel_1 = __importDefault(require("../../events/eventsModel"));
+var cronJob_1 = require("../../../utils/cronJob");
 // Definying the schema
 var PermanentMachinerySchema = new mongoose_1.Schema({
     radicado: {
@@ -63,7 +64,7 @@ var PermanentMachinerySchema = new mongoose_1.Schema({
         required: false,
     },
     startDates: Date,
-    finishDates: Date,
+    // finishDates: Date,
     type: {
         type: String,
         required: true,
@@ -74,6 +75,7 @@ var PermanentMachinerySchema = new mongoose_1.Schema({
         unique: true,
     },
     reasonDescription: String,
+    docPicture: String,
     ordinaryType: {
         type: String,
         default: 'permanentMachinery',
@@ -120,4 +122,5 @@ PermanentMachinerySchema.pre('save', function (next) {
         });
     });
 });
+PermanentMachinerySchema.post('save', cronJob_1.autoDecline);
 exports.default = (0, mongoose_1.model)('permanent_machinery', PermanentMachinerySchema);

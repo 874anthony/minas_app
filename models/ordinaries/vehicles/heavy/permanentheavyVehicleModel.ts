@@ -1,5 +1,6 @@
 import { Schema, model } from 'mongoose';
 import { getModelByType } from '../../../../interfaces/ordinaries/ordinariesEnum';
+import { autoDecline } from '../../../../utils/cronJob';
 import { addDate } from '../../../../utils/date';
 import Event from '../../../events/eventsModel';
 
@@ -23,7 +24,7 @@ const PermanentHeavyVehicleSchema = new Schema({
 		required: false,
 	},
 	startDates: Date,
-	finishDates: Date,
+	// finishDates: Date,
 	type: {
 		type: String,
 		required: true,
@@ -45,6 +46,7 @@ const PermanentHeavyVehicleSchema = new Schema({
 		type: String,
 		required: true,
 	},
+	docPicture: String,
 	docSoat: String,
 	docPropertyCard: String,
 	docTechno: String,
@@ -88,5 +90,7 @@ PermanentHeavyVehicleSchema.pre('save', async function (next) {
 	}
 	next();
 });
+
+PermanentHeavyVehicleSchema.post('save', autoDecline);
 
 export default model('permanentheavy_vehicle', PermanentHeavyVehicleSchema);

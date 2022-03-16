@@ -29,6 +29,7 @@ import Workflow from '../models/workflows/workflowModel';
 import Event from '../models/events/eventsModel';
 import TRDOrdinary from '../models/trd/trdOrdinary';
 import Company from '../models/companies/companyModel';
+import contractorModel from '../models/contractors/contractorModel';
 
 // ================================================ Endpoints starts here =========================================
 
@@ -36,6 +37,7 @@ import Company from '../models/companies/companyModel';
 // const uploadAttached = uploadOrdinaryPerson.single()
 
 const uploadPerson = uploadOrdinaryPerson.fields([
+	{ name: 'docPicture', maxCount: 1 },
 	{ name: 'docHealth', maxCount: 1 },
 	{ name: 'docPension', maxCount: 1 },
 	{ name: 'docARL', maxCount: 1 },
@@ -55,6 +57,7 @@ const uploadPerson = uploadOrdinaryPerson.fields([
 ]);
 
 const uploadVehicle = uploadOrdinaryVehicle.fields([
+	{ name: 'docPicture', maxCount: 1 },
 	{ name: 'docSoat', maxCount: 1 },
 	{ name: 'docPropertyCard', maxCount: 1 },
 	{ name: 'docTechno', maxCount: 1 },
@@ -203,9 +206,26 @@ const createOrdinary = (
 			body.contractorID = req.params.idContractor;
 		}
 
-		const newOrdinaryPerson = await Model.create(body);
+		const getOrdinary = async () => {
+			const { citizenship } = body;
+			if (citizenship) {
+				const exists = await Model.exists({ citizenship });
+				if (exists) {
+					const query = await Model.findOne({ citizenship });
+					if (query.ordinaryType === 'permanentPerson') {
+						const { status } = query;
+						if (status === StatusOrdinary.Forbidden) {
+							return await Model.findOne({ citizenship });
+						}
+					}
+				}
+			}
+			return await Model.create(body);
+		};
 
-		if (!newOrdinaryPerson) {
+		const ordinary = await getOrdinary();
+
+		if (!ordinary) {
 			return next(
 				new HttpException(
 					'No se ha podido crear el ordinario, intente nuevamente',
@@ -215,7 +235,7 @@ const createOrdinary = (
 		}
 
 		const bodyEvent = {
-			radicado: newOrdinaryPerson._id,
+			radicado: ordinary._id,
 			action: 'Envío de formulario',
 			description: 'Se generó el nuevo tipo de ingreso',
 		};
@@ -238,7 +258,7 @@ const createOrdinary = (
 		const usersID: any = [];
 		const ordinaryOpts = {
 			radicado,
-			ordinaryType: getModelByType[newOrdinaryPerson.ordinaryType],
+			ordinaryType: getModelByType[ordinary.ordinaryType],
 		};
 
 		usersArray.forEach((ArrayPerRole: Array<any>) => {
@@ -258,9 +278,9 @@ const createOrdinary = (
 			});
 		});
 
-		const bodyWorkflow = {
-			radicado: newOrdinaryPerson._id,
-			ordinaryType: newOrdinaryPerson.ordinaryType,
+		const bodyWorkflow: any = {
+			radicado: ordinary._id,
+			ordinaryType: ordinary.ordinaryType,
 			roles: usersID,
 			observations: req.body.observations,
 			...checkRoles,
@@ -268,7 +288,11 @@ const createOrdinary = (
 		};
 
 		try {
-			await Workflow.create(bodyWorkflow);
+			const onflow = await Workflow.exists({ radicado: ordinary._id });
+			if (!onflow) {
+				bodyWorkflow.forbidden = ordinary.status === StatusOrdinary.Forbidden;
+				await Workflow.create(bodyWorkflow);
+			}
 		} catch (error) {
 			return next(
 				new HttpException(
@@ -281,7 +305,7 @@ const createOrdinary = (
 		res.status(200).json({
 			status: true,
 			message: 'Se ha creado el ordinario con éxito',
-			ordinary: newOrdinaryPerson,
+			ordinary
 		});
 	});
 
@@ -364,26 +388,28 @@ const updateOrdinary = (Model) =>
 
 const getAllOrds = catchAsync(
 	async (req: Request, res: Response, next: NextFunction) => {
+		let params = req.query;
+		if (params.companyID) {
+			const { companyID } = params;
+			const subcontractors = await contractorModel.find({ companyID });
+			params = {
+				$or: [
+					{ companyID },
+					{ contractorID: { $in: subcontractors } },
+				]
+			};
+		}
 		const ordinariesPromises = Object.values(ModelsOrdinary).map(
 			async (Model) => {
-				let featuresQuery = new APIFeatures(Model.find(), req.query)
+				const feature = new APIFeatures(Model.find(), params)
 					.filter()
+					.sort()
 					.limitFields()
-					.paginate()
-					.sort();
-
-				let ordinaryResult = await featuresQuery.query.populate([
-					{
-						path: 'companyID',
-						select: 'businessName',
-					},
-					{
-						path: 'contractorID',
-						select: 'businessName',
-					},
+					.paginate();
+				return feature.query.populate([
+					{ path: 'companyID', select: 'businessName' },
+					{ path: 'contractorID', select: 'businessName' },
 				]);
-
-				return ordinaryResult;
 			}
 		);
 

@@ -36,6 +36,7 @@ var StatusOrdinary;
     StatusOrdinary["Rejected"] = "RECHAZADO";
     StatusOrdinary["Sanitation"] = "SUBSANAR";
     StatusOrdinary["Visa"] = "POR VISAR";
+    StatusOrdinary["Forbidden"] = "PROHIBIDO";
 })(StatusOrdinary = exports.StatusOrdinary || (exports.StatusOrdinary = {}));
 exports.getModelByType = {
     permanentPerson: 'Persona permanente',

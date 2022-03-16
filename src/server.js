@@ -9,10 +9,12 @@ var dotenv_1 = __importDefault(require("dotenv"));
 var app_1 = __importDefault(require("./app"));
 // Import enviroment variables and parsing into the single process.env
 dotenv_1.default.config({ path: './config.env' });
-// Creating the DB instance
-var DB = process.env.DATABASE_URI.replace('<password>', process.env.MONGODB_PASSWORD);
+var username = process.env.MONGODB_USERNAME;
+var password = process.env.MONGODB_PASSWORD;
+var DB = process.env.DATABASE_URI
+    .replace('<username>', username)
+    .replace('<password>', password);
 // Connecting to the DB itself
-// TODO: Handle errors
 mongoose_1.default
     .connect(DB, { dbName: 'minas_gecelca' })
     .then(function () { return console.log('DB connected succesfully!'); })

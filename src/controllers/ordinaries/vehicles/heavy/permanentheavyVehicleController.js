@@ -33,13 +33,18 @@ var uploadPermanentHeavyVehicles = ordinaryFactory.uploadVehicle;
 exports.uploadPermanentHeavyVehicles = uploadPermanentHeavyVehicles;
 var getVehicleNumber = ordinaryFactory.getVehicleNumber(permanentheavyVehicleModel_1.default);
 exports.getVehicleNumber = getVehicleNumber;
-var createPermanentHeavyVehicle = ordinaryFactory.createOrdinary(permanentheavyVehicleModel_1.default, [userModel_1.UserRoles.AccessControl, userModel_1.UserRoles.SISO, userModel_1.UserRoles.Auditing], {
+// validar si es permanentes en general o permanentes especiales.
+var createPermanentHeavyVehicle = ordinaryFactory.createOrdinary(permanentheavyVehicleModel_1.default, [
+    userModel_1.UserRoles.AccessControl,
+    userModel_1.UserRoles.SST,
+    userModel_1.UserRoles.Auditing
+], {
     checkAccessControl: false,
-    checkSISO: false,
+    checkSST: false,
     checkAuditing: false,
 }, {
     correctAccessControl: false,
-    correctSISO: false,
+    correctSST: false,
     correcAuditing: false,
 });
 exports.createPermanentHeavyVehicle = createPermanentHeavyVehicle;

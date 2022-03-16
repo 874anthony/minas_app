@@ -14,7 +14,7 @@ export enum StatusCompany {
 }
 export interface CompanyInterface extends Schema {
 	businessName: string;
-	nit: number;
+	nit: string;
 	email: string;
 	address: string;
 	phone: number;
@@ -46,7 +46,7 @@ const CompanySchema: Schema<CompanyInterface> = new Schema(
 			minlength: 3,
 		},
 		nit: {
-			type: Number,
+			type: String,
 			unique: true,
 			required: true,
 			min: 7,

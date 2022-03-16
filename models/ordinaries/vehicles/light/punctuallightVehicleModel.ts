@@ -2,6 +2,7 @@ import { Schema, model } from 'mongoose';
 import { addDate } from '../../../../utils/date';
 import { getModelByType } from '../../../../interfaces/ordinaries/ordinariesEnum';
 import Event from '../../../events/eventsModel';
+import { autoDecline } from '../../../../utils/cronJob';
 
 // Definying the schema
 const PunctualLightVehicleSchema = new Schema({
@@ -45,6 +46,7 @@ const PunctualLightVehicleSchema = new Schema({
 		type: String,
 		required: true,
 	},
+	docPicture: String,
 	docSoat: String,
 	docPropertyCard: String,
 	docTechno: String,
@@ -85,5 +87,7 @@ PunctualLightVehicleSchema.pre('save', async function (next) {
 	}
 	next();
 });
+
+PunctualLightVehicleSchema.post('save', autoDecline);
 
 export default model('punctuallight_vehicle', PunctualLightVehicleSchema);

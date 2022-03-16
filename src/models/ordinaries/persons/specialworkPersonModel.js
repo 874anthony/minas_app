@@ -40,6 +40,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var mongoose_1 = require("mongoose");
+var cronJob_1 = require("../../../utils/cronJob");
 var date_1 = require("../../../utils/date");
 var eventsModel_1 = __importDefault(require("../../events/eventsModel"));
 // Definying the schema
@@ -78,6 +79,7 @@ var SpecialWorkPersonSchema = new mongoose_1.Schema({
         type: String,
         trim: true,
     },
+    docPicture: String,
     docHealth: String,
     docPension: String,
     docARL: String,
@@ -166,4 +168,5 @@ SpecialWorkPersonSchema.pre('save', function (next) {
         });
     });
 });
+SpecialWorkPersonSchema.post('save', cronJob_1.autoDecline);
 exports.default = (0, mongoose_1.model)('specialwork_person', SpecialWorkPersonSchema);

@@ -14,6 +14,7 @@ export enum StatusOrdinary {
 	Rejected = 'RECHAZADO',
 	Sanitation = 'SUBSANAR',
 	Visa = 'POR VISAR',
+	Forbidden = 'PROHIBIDO',
 }
 
 export const getModelByType = {
@@ -72,12 +73,12 @@ export interface StatusBody {
 	checkAccessControl?: boolean;
 	checkRSE?: boolean;
 	checkSSFF?: boolean;
-	checkSISO?: boolean;
+	checkSST?: boolean;
 	checkAuditing?: boolean;
 	checkSMIN?: boolean;
 	correctAccessControl?: boolean;
 	correctRSE?: boolean;
 	correctSSFF?: boolean;
-	correctSISO?: boolean;
+	correctSST?: boolean;
 	correctSMIN?: boolean;
 }

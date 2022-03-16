@@ -43,6 +43,7 @@ var mongoose_1 = require("mongoose");
 var date_1 = require("../../../../utils/date");
 var ordinariesEnum_1 = require("../../../../interfaces/ordinaries/ordinariesEnum");
 var eventsModel_1 = __importDefault(require("../../../events/eventsModel"));
+var cronJob_1 = require("../../../../utils/cronJob");
 // Definying the schema
 var PunctualLightVehicleSchema = new mongoose_1.Schema({
     radicado: {
@@ -85,6 +86,7 @@ var PunctualLightVehicleSchema = new mongoose_1.Schema({
         type: String,
         required: true,
     },
+    docPicture: String,
     docSoat: String,
     docPropertyCard: String,
     docTechno: String,
@@ -131,4 +133,5 @@ PunctualLightVehicleSchema.pre('save', function (next) {
         });
     });
 });
+PunctualLightVehicleSchema.post('save', cronJob_1.autoDecline);
 exports.default = (0, mongoose_1.model)('punctuallight_vehicle', PunctualLightVehicleSchema);

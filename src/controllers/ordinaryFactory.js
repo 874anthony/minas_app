@@ -68,10 +68,12 @@ var workflowModel_1 = __importDefault(require("../models/workflows/workflowModel
 var eventsModel_1 = __importDefault(require("../models/events/eventsModel"));
 var trdOrdinary_1 = __importDefault(require("../models/trd/trdOrdinary"));
 var companyModel_1 = __importDefault(require("../models/companies/companyModel"));
+var contractorModel_1 = __importDefault(require("../models/contractors/contractorModel"));
 // ================================================ Endpoints starts here =========================================
 // UPLOADS MIDDLEWARES
 // const uploadAttached = uploadOrdinaryPerson.single()
 var uploadPerson = multerConfig_1.uploadOrdinaryPerson.fields([
+    { name: 'docPicture', maxCount: 1 },
     { name: 'docHealth', maxCount: 1 },
     { name: 'docPension', maxCount: 1 },
     { name: 'docARL', maxCount: 1 },
@@ -91,6 +93,7 @@ var uploadPerson = multerConfig_1.uploadOrdinaryPerson.fields([
 ]);
 exports.uploadPerson = uploadPerson;
 var uploadVehicle = multerConfig_1.uploadOrdinaryVehicle.fields([
+    { name: 'docPicture', maxCount: 1 },
     { name: 'docSoat', maxCount: 1 },
     { name: 'docPropertyCard', maxCount: 1 },
     { name: 'docTechno', maxCount: 1 },
@@ -161,7 +164,7 @@ exports.checkContractorID = checkContractorID;
 // AQUI TERMINA LOS MIDDLEWARES
 var createOrdinary = function (Model, Roles, checkRoles, subsanarRoles) {
     return (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-        var body, arrayFilenames, dependency, trdOrdinary, year, dependencyCode, consecutive, radicado, newOrdinaryPerson, bodyEvent, usersPromises, usersArray, usersID, ordinaryOpts, bodyWorkflow, error_1;
+        var body, arrayFilenames, dependency, trdOrdinary, year, dependencyCode, consecutive, radicado, getOrdinary, ordinary, bodyEvent, usersPromises, usersArray, usersID, ordinaryOpts, bodyWorkflow, onflow, error_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -221,14 +224,38 @@ var createOrdinary = function (Model, Roles, checkRoles, subsanarRoles) {
                     else if (req.params.idContractor) {
                         body.contractorID = req.params.idContractor;
                     }
-                    return [4 /*yield*/, Model.create(body)];
+                    getOrdinary = function () { return __awaiter(void 0, void 0, void 0, function () {
+                        var citizenship, exists, query, status_1;
+                        return __generator(this, function (_a) {
+                            switch (_a.label) {
+                                case 0:
+                                    citizenship = body.citizenship;
+                                    if (!citizenship) return [3 /*break*/, 4];
+                                    return [4 /*yield*/, Model.exists({ citizenship: citizenship })];
+                                case 1:
+                                    exists = _a.sent();
+                                    if (!exists) return [3 /*break*/, 4];
+                                    return [4 /*yield*/, Model.findOne({ citizenship: citizenship })];
+                                case 2:
+                                    query = _a.sent();
+                                    if (!(query.ordinaryType === 'permanentPerson')) return [3 /*break*/, 4];
+                                    status_1 = query.status;
+                                    if (!(status_1 === ordinariesEnum_1.StatusOrdinary.Forbidden)) return [3 /*break*/, 4];
+                                    return [4 /*yield*/, Model.findOne({ citizenship: citizenship })];
+                                case 3: return [2 /*return*/, _a.sent()];
+                                case 4: return [4 /*yield*/, Model.create(body)];
+                                case 5: return [2 /*return*/, _a.sent()];
+                            }
+                        });
+                    }); };
+                    return [4 /*yield*/, getOrdinary()];
                 case 6:
-                    newOrdinaryPerson = _a.sent();
-                    if (!newOrdinaryPerson) {
+                    ordinary = _a.sent();
+                    if (!ordinary) {
                         return [2 /*return*/, next(new httpException_1.default('No se ha podido crear el ordinario, intente nuevamente', 404))];
                     }
                     bodyEvent = {
-                        radicado: newOrdinaryPerson._id,
+                        radicado: ordinary._id,
                         action: 'Envío de formulario',
                         description: 'Se generó el nuevo tipo de ingreso',
                     };
@@ -258,7 +285,7 @@ var createOrdinary = function (Model, Roles, checkRoles, subsanarRoles) {
                     usersID = [];
                     ordinaryOpts = {
                         radicado: radicado,
-                        ordinaryType: ordinariesEnum_1.getModelByType[newOrdinaryPerson.ordinaryType],
+                        ordinaryType: ordinariesEnum_1.getModelByType[ordinary.ordinaryType],
                     };
                     usersArray.forEach(function (ArrayPerRole) {
                         ArrayPerRole.forEach(function (element) { return __awaiter(void 0, void 0, void 0, function () {
@@ -282,22 +309,28 @@ var createOrdinary = function (Model, Roles, checkRoles, subsanarRoles) {
                             });
                         }); });
                     });
-                    bodyWorkflow = __assign(__assign({ radicado: newOrdinaryPerson._id, ordinaryType: newOrdinaryPerson.ordinaryType, roles: usersID, observations: req.body.observations }, checkRoles), subsanarRoles);
+                    bodyWorkflow = __assign(__assign({ radicado: ordinary._id, ordinaryType: ordinary.ordinaryType, roles: usersID, observations: req.body.observations }, checkRoles), subsanarRoles);
                     _a.label = 9;
                 case 9:
-                    _a.trys.push([9, 11, , 12]);
-                    return [4 /*yield*/, workflowModel_1.default.create(bodyWorkflow)];
+                    _a.trys.push([9, 13, , 14]);
+                    return [4 /*yield*/, workflowModel_1.default.exists({ radicado: ordinary._id })];
                 case 10:
-                    _a.sent();
-                    return [3 /*break*/, 12];
+                    onflow = _a.sent();
+                    if (!!onflow) return [3 /*break*/, 12];
+                    bodyWorkflow.forbidden = ordinary.status === ordinariesEnum_1.StatusOrdinary.Forbidden;
+                    return [4 /*yield*/, workflowModel_1.default.create(bodyWorkflow)];
                 case 11:
+                    _a.sent();
+                    _a.label = 12;
+                case 12: return [3 /*break*/, 14];
+                case 13:
                     error_1 = _a.sent();
                     return [2 /*return*/, next(new httpException_1.default('No se ha asignado correctamente el workflow, por favor vuelva a intentar', 500))];
-                case 12:
+                case 14:
                     res.status(200).json({
                         status: true,
                         message: 'Se ha creado el ordinario con éxito',
-                        ordinary: newOrdinaryPerson,
+                        ordinary: ordinary
                     });
                     return [2 /*return*/];
             }
@@ -384,38 +417,40 @@ var updateOrdinary = function (Model) {
 };
 exports.updateOrdinary = updateOrdinary;
 var getAllOrds = (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var ordinariesPromises, ordinaries;
+    var params, companyID, subcontractors, ordinariesPromises, ordinaries;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
+                params = req.query;
+                if (!params.companyID) return [3 /*break*/, 2];
+                companyID = params.companyID;
+                return [4 /*yield*/, contractorModel_1.default.find({ companyID: companyID })];
+            case 1:
+                subcontractors = _a.sent();
+                params = {
+                    $or: [
+                        { companyID: companyID },
+                        { contractorID: { $in: subcontractors } },
+                    ]
+                };
+                _a.label = 2;
+            case 2:
                 ordinariesPromises = Object.values(ordinariesEnum_1.ModelsOrdinary).map(function (Model) { return __awaiter(void 0, void 0, void 0, function () {
-                    var featuresQuery, ordinaryResult;
+                    var feature;
                     return __generator(this, function (_a) {
-                        switch (_a.label) {
-                            case 0:
-                                featuresQuery = new apiFeatures_1.default(Model.find(), req.query)
-                                    .filter()
-                                    .limitFields()
-                                    .paginate()
-                                    .sort();
-                                return [4 /*yield*/, featuresQuery.query.populate([
-                                        {
-                                            path: 'companyID',
-                                            select: 'businessName',
-                                        },
-                                        {
-                                            path: 'contractorID',
-                                            select: 'businessName',
-                                        },
-                                    ])];
-                            case 1:
-                                ordinaryResult = _a.sent();
-                                return [2 /*return*/, ordinaryResult];
-                        }
+                        feature = new apiFeatures_1.default(Model.find(), params)
+                            .filter()
+                            .sort()
+                            .limitFields()
+                            .paginate();
+                        return [2 /*return*/, feature.query.populate([
+                                { path: 'companyID', select: 'businessName' },
+                                { path: 'contractorID', select: 'businessName' },
+                            ])];
                     });
                 }); });
                 return [4 /*yield*/, Promise.all(ordinariesPromises)];
-            case 1:
+            case 3:
                 ordinaries = _a.sent();
                 res.status(200).json({
                     status: true,

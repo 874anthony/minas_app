@@ -57,14 +57,9 @@ var Email = /** @class */ (function () {
     function Email(user, url) {
         this.to = user.email;
         this.url = url;
-        this.from = "Control de Acceso - Gecelca <".concat(process.env.EMAIL_FROM, ">");
+        this.from = "Mina Las Palmeras - Gecelca <".concat(process.env.EMAIL_USERNAME, ">");
     }
     Email.prototype.newTransport = function () {
-        // if (process.env.NODE_ENV === 'production') {
-        // 	// Sendgrid - PRODUCTION
-        // 	return 1;
-        // }
-        // 1) Create a transporter
         return nodemailer_1.default.createTransport({
             host: process.env.EMAIL_HOST,
             port: parseInt(process.env.EMAIL_PORT),
@@ -111,7 +106,7 @@ var Email = /** @class */ (function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.send('welcomeCompany', 'Su acceso a la mina ha sido aprobado!', companyCredentials)];
+                    case 0: return [4 /*yield*/, this.send('welcomeCompany', '¡BIENVENIDO A LA MINA LAS PALMERAS!', companyCredentials)];
                     case 1:
                         _a.sent();
                         return [2 /*return*/];
@@ -123,9 +118,7 @@ var Email = /** @class */ (function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.send('rejectedCompany', 'Su acceso a la mina ha sido denegado', {
-                            emailMessage: emailMessage,
-                        })];
+                    case 0: return [4 /*yield*/, this.send('rejectedCompany', 'HA SIDO RECHAZADO PARA ACCEDER A LA MINA LAS PALMERAS', { emailMessage: emailMessage })];
                     case 1:
                         _a.sent();
                         return [2 /*return*/];
@@ -133,11 +126,11 @@ var Email = /** @class */ (function () {
             });
         });
     };
-    Email.prototype.sendOrdNotification = function (ordinaryOpts) {
+    Email.prototype.sendOrdNotification = function (options) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.send('ordNotification', 'Se ha generado un nuevo ordinario!', ordinaryOpts)];
+                    case 0: return [4 /*yield*/, this.send('ordNotification', 'NUEVO TIPO DE INGRESO REGISTRADO', options)];
                     case 1:
                         _a.sent();
                         return [2 /*return*/];

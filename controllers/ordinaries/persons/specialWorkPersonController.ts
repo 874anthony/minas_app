@@ -14,15 +14,15 @@ const getCitizenship = ordinaryFactory.getOrdinaryCitizenship(
 
 const createSpecialWorkPerson = ordinaryFactory.createOrdinary(
 	SpecialWorkPersonModel,
-	[UserRoles.AccessControl, UserRoles.SISO, UserRoles.Auditing],
+	[UserRoles.AccessControl, UserRoles.SST, UserRoles.Auditing],
 	{
 		checkAccessControl: false,
-		checkSISO: false,
+		checkSST: false,
 		checkAuditing: false,
 	},
 	{
 		correctAccessControl: false,
-		correctSISO: false,
+		correctSST: false,
 		correctAuditing: false,
 	}
 );
@@ -32,8 +32,7 @@ const updateSpecialWorkPerson = ordinaryFactory.updateOrdinary(
 );
 
 // Cron Job to verify if Date.now() > qrCodeDate
-const job = CronJob(SpecialWorkPersonModel);
-job.start();
+CronJob(SpecialWorkPersonModel).start();
 
 export {
 	createSpecialWorkPerson,

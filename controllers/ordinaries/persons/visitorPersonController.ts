@@ -25,8 +25,7 @@ const createVisitorPerson = ordinaryFactory.createOrdinary(
 const updateVisitorPerson = ordinaryFactory.updateOrdinary(VisitorPersonModel);
 
 // Cron Job to verify if Date.now() > qrCodeDate
-const job = CronJob(VisitorPersonModel);
-job.start();
+CronJob(VisitorPersonModel).start();
 
 export {
 	createVisitorPerson,

@@ -28,8 +28,7 @@ const updatePunctualLightVehicle = ordinaryFactory.updateOrdinary(
 );
 
 // Cron Job to verify if Date.now() > qrCodeDate
-const job = CronJob(PunctualLightVehicleModel);
-job.start();
+CronJob(PunctualLightVehicleModel).start();
 
 export {
 	createPunctualLightVehicle,

@@ -33,18 +33,17 @@ var uploadSpecialWorkPersons = ordinaryFactory.uploadPerson;
 exports.uploadSpecialWorkPersons = uploadSpecialWorkPersons;
 var getCitizenship = ordinaryFactory.getOrdinaryCitizenship(specialWorkPersonModel_1.default);
 exports.getCitizenship = getCitizenship;
-var createSpecialWorkPerson = ordinaryFactory.createOrdinary(specialWorkPersonModel_1.default, [userModel_1.UserRoles.AccessControl, userModel_1.UserRoles.SISO, userModel_1.UserRoles.Auditing], {
+var createSpecialWorkPerson = ordinaryFactory.createOrdinary(specialWorkPersonModel_1.default, [userModel_1.UserRoles.AccessControl, userModel_1.UserRoles.SST, userModel_1.UserRoles.Auditing], {
     checkAccessControl: false,
-    checkSISO: false,
+    checkSST: false,
     checkAuditing: false,
 }, {
     correctAccessControl: false,
-    correctSISO: false,
+    correctSST: false,
     correctAuditing: false,
 });
 exports.createSpecialWorkPerson = createSpecialWorkPerson;
 var updateSpecialWorkPerson = ordinaryFactory.updateOrdinary(specialWorkPersonModel_1.default);
 exports.updateSpecialWorkPerson = updateSpecialWorkPerson;
 // Cron Job to verify if Date.now() > qrCodeDate
-var job = (0, cronJob_1.default)(specialWorkPersonModel_1.default);
-job.start();
+(0, cronJob_1.default)(specialWorkPersonModel_1.default).start();
