@@ -259,12 +259,12 @@ const createOrdinary = (
 		const ordinaryOpts = {
 			radicado,
 			ordinaryType: getModelByType[ordinary.ordinaryType],
+			id: ordinary.citizenship || ordinary.vehicleNumber,
 		};
 
 		usersArray.forEach((ArrayPerRole: Array<any>) => {
 			ArrayPerRole.forEach(async (element) => {
 				usersID.push(element._id);
-
 				try {
 					await new Email(element).sendOrdNotification(ordinaryOpts);
 				} catch (error) {

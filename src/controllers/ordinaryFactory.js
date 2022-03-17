@@ -286,6 +286,7 @@ var createOrdinary = function (Model, Roles, checkRoles, subsanarRoles) {
                     ordinaryOpts = {
                         radicado: radicado,
                         ordinaryType: ordinariesEnum_1.getModelByType[ordinary.ordinaryType],
+                        id: ordinary.citizenship || ordinary.vehicleNumber,
                     };
                     usersArray.forEach(function (ArrayPerRole) {
                         ArrayPerRole.forEach(function (element) { return __awaiter(void 0, void 0, void 0, function () {
