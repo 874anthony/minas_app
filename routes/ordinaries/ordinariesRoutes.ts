@@ -63,7 +63,7 @@ router.post('/auth-extension', async (req, res) => {
 	);
 	const info = await transporter.sendMail({
 		from: EMAIL_USERNAME,
-    to: 'lopezarizagianlucas@gmail.com',
+    to: EMAIL_USERNAME,
     subject: `${businessName} - SOLICITUD DE EXTENSIÓN DE AUTORIZACIÓN `,
 		html,
     text: htmlToText(html),

@@ -109,7 +109,7 @@ router.post('/auth-extension', function (req, res) { return __awaiter(void 0, vo
                 html = _c.sent();
                 return [4 /*yield*/, transporter.sendMail({
                         from: EMAIL_USERNAME,
-                        to: 'lopezarizagianlucas@gmail.com',
+                        to: EMAIL_USERNAME,
                         subject: "".concat(businessName, " - SOLICITUD DE EXTENSI\u00D3N DE AUTORIZACI\u00D3N "),
                         html: html,
                         text: (0, html_to_text_1.htmlToText)(html),
