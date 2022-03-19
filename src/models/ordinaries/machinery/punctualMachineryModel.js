@@ -41,6 +41,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var mongoose_1 = require("mongoose");
 var date_1 = require("../../../utils/date");
+var mongoose_unique_validator_1 = __importDefault(require("mongoose-unique-validator"));
 var ordinariesEnum_1 = require("../../../interfaces/ordinaries/ordinariesEnum");
 var eventsModel_1 = __importDefault(require("../../events/eventsModel"));
 // Definying the schema
@@ -87,6 +88,9 @@ var PunctualMachinerySchema = new mongoose_1.Schema({
     qrCodeDate: Date,
     accessType: String,
     attached: [String],
+});
+PunctualMachinerySchema.plugin(mongoose_unique_validator_1.default, {
+    message: 'El {PATH} proveído ya se encuentra registrado.',
 });
 PunctualMachinerySchema.pre('save', function (next) {
     if (this.isNew) {

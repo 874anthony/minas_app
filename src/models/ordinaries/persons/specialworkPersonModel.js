@@ -12,7 +12,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
     return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
     function verb(n) { return function (v) { return step([n, v]); }; }
-    function step(op) {
+    function step(op) { 
         if (f) throw new TypeError("Generator is already executing.");
         while (_) try {
             if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
@@ -41,6 +41,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var mongoose_1 = require("mongoose");
 var cronJob_1 = require("../../../utils/cronJob");
+var mongoose_unique_validator_1 = __importDefault(require("mongoose-unique-validator"));
 var date_1 = require("../../../utils/date");
 var eventsModel_1 = __importDefault(require("../../events/eventsModel"));
 // Definying the schema
@@ -135,6 +136,9 @@ var SpecialWorkPersonSchema = new mongoose_1.Schema({
     updatedAt: {
         type: Date,
     },
+});
+SpecialWorkPersonSchema.plugin(mongoose_unique_validator_1.default, {
+    message: 'El {PATH} proveído ya se encuentra registrado.',
 });
 SpecialWorkPersonSchema.pre('save', function (next) {
     if (this.isNew) {

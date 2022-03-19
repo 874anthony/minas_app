@@ -1,5 +1,6 @@
 import { Schema, model } from 'mongoose';
 import { addDate } from '../../../utils/date';
+import uniqueValidator from 'mongoose-unique-validator';
 import { getModelByType } from '../../../interfaces/ordinaries/ordinariesEnum';
 import Event from '../../events/eventsModel';
 import { autoDecline } from '../../../utils/cronJob';
@@ -48,6 +49,10 @@ const PermanentMachinerySchema = new Schema({
 	qrCodeDate: Date,
 	accessType: String,
 	attached: [String],
+});
+
+PermanentMachinerySchema.plugin(uniqueValidator, {
+	message: 'El {PATH} proveído ya se encuentra registrado.',
 });
 
 PermanentMachinerySchema.pre('save', function (next) {

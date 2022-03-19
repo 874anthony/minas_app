@@ -41,6 +41,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var mongoose_1 = require("mongoose");
 var date_1 = require("../../../../utils/date");
+var mongoose_unique_validator_1 = __importDefault(require("mongoose-unique-validator"));
 var eventsModel_1 = __importDefault(require("../../../events/eventsModel"));
 var cronJob_1 = require("../../../../utils/cronJob");
 // Definying the schema
@@ -99,6 +100,9 @@ var SpecialPunctualHeavyVehicleSchema = new mongoose_1.Schema({
     observations: [String],
     qrCodeDate: Date,
     reasonDescription: String,
+});
+SpecialPunctualHeavyVehicleSchema.plugin(mongoose_unique_validator_1.default, {
+    message: 'El {PATH} proveído ya se encuentra registrado.',
 });
 // SpecialPunctualHeavyVehicleSchema.pre('save', function (next) {
 // if (this.isNew) {

@@ -1,5 +1,6 @@
 import { Schema, model } from 'mongoose';
 import { addDate } from '../../../utils/date';
+import uniqueValidator from 'mongoose-unique-validator';
 import { getModelByType } from '../../../interfaces/ordinaries/ordinariesEnum';
 import Event from '../../events/eventsModel';
 
@@ -47,6 +48,10 @@ const PunctualMachinerySchema = new Schema({
 	qrCodeDate: Date,
 	accessType: String,
 	attached: [String],
+});
+
+PunctualMachinerySchema.plugin(uniqueValidator, {
+	message: 'El {PATH} proveído ya se encuentra registrado.',
 });
 
 PunctualMachinerySchema.pre('save', function (next) {

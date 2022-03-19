@@ -1,6 +1,6 @@
 import { Schema, model } from 'mongoose';
 import validator from 'validator';
-
+import uniqueValidator from 'mongoose-unique-validator';
 import CryptoJS from 'crypto-js';
 import crypto from 'crypto';
 import { ModelsOrdinary } from '../../interfaces/ordinaries/ordinariesEnum';
@@ -124,6 +124,10 @@ const CompanySchema: Schema<CompanyInterface> = new Schema(
 		toJSON: { virtuals: true },
 	}
 );
+
+CompanySchema.plugin(uniqueValidator, {
+	message: 'El {PATH} proveído ya se encuentra registrado.',
+});
 
 // ================================================== VIRTUAL PROPERTIES STARTS HERE ==================================================
 // Virtual populate

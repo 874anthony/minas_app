@@ -1,5 +1,6 @@
 import { Schema, model } from 'mongoose';
 import { addDate } from '../../../utils/date';
+import uniqueValidator from 'mongoose-unique-validator';
 import { getModelByType } from '../../../interfaces/ordinaries/ordinariesEnum';
 import Event from '../../events/eventsModel';
 import { autoDecline } from '../../../utils/cronJob';
@@ -90,6 +91,10 @@ const VisitorPersonSchema = new Schema({
 	updatedAt: {
 		type: Date,
 	},
+});
+
+VisitorPersonSchema.plugin(uniqueValidator, {
+	message: 'El {PATH} proveído ya se encuentra registrado.'
 });
 
 VisitorPersonSchema.pre('save', function (next) {

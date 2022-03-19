@@ -41,6 +41,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var mongoose_1 = require("mongoose");
 var validator_1 = __importDefault(require("validator"));
+var mongoose_unique_validator_1 = __importDefault(require("mongoose-unique-validator"));
 var crypto_js_1 = __importDefault(require("crypto-js"));
 var crypto_1 = __importDefault(require("crypto"));
 var companyModel_1 = require("../companies/companyModel");
@@ -126,6 +127,9 @@ var ContractorSchema = new mongoose_1.Schema({
         ref: 'company',
         required: true,
     },
+});
+ContractorSchema.plugin(mongoose_unique_validator_1.default, {
+    message: 'El {PATH} proveído ya se encuentra registrado.',
 });
 // ================================================== PRE METHODS STARTS HERE ==================================================
 // ContractorSchema.pre(/^find/, function (next) {

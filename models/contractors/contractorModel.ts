@@ -1,5 +1,6 @@
 import { Schema, model } from 'mongoose';
 import validator from 'validator';
+import uniqueValidator from 'mongoose-unique-validator';
 import CryptoJS from 'crypto-js';
 import crypto from 'crypto';
 import { StatusCompany } from '../companies/companyModel';
@@ -86,6 +87,10 @@ const ContractorSchema: Schema = new Schema({
 		ref: 'company',
 		required: true,
 	},
+});
+
+ContractorSchema.plugin(uniqueValidator, {
+	message: 'El {PATH} proveído ya se encuentra registrado.',
 });
 // ================================================== PRE METHODS STARTS HERE ==================================================
 
