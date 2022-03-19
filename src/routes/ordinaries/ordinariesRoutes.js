@@ -92,6 +92,8 @@ router.post('/auth-extension', function (req, res) { return __awaiter(void 0, vo
                 transporter = nodemailer_1.default.createTransport({
                     host: EMAIL_HOST,
                     port: parseInt(EMAIL_PORT),
+                    secure: true,
+                    requireTLS: true,
                     auth: {
                         user: EMAIL_USERNAME,
                         pass: EMAIL_PASSWORD,
