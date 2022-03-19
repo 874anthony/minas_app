@@ -41,6 +41,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var mongoose_1 = require("mongoose");
 var cronJob_1 = require("../../../utils/cronJob");
+var mongoose_unique_validator_1 = __importDefault(require("mongoose-unique-validator"));
 var date_1 = require("../../../utils/date");
 var eventsModel_1 = __importDefault(require("../../events/eventsModel"));
 // Definying the schema
@@ -135,6 +136,9 @@ var SpecialWorkPersonSchema = new mongoose_1.Schema({
     updatedAt: {
         type: Date,
     },
+});
+SpecialWorkPersonSchema.plugin(mongoose_unique_validator_1.default, {
+    message: 'El {PATH} proveído ya se encuentra registrado.',
 });
 SpecialWorkPersonSchema.pre('save', function (next) {
     if (this.isNew) {

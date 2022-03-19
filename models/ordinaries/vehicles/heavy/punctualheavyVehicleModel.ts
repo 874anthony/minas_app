@@ -1,5 +1,6 @@
 import { Schema, model } from 'mongoose';
 import { addDate } from '../../../../utils/date';
+import uniqueValidator from 'mongoose-unique-validator';
 import { getModelByType } from '../../../../interfaces/ordinaries/ordinariesEnum';
 import Event from '../../../events/eventsModel';
 import { autoDecline } from '../../../../utils/cronJob';
@@ -59,6 +60,10 @@ const PunctualHeavyVehicleSchema = new Schema({
 	qrCodeDate: Date,
 	reasonDescription: String,
 	attached: [String],
+});
+
+PunctualHeavyVehicleSchema.plugin(uniqueValidator, {
+	message: 'El {PATH} proveído ya se encuentra registrado.',
 });
 
 PunctualHeavyVehicleSchema.pre('save', function (next) {

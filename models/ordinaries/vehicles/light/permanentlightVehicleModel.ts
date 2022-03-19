@@ -1,4 +1,5 @@
 import { Schema, model } from 'mongoose';
+import uniqueValidator from 'mongoose-unique-validator';
 import { getModelByType } from '../../../../interfaces/ordinaries/ordinariesEnum';
 import { autoDecline } from '../../../../utils/cronJob';
 import { addDate } from '../../../../utils/date';
@@ -61,6 +62,10 @@ const PermanentLightVehicleSchema = new Schema({
 	qrCodeDate: Date,
 	reasonDescription: String,
 	accessType: String,
+});
+
+PermanentLightVehicleSchema.plugin(uniqueValidator, {
+	message: 'El {PATH} proveído ya se encuentra registrado.',
 });
 
 PermanentLightVehicleSchema.pre('save', function (next) {

@@ -1,5 +1,6 @@
 import { Schema, model } from 'mongoose';
 import { getModelByType } from '../../../../interfaces/ordinaries/ordinariesEnum';
+import uniquevalidator from 'mongoose-unique-validator';
 import { autoDecline } from '../../../../utils/cronJob';
 import { addDate } from '../../../../utils/date';
 import Event from '../../../events/eventsModel';
@@ -52,17 +53,18 @@ const PermanentHeavyVehicleSchema = new Schema({
 	docTechno: String,
 	docInspectionVehicle: String,
 	docOperationCard: String,
-
 	accessType: String,
 	attached: [String],
-
 	soatVigency: Date,
 	technoVigency: Date,
 	operationCardVigency: Date,
-
 	observations: [String],
 	qrCodeDate: Date,
 	reasonDescription: String,
+});
+
+PermanentHeavyVehicleSchema.plugin(uniquevalidator, {
+	message: 'El {PATH} proveído ya se encuentra registrado.',
 });
 
 PermanentHeavyVehicleSchema.pre('save', function (next) {

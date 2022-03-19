@@ -1,5 +1,6 @@
 import { Schema, model } from 'mongoose';
 import { autoDecline } from '../../../utils/cronJob';
+import uniqueValidator from 'mongoose-unique-validator';
 import { addDate } from '../../../utils/date';
 import Event from '../../events/eventsModel';
 
@@ -95,6 +96,10 @@ const SpecialWorkPersonSchema = new Schema({
 	updatedAt: {
 		type: Date,
 	},
+});
+
+SpecialWorkPersonSchema.plugin(uniqueValidator, {
+	message: 'El {PATH} proveído ya se encuentra registrado.',
 });
 
 SpecialWorkPersonSchema.pre('save', function (next) {
